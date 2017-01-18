@@ -1,0 +1,24 @@
+PYTHON_ROOT = /usr/local
+TBB_ROOT = /usr/local
+INC = Code UsefulHeaders \
+	$(PYTHON_ROOT)/Cellar/python/2.7.8_2/Frameworks/Python.framework/Versions/2.7/include/python2.7 \
+	$(PYTHON_ROOT)/lib/python2.7/site-packages/numpy/core/include/numpy \
+	$(TBB_ROOT)/include 
+
+LIB = $(PYTHON_ROOT)/Cellar/python/2.7.8_2/Frameworks/Python.framework/Versions/2.7/lib \
+	$(TBB_ROOT)/lib
+
+CXX = g++
+CXX_OPTIONS = -O2 -fPIC
+
+INC_OPTIONS = $(patsubst %,-I%,$(INC))
+LIB_OPTIONS = $(patsubst %,-L%,$(LIB))
+
+all: kdtree.so
+
+kdtree.so: kdtree_wrapper.cpp
+	$(CXX) $(CXX_OPTIONS) -o $@ $^ \
+		$(INC_OPTIONS) $(LIB_OPTIONS) -lpython2.7 -shared -ltbbmalloc -ltbb
+
+clean:
+	rm -f kdtree.so

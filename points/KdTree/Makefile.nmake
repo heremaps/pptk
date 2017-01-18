@@ -1,0 +1,38 @@
+# path to root python folder
+PYTHON_ROOT = C:\Users\victlu\AppData\Local\Enthought\Canopy\App\appdata\canopy-1.3.0.1715.win-x86_64
+# path to root TBB folder
+TBB_ROOT = C:\Users\victlu\Desktop\Sources\tbb42_20140601oss
+# path to Python.h
+INC_PYTHON = "*$(PYTHON_ROOT)\include"
+# path to arrayobject.h
+INC_NUMPY = "*$(PYTHON_ROOT)\Lib\site-packages\numpy\core\include\numpy"
+# path for TBB .h files
+INC_TBB = "*$(TBB_ROOT)\include"
+# path to python27.lib
+LIB_PYTHON = "*$(PYTHON_ROOT)\libs"
+# path to tbb.lib and tbbmalloc.lib
+LIB_TBB = *$(TBB_ROOT)\lib\intel64\vc10
+# path to msvcprt.lib
+LIB_MSVC = "*C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\lib\amd64"
+# path to stuff like uuid.lib
+LIB_WINSDK = "*C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib\x64"
+
+INC = *Code *UsefulHeaders $(INC_TBB) $(INC_PYTHON) $(INC_NUMPY)
+LIB = $(LIB_PYTHON) $(LIB_TBB) $(LIB_MSVC) $(LIB_WINSDK)
+
+CXX = cl
+CXX_OPTIONS = -O2
+
+INC_OPTIONS = $(INC:*=-I)
+LIB_OPTIONS = $(LIB:*=/LIBPATH:)
+
+all: kdtree.pyd
+
+kdtree.pyd: kdtree.obj
+	link $(LIB_OPTIONS) /DLL /nologo /INCREMENTAL:NO /OUT:$@ python27.lib tbbmalloc.lib tbb.lib kdtree.obj /IMPLIB:kdtree.lib /MANIFESTFILE:kdtree.pyd.manifest
+
+kdtree.obj: kdtree_wrapper.cpp
+	cl $(INC_OPTIONS) /c /nologo /Ox /MD /W3 /GS- /DNDEBUG /Fokdtree.obj kdtree_wrapper.cpp /EHsc
+
+clean:
+	rm -rf kdtree.pyd kdtree.obj kdtree.lib kdtree.exp

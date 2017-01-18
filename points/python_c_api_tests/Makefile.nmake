@@ -1,0 +1,31 @@
+# path to root python folder
+ROOT_PYTHON = C:/Users/victlu/AppData/Local/Enthought/Canopy/App/appdata/canopy-1.3.0.1715.win-x86_64
+# path to Python.h
+INC_PYTHON = "*$(ROOT_PYTHON)\include"
+# path to Numpy arrayobject.h
+INC_NUMPY = "*$(ROOT_PYTHON)\Lib\site-packages\numpy\core\include\numpy"
+# path to Eigen library
+INC_EIGEN = *C:\Users\victlu\Desktop\Sources\eigen-3.2.1
+# path to python27.lib
+LIB_PYTHON = "*$(ROOT_PYTHON)\libs"
+# path to msvcprt.lib
+LIB_MSVC = "*C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\lib\amd64"
+# path to stuff like kernel32.lib
+LIB_WINSDK = "*C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib\x64"
+
+INC = $(INC_PYTHON) $(INC_NUMPY) $(INC_EIGEN)
+LIB = $(LIB_PYTHON) $(LIB_MSVC) $(LIB_WINSDK)
+	
+INC_OPTIONS = $(INC:*=-I)
+LIB_OPTIONS = $(LIB:*=/LIBPATH:)	
+
+all: vfuncs.pyd
+
+vfuncs.pyd: vfuncs.obj
+	link $(LIB_OPTIONS) /DLL /nologo /INCREMENTAL:NO /OUT:$@ python27.lib vfuncs.obj /IMPLIB:vfuncs.lib /MANIFESTFILE:vfuncs.pyd.manifest
+	
+vfuncs.obj: vfuncs.cpp
+	cl $(INC_OPTIONS) /c /nologo /Ox /MD /W3 /GS- /DNDEBUG /Fovfuncs.obj vfuncs.cpp /EHsc
+
+clean:
+	rm -rf vfuncs.pyd vfuncs.obj

@@ -1,0 +1,37 @@
+# path to root python folder
+PYTHON_ROOT = C:\Program Files\Enthought\Canopy\App\appdata\canopy-1.1.0.1371.win-x86_64
+# path to root TBB folder
+TBB_ROOT = C:\Users\victlu\Desktop\Source\tbb40_20120613oss
+# path to Python.h
+INC_PYTHON = "*$(PYTHON_ROOT)\include"
+# path to Numpy arrayobject.h
+INC_NUMPY = "*$(PYTHON_ROOT)\Lib\site-packages\numpy\core\include\numpy"
+# path to Eigen library
+INC_EIGEN = *C:\Users\victlu\Desktop\Source\eigen-3.1.2
+# path for TBB .h files
+INC_TBB = "*$(TBB_ROOT)\include"
+# path to python27.lib
+LIB_PYTHON = "*$(PYTHON_ROOT)\libs"
+# path to tbb.lib and tbbmalloc.lib
+LIB_TBB = *$(TBB_ROOT)\lib\intel64\vc10
+# path to msvcprt.lib
+LIB_MSVC = "*C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\lib\amd64"
+# path to stuff like kernel32.lib
+LIB_WINSDK = "*C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib\x64"
+
+INC = *..\..\points\KdTree\Code *..\..\points\KdTree\UsefulHeaders $(INC_EIGEN) $(INC_TBB) $(INC_PYTHON) $(INC_NUMPY)
+LIB = $(LIB_PYTHON) $(LIB_TBB) $(LIB_MSVC) $(LIB_WINSDK)
+
+INC_OPTIONS = $(INC:*=-I)
+LIB_OPTIONS = $(LIB:*=/LIBPATH:)	
+
+all: estimate_normals.pyd
+
+estimate_normals.pyd: estimate_normals.obj
+	link $(LIB_OPTIONS) /DLL /nologo /INCREMENTAL:NO /OUT:$@ python27.lib estimate_normals.obj /IMPLIB:estimate_normals.lib /MANIFESTFILE:estimate_normals.pyd.manifest
+	
+estimate_normals.obj: estimate_normals.cpp
+	cl $(INC_OPTIONS) /c /nologo /Ox /MD /W3 /GS- /openmp /DNDEBUG /Foestimate_normals.obj estimate_normals.cpp /EHsc
+
+clean:
+	rm -rf estimate_normals.pyd estimate_normals.obj
