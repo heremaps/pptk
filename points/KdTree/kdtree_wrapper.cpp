@@ -1,344 +1,360 @@
 #include <iostream>
 #include <limits>
-#include "Python.h"
-#include "arrayobject.h"
-#include "PointKdTree.h"
-#include "BuilderParallel.h"
-#include "TraverserBatchedDF.h"
-#include "TraverserDF.h"
 #include "python_util.h"
-#include "../KdTree/UsefulHeaders/vltools/timer.h"
-using namespace vltools;
+#include "kdtree.h"
 using namespace std;
-using namespace pointkd;
 
-struct ArrayStruct {
-  const void* data;
-  float scalar;
-  npy_intp m;
-  npy_intp n;
-  npy_intp row_stride;
-  npy_intp col_stride;
+struct KdTreeStruct {
+  KdTreeStruct(void* tree_ptr, int type_num, int dim)
+      : tree_ptr(tree_ptr), type_num(type_num), dim(dim) {}
+  void* tree_ptr;
   int type_num;
+  int dim;
 };
 
-bool extract_array(ArrayStruct& item, PyObject* obj) {
-  // Checks the following conditions:
-  // 1. obj is a PyArrayObject
-  // 2. obj's ndim is either 1 or 2
-  // If all the above conditions hold, then array properties are
-  // extracted and function returns true.
-  if (!PyArray_Check(obj)) {
-    PyErr_SetString(PyExc_TypeError, "Encountered non-array type");
-    return false;
+template <typename Action, int dim>
+void PerformAction_(Action& action, int type_num) {
+  if (type_num == NPY_FLOAT32)
+    action.template Perform<float, dim>();
+  else if (type_num == NPY_FLOAT64)
+    action.template Perform<double, dim>();
+  else if (type_num == NPY_INT8)
+    action.template Perform<std::int8_t, dim>();
+  else if (type_num == NPY_INT16)
+    action.template Perform<std::int16_t, dim>();
+  else if (type_num == NPY_INT32)
+    action.template Perform<std::int32_t, dim>();
+  else if (type_num == NPY_INT64)
+    action.template Perform<std::int64_t, dim>();
+  else if (type_num == NPY_UINT8)
+    action.template Perform<std::uint8_t, dim>();
+  else if (type_num == NPY_UINT16)
+    action.template Perform<std::uint16_t, dim>();
+  else if (type_num == NPY_UINT32)
+    action.template Perform<std::uint32_t, dim>();
+  else if (type_num == NPY_UINT64)
+    action.template Perform<std::uint64_t, dim>();
+  else {
+    PyErr_Format(PyExc_RuntimeError,
+                 "PerformAction_(): Invalid k-d tree type_num = %d.", type_num);
   }
-  PyArrayObject* arr = (PyArrayObject*)obj;
-  int ndim = PyArray_NDIM(arr);
-  if (ndim != 1 && ndim != 2) {
-    PyErr_SetString(PyExc_ValueError, "Array ndim neither 1 nor 2");
-    return false;
-  }
-  if (ndim == 1) {
-    item.m = 1;
-    item.n = PyArray_DIM(arr, 0);
-    item.row_stride = 0;
-    item.col_stride = PyArray_STRIDE(arr, 0) / sizeof(float);
+}
+
+template <typename Action>
+void PerformAction(Action& action, int type_num, int dim) {
+  if (dim == 2) {
+    PerformAction_<Action, 2>(action, type_num);
+  } else if (dim == 3) {
+    PerformAction_<Action, 3>(action, type_num);
+  } else if (dim == 4) {
+    PerformAction_<Action, 4>(action, type_num);
   } else {
-    item.m = PyArray_DIM(arr, 0);
-    item.n = PyArray_DIM(arr, 1);
-    item.row_stride = PyArray_STRIDE(arr, 0) / sizeof(float);
-    item.col_stride = PyArray_STRIDE(arr, 1) / sizeof(float);
+    PyErr_Format(PyExc_RuntimeError,
+	             "PerformAction(): Invalid k-d tree dim = %d.", dim);
   }
-  if (item.m == 1) item.row_stride = 0;
-  if (item.n == 1) item.col_stride = 0;
-  item.data = PyArray_DATA(arr);
-  item.type_num = PyArray_TYPE(arr);
-  return true;
 }
 
-template <typename T>
-void copyToVector(vector<T>& v, const ArrayStruct arr) {
-  // assumes arr.type_num is consistent with T
-  v.reserve(arr.m * arr.n);
-  for (npy_intp i = 0; i < arr.m; i++)
-    for (npy_intp j = 0; j < arr.n; j++)
-      v.push_back(
-          *((const T*)arr.data + arr.row_stride * i + arr.col_stride * j));
-}
-
-PyObject* listOfLists(const vector<int>& indices,
-                      const vector<float>& distances, const int k) {
-  // assumes indices.size() == distances.size()
-  // and k divides indices.size()
-  Py_ssize_t num_lists = (Py_ssize_t)indices.size() / k;
-  PyObject* indices_list = PyList_New(num_lists);
-  PyObject* distances_list = PyList_New(num_lists);
-  for (Py_ssize_t i = 0; i < num_lists; i++) {
-    const int* ptr_indices = &indices[i * k];
-    const float* ptr_distances = &distances[i * k];
-    Py_ssize_t num_neighbors = (Py_ssize_t)k;
-    for (int j = 0; j < k; j++) {
-      if (ptr_indices[j] == -1) {
-        num_neighbors = j;
-        break;
-      }
-    }
-    PyObject* indices_sublist = PyList_New(num_neighbors);
-    PyObject* distances_sublist = PyList_New(num_neighbors);
-    for (Py_ssize_t j = 0; j < num_neighbors; j++) {
-      PyList_SetItem(indices_sublist, j, PyInt_FromLong((long)ptr_indices[j]));
-      PyList_SetItem(distances_sublist, j,
-                     PyFloat_FromDouble((double)ptr_distances[j]));
-    }
-    PyList_SetItem(indices_list, i, indices_sublist);
-    PyList_SetItem(distances_list, i, distances_sublist);
+class DeleteTreeAction {
+ public:
+  DeleteTreeAction(KdTreeStruct* ptr) : ptr_(ptr) {}
+  template <typename T, int dim>
+  void Perform() {
+    delete (pointkd::KdTree<T, dim>*)ptr_->tree_ptr;
+    delete ptr_;
   }
-  PyObject* out_tuple = PyTuple_New(2);
-  PyTuple_SetItem(out_tuple, 0, indices_list);
-  PyTuple_SetItem(out_tuple, 1, distances_list);
+ private:
+  KdTreeStruct* ptr_;
+};
 
-  return out_tuple;
+void DeleteKdTree(PyObject* obj) {
+  KdTreeStruct* ptr = (KdTreeStruct*)PyCapsule_GetPointer(obj, NULL);
+  DeleteTreeAction action(ptr);
+  PerformAction<DeleteTreeAction>(action, ptr->type_num, ptr->dim);
 }
 
-PyObject* listOfArrays(const vector<int>& indices,
-                       const vector<float>& distances, const int k) {
-  Py_ssize_t num_arrays = (Py_ssize_t)indices.size() / k;
-  PyObject* indices_list = PyList_New(num_arrays);
-  PyObject* distances_list = PyList_New(num_arrays);
-  for (Py_ssize_t i = 0; i < num_arrays; i++) {
-    const int* ptr_indices = &indices[i * k];
-    const float* ptr_distances = &distances[i * k];
-    npy_intp num_neighbors = (npy_intp)k;
-    for (int j = 0; j < k; j++) {
-      if (ptr_indices[j] == -1) {
-        num_neighbors = j;
-        break;
-      }
-    }
-    PyObject* indices_array =
-        PyArray_EMPTY(1, &num_neighbors, NPY_INT32, false);
-    PyObject* distances_array =
-        PyArray_EMPTY(1, &num_neighbors, NPY_FLOAT32, false);
-    copy(ptr_indices, ptr_indices + num_neighbors,
-         (int*)PyArray_DATA((PyArrayObject*)indices_array));
-    copy(ptr_distances, ptr_distances + num_neighbors,
-         (float*)PyArray_DATA((PyArrayObject*)distances_array));
-    PyList_SetItem(indices_list, i, indices_array);
-    PyList_SetItem(distances_list, i, distances_array);
-  }
-  PyObject* out_tuple = PyTuple_New(2);
-  PyTuple_SetItem(out_tuple, 0, indices_list);
-  PyTuple_SetItem(out_tuple, 1, distances_list);
+class BuildTreeAction {
+ public:
+  BuildTreeAction(const Array2D& x, const pointkd::BuildParams& params)
+      : x_(x), params_(params), results_(NULL) {}
 
-  return out_tuple;
-}
-
-PyObject* k_nearest(PyObject* obj_queries, const PointKdTree<float>* tree,
-                    int k, float dMax) {
-  // assumes k > 0 and dMax > 0
-  vector<int> indices;
-  vector<float> distances;
-  if (obj_queries == Py_None) {
-    // all k-nearest
-    TraverserBatchedDF<float> trav(*tree);
-    trav.allNearest(k, indices, distances, dMax);
-  } else if (PyArray_Check(obj_queries)) {
-    ArrayStruct arrStruct;
-    if (!extract_array(arrStruct, obj_queries)) {
-      return NULL;
-    }
-    PyArrayObject* arr = (PyArrayObject*)obj_queries;
-    if (arrStruct.type_num == NPY_FLOAT32) {
-      // query with explicitly specified query points
-      if (arrStruct.n != 3) {
-        PyErr_SetString(PyExc_ValueError, "Require 3-d query points");
-        return NULL;
-      }
-      vector<float> queries;
-      copyToVector(queries, arrStruct);
-      TraverserDF<float> trav(*tree);
-      trav.nearest(queries, k, indices, distances, dMax);
-    } else if (arrStruct.type_num == NPY_INT32) {
-      // query with array of indices
-      vector<int> queryIndices;
-      copyToVector(queryIndices, arrStruct);
-      if (!check_indices(queryIndices, (npy_intp)tree->getNumPoints(), 0)) {
-        PyErr_SetString(PyExc_IndexError, "Index out of bounds");
-        return NULL;
-      }
-      fix_negative_indices(queryIndices, (npy_intp)tree->getNumPoints());
-      TraverserDF<float> trav(*tree);
-      trav.nearestSelf(queryIndices, k, indices, distances, dMax);
+  template <typename T, int dim>
+  void Perform() {
+    typedef pointkd::KdTree<T, dim> KdTreeT;
+    KdTreeT* tree;
+    // TODO(longer term): make kd-tree accept pointer to strided array
+    if (IsContiguous(x_)) {
+      tree = new KdTreeT((const T*)x_.data, x_.m, params_);
     } else {
-      PyErr_Format(PyExc_TypeError, "Querying with array dtype %s unsupported",
-                   PyArray_DESCR(arr)->typeobj->tp_name);
-      return NULL;
+      std::vector<T> points;
+      VectorFromArray2D(points, x_);
+      tree = new KdTreeT(points, params_);
     }
-  } else if (PyList_Check(obj_queries)) {
-    // query with list of indices
-    vector<int> queryIndices;
-    if (!extract_indices(queryIndices, obj_queries, 0)) {
-      PyErr_SetString(PyExc_IndexError, "Invalid list of indices");
-      return NULL;
-    }
-    if (!check_indices(queryIndices, (npy_intp)tree->getNumPoints(), 0)) {
-      PyErr_SetString(PyExc_IndexError, "Index out of bounds");
-      return NULL;
-    }
-    fix_negative_indices(queryIndices, (npy_intp)tree->getNumPoints());
-    TraverserDF<float> trav(*tree);
-    trav.nearestSelf(queryIndices, k, indices, distances, dMax);
-  } else if (PySlice_Check(obj_queries)) {
-    PyErr_SetString(PyExc_NotImplementedError,
-                    "Slice-based query not yet implemented");
-    return NULL;
-  } else {
-    PyErr_Format(PyExc_TypeError, "Unsupported query type %s",
-                 obj_queries->ob_type->tp_name);
-    return NULL;
+    KdTreeStruct* kdtree_struct = new KdTreeStruct((void*)tree,
+                                                   x_.type_num, dim);
+    results_ = PyCapsule_New((void*)kdtree_struct, NULL, &DeleteKdTree);
   }
 
-  // store results in tuple (indices, distances)
-  // note: for 4-nn on 330309 points,
-  // generating a list of lists takes about 0.38+0.59
-  // generating a list of arrays takes about 0.38+0.20
-  PyObject* result = listOfArrays(indices, distances, k);
-  // PyObject* result = listOfLists(indices, distances, k);
+  PyObject* results() const { return results_; }
 
-  return result;
+ private:
+  const Array2D& x_;
+  const pointkd::BuildParams& params_;
+  PyObject* results_;
+};
+
+PyObject* MakeList(const std::vector<pointkd::Indices>& v) {
+  PyObject* X = PyList_New((Py_ssize_t)v.size());
+  for (std::size_t i = 0; i < v.size(); i++) {
+    npy_intp n = (npy_intp)v[i].size();
+    PyObject* x = PyArray_EMPTY(1, &n, NPY_INT32, false);
+    copy(v[i].begin(), v[i].end(), (int*)PyArray_DATA((PyArrayObject*)x));
+    PyList_SetItem(X, i, x);
+  }
+  return X;
 }
 
-void delete_kdtree(PyObject* obj) {
-  delete (PointKdTree<float>*)PyCapsule_GetPointer(obj, NULL);
+template <typename T, int dim>
+PyObject* QueryWithIndices(const pointkd::KdTree<T, dim>* kdtree,
+                           const pointkd::Indices& indices,
+                           long k, double dmax) {
+  // assume k >= -1 and dMax >= 0.0
+  typedef typename pointkd::KdTree<T, dim>::DistT DistT;
+  std::vector<pointkd::Indices> results;
+  if (k > 0) {  // k-nearest
+    kdtree->KNearestNeighborsSelf(results, indices, (int)k, (DistT)dmax);
+    return MakeList(results);
+  } else if (dmax != std::numeric_limits<double>::infinity()) {  // r-near
+    kdtree->RNearNeighborsSelf(results, indices, (DistT)dmax);
+    return MakeList(results);
+  } else {
+    PyErr_Format(PyExc_ValueError,
+                 "QueryWithIndices(): "
+				 "k = %ld and dmax = %lf is an invalid combination.", k, dmax);
+    return NULL;
+  }
 }
 
-static PyObject* _build(PyObject* self, PyObject* args, PyObject* kwargs) {
+template <typename Tx, typename Ty, int dim>
+PyObject* QueryWithPoints(const pointkd::KdTree<Tx, dim>* kdtree,
+                          const std::vector<Ty>& query_points,
+                          long k, double dmax) {
+  // assume k >= -1 and dMax >= 0.0
+  typedef typename pointkd::KdTree<Tx, dim>::DistT DistT;
+  std::vector<pointkd::Indices> results;
+  if (k > 0) {  // k-nearest
+    kdtree->KNearestNeighbors(results, query_points, k, (DistT)dmax);
+    return MakeList(results);
+  } else if (dmax != std::numeric_limits<double>::infinity()) {  // r-near
+    kdtree->RNearNeighbors(results, query_points, (DistT)dmax);
+    return MakeList(results);
+  } else {
+    PyErr_Format(PyExc_ValueError,
+                 "QueryWithPoints(): "
+				 "k = %ld and dmax = %lf is an invalid combination.", k, dmax);
+    return NULL;
+  }
+}
+
+class QueryTreeAction {
+ public:
+  QueryTreeAction(const KdTreeStruct* ptr, PyObject* obj_queries, long k, double dmax)
+      : ptr_(ptr),
+        obj_queries_(obj_queries),
+        k_(k),
+        dmax_(dmax),
+        results_(NULL) {}
+  template <typename T, int dim>
+  void Perform() {
+    const pointkd::KdTree<T, dim>* tree =
+        (const pointkd::KdTree<T, dim>*)ptr_->tree_ptr;
+    pointkd::Indices indices;
+    std::vector<pointkd::Indices> r;
+    if (obj_queries_ == NULL || obj_queries_ == Py_None) {
+      // query with indices 0 ... num_points-1
+      for (int i = 0; i < tree->num_points(); i++)
+        indices.push_back(i);
+      results_ = QueryWithIndices(tree, indices, k_, dmax_);
+    } else if (PySlice_Check(obj_queries_)) {
+      // query with indices represented by a slice (begin:end:step)
+      PyErr_SetString(PyExc_NotImplementedError,
+	                  "QueryTreeAction::Perform(): "
+                      "slice-based query not yet implemented");
+      results_ = NULL;
+    } else if (PyArray_Check(obj_queries_) && PyArray_NDIM(obj_queries_) == 2) {
+      // query with points
+      Array2D x;
+      ExtractArray2DFromPyArray(x, obj_queries_);
+	  if (x.n != dim) {
+		  PyErr_Format(PyExc_ValueError,
+		               "QueryTreeAction::Perform(): "
+		               "query point dim = %d (expecting dim = %d).",
+					   (int)x.n, dim);
+		  results_ = NULL;
+      } else if (x.type_num == NPY_FLOAT32) {
+        std::vector<float> q;
+        VectorFromArray2D(q, x);
+        results_ = QueryWithPoints(tree, q, k_, dmax_);
+      } else if (x.type_num == NPY_FLOAT64) {
+        std::vector<double> q;
+        VectorFromArray2D(q, x);
+        results_ = QueryWithPoints(tree, q, k_, dmax_);
+      } else if (x.type_num == NPY_INT8) {
+        std::vector<std::int8_t> q;
+        VectorFromArray2D(q, x);
+        results_ = QueryWithPoints(tree, q, k_, dmax_);
+      } else if (x.type_num == NPY_INT16) {
+        std::vector<std::int16_t> q;
+        VectorFromArray2D(q, x);
+        results_ = QueryWithPoints(tree, q, k_, dmax_);
+      } else if (x.type_num == NPY_INT32) {
+        std::vector<std::int32_t> q;
+        VectorFromArray2D(q, x);
+        results_ = QueryWithPoints(tree, q, k_, dmax_);
+      } else if (x.type_num == NPY_INT64) {
+        std::vector<std::int64_t> q;
+        VectorFromArray2D(q, x);
+        results_ = QueryWithPoints(tree, q, k_, dmax_);
+      } else if (x.type_num == NPY_UINT8) { 
+        std::vector<std::uint8_t> q;
+        VectorFromArray2D(q, x);
+        results_ = QueryWithPoints(tree, q, k_, dmax_);
+      } else if (x.type_num == NPY_UINT16) {
+        std::vector<std::uint16_t> q;
+        VectorFromArray2D(q, x);
+        results_ = QueryWithPoints(tree, q, k_, dmax_);
+      } else if (x.type_num == NPY_UINT32) {
+        std::vector<std::uint32_t> q;
+        VectorFromArray2D(q, x);
+        results_ = QueryWithPoints(tree, q, k_, dmax_);
+      } else if (x.type_num == NPY_UINT64) {
+        std::vector<std::uint64_t> q;
+        VectorFromArray2D(q, x);
+        results_ = QueryWithPoints(tree, q, k_, dmax_);
+      }
+    } else if (CheckAndExtractIndices(indices,
+	                                  obj_queries_, tree->num_points())) {
+      results_ = QueryWithIndices(tree, indices, k_, dmax_);
+    } else {
+      if (!PyErr_Occurred())
+        PyErr_Format(PyExc_TypeError,
+		             "QueryTreeAction::Perform(): "
+                     "could not use object of type %s as query input.",
+                     obj_queries_->ob_type->tp_name);
+      results_ = NULL;
+    }
+  }
+
+  PyObject* results() const { return results_; }
+
+ private:
+  const KdTreeStruct* ptr_;
+  PyObject* obj_queries_;
+  long k_;
+  double dmax_;
+  PyObject* results_;
+};
+
+static PyObject* Build(PyObject* self, PyObject* args, PyObject* kwargs) {
   static char* keywords[] = {(char*)"data", (char*)"numprocs",
                              (char*)"maxleafsize", (char*)"emptysplit", NULL};
   PyObject* data = NULL;
-  int numProcs = -1;
-  int maxLeafSize = 16;
-  float emptySplit = 0.2f;
-  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|ii", keywords, &data,
-                                   &numProcs, &maxLeafSize, &emptySplit)) {
-    PyErr_SetString(PyExc_TypeError, "Failed parsing arguments");
+  pointkd::BuildParams build_params;
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|iid", keywords, &data,
+                                   &build_params.num_proc, &build_params.max_leaf_size, &build_params.empty_split_threshold)) {
+    PyErr_SetString(PyExc_TypeError, "Build(): failed parsing arguments");
     return NULL;
   }
-  ArrayStruct X;
-  if (!extract_array(X, data)) {
+  // TODO: make sure data is never NULL at this point 
+  Array2D x;
+  if (CheckAndExtractArray2D(x, data)) {
+    BuildTreeAction action(x, build_params);
+    PerformAction<BuildTreeAction>(action, x.type_num, x.n);
+    return action.results();
+  } else {
+    if (!PyErr_Occurred())
+      PyErr_Format(PyExc_TypeError, "Build(): points array type %s unsupported",
+                   data->ob_type->tp_name);
     return NULL;
   }
-  if (X.type_num != NPY_FLOAT32) {
-    PyErr_SetString(PyExc_TypeError, "Point dtype must be float32");
-    return NULL;
-  }
-  if (X.n != 3) {
-    PyErr_SetString(PyExc_ValueError, "Currently only supports 3-d points");
-    return NULL;
-  }
-  // if not contiguous, copy array to stl vector
-  const float* points;
-  vector<float> buf;
-  if (!PyArray_ISCONTIGUOUS(data)) {
-    buf.reserve(X.m * X.n);
-    for (npy_intp i = 0; i < X.m; i++)
-      for (npy_intp j = 0; j < X.n; j++)
-        buf.push_back(
-            *((const float*)X.data + X.row_stride * i + X.col_stride * j));
-    points = &buf[0];
-  } else
-    points = (const float*)X.data;
-  // build k-d tree
-  PointKdTree<float>* tree = new PointKdTree<float>();
-  BuilderParallel<float> builder(*tree);
-  builder.build(points, X.m, X.n, maxLeafSize, emptySplit, numProcs);
-  // construct capsule object
-  PyObject* capsule = PyCapsule_New((void*)tree, NULL, &delete_kdtree);
-  return capsule;
 }
 
-static PyObject* _query(PyObject* self, PyObject* args, PyObject* kwargs) {
+static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
   const float flt_infinity = numeric_limits<float>::infinity();
+  const double dbl_infinity = numeric_limits<double>::infinity();
   PyObject* obj_kdtree;
   PyObject* obj_queries;
   PyObject* obj_k = NULL;
-  PyObject* obj_dMax = NULL;
-  int numProcs = -1;
+  PyObject* obj_dmax = NULL;
+  int num_procs = -1;
   static char* keywords[] = {(char*)"kdtree", (char*)"queries",  (char*)"k",
                              (char*)"dmax",   (char*)"numprocs", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO|OOi", keywords,
-                                   &obj_kdtree, &obj_queries, &obj_k, &obj_dMax,
-                                   &numProcs)) {
-    PyErr_SetString(PyExc_TypeError, "Failed parsing arguments");
+                                   &obj_kdtree, &obj_queries, &obj_k, &obj_dmax,
+                                   &num_procs)) {
+    PyErr_SetString(PyExc_TypeError, "Query(): failed parsing arguments");
     return NULL;
   }
+
   // check option obj_k and set k
-  int k;
-  if (obj_k == NULL) {
+  long k;
+  if (obj_k == NULL) {  // k not specified
     k = 1;
   } else if (obj_k == Py_None) {
     k = -1;
-  } else if (PyInt_Check(obj_k)) {
-    k = (int)PyInt_AsLong(obj_k);
-    if (k <= 0) {
-      PyErr_Format(PyExc_ValueError, "Encountered non-positive k=%d", k);
-      return NULL;
-    }
-  } else {
-    PyErr_Format(PyExc_TypeError,
-                 "Encountered %s k. "
-                 "Require int or None, ",
-                 obj_k->ob_type->tp_name);
+  } else if (!CastAsLong(k, obj_k)) {
+    if (!PyErr_Occurred())
+      PyErr_Format(PyExc_RuntimeError,
+                   "Query(): could not interpret k of type %s as C long.",
+                   obj_k->ob_type->tp_name);
+    return NULL;
+  } else if (k <= 0) {
+    PyErr_Format(PyExc_ValueError, "Query(): encountered negative k=%ld", k);
+    return NULL; 
+  }
+
+  // check option obj_dmax and set dmax
+  double dmax;
+  if (obj_dmax == NULL) {  // dmax not specified
+    dmax = dbl_infinity;
+  } else if (obj_dmax == Py_None) {
+    dmax = dbl_infinity;
+  } else if (!CastAsDouble(dmax, obj_dmax)) {
+    if (!PyErr_Occurred())
+      PyErr_Format(PyExc_RuntimeError,
+                   "Query(): could not interpret dmax of type %s as C double.",
+                   obj_dmax->ob_type->tp_name);
+    return NULL;
+  } else if (dmax < 0.0) {
+    PyErr_Format(PyExc_ValueError,
+                 "Query(): encountered negative dmax %lf", dmax);
     return NULL;
   }
-  // check option obj_dMax and set dMax
-  float dMax;
-  if (obj_dMax == NULL) {
-    dMax = flt_infinity;
-  } else if (obj_dMax == Py_None) {
-    dMax = flt_infinity;
-  } else if (PyFloat_Check(obj_dMax)) {
-    dMax = (float)PyFloat_AsDouble(obj_dMax);
-    if (dMax <= 0.0f) {
-      PyErr_SetString(PyExc_ValueError, "Encountered non-positive dmax");
-      return NULL;
-    }
-  } else {
-    PyErr_Format(PyExc_TypeError,
-                 "Encountered %s dmax. "
-                 "Require float or None.",
-                 obj_dMax->ob_type->tp_name);
-    return NULL;
-  }
+
   // get pointer to k-d tree
-  const PointKdTree<float>* tree;
+  const KdTreeStruct* kdtree_struct;
   if (PyCapsule_CheckExact(obj_kdtree)) {
-    tree = (PointKdTree<float>*)PyCapsule_GetPointer(obj_kdtree, NULL);
+    kdtree_struct = (const KdTreeStruct*)PyCapsule_GetPointer(obj_kdtree, NULL);
   } else {
     PyErr_SetString(PyExc_TypeError,
-                    "First arg must be capsule of k-d tree pointer");
+                    "Query(): "
+                    "first arg must be capsule of a KdTreeStruct pointer");
     return NULL;
   }
-  // toggle between various query types
-  // note: at this point, k is either -1 or positive
-  // and dMax is either finite positive or inf
-  if (k > 0) {
-    // k-nearest
-    return k_nearest(obj_queries, tree, k, dMax);
-  } else if (dMax != flt_infinity) {
-    // r-near
-    PyErr_SetString(PyExc_NotImplementedError, "r-near not yet supported");
+
+  // note: at this point, k >= -1 and dMax >= 0.0
+  QueryTreeAction action(kdtree_struct, obj_queries, k, dmax);
+  PerformAction<QueryTreeAction>(action,
+                                 kdtree_struct->type_num, kdtree_struct->dim);
+  if (PyErr_Occurred()) {
     return NULL;
   } else {
-    PyErr_SetString(PyExc_ValueError,
-                    "Invalid combination of k and dmax options");
-    return NULL;
+    return action.results();
   }
 }
 
 static PyMethodDef methods_table[] = {
-    {"_build", (PyCFunction)_build, METH_KEYWORDS, "build k-d tree"},
-    {"_query", (PyCFunction)_query, METH_KEYWORDS,
+    {"_build", (PyCFunction)Build, METH_KEYWORDS, "build k-d tree"},
+    {"_query", (PyCFunction)Query, METH_KEYWORDS,
      "performs either k-nearest or r-near"},
     {NULL, NULL, 0, NULL}};
 
