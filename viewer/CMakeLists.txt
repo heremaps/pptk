@@ -10,10 +10,15 @@ endif()
 if (QMAKE_BIN STREQUAL "")
 	message(FATAL ERROR "QMAKE_BIN not set")
 endif()
+if (WIN32 AND MSVC)
+	set(MAKE_CMD nmake)
+else()
+	set(MAKE_CMD make)
+endif()
 
 set(QMAKE_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/qmake-build)
 file(MAKE_DIRECTORY ${QMAKE_BUILD_DIR})
 add_custom_target(viewer
 	ALL ${QMAKE_BIN} ${CMAKE_CURRENT_SOURCE_DIR} "EIGEN_INC = ${EIGEN_INC}"
-	COMMAND nmake install
+	COMMAND ${MAKE_CMD} install
 	WORKING_DIRECTORY ${QMAKE_BUILD_DIR})

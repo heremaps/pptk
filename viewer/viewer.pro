@@ -28,8 +28,8 @@ win32 {
 		--no-angle \
 		--no-system-d3d-compiler
 } else: macx {
-	dependencies.extra = \
-		$$[QT_INSTALL_BINS]/macdeployqt.exe $$OUT_PWD/bin/viewer.app
+	dependencies.commands = \
+		$$[QT_INSTALL_BINS]/macdeployqt $$OUT_PWD/bin/viewer.app
 } else: unix {
 	QMAKE_RPATH =
 	dependencies.files = \
