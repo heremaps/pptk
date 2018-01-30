@@ -1,7 +1,6 @@
 #include "Python.h"
 #include "arrayobject.h"
-#include "PointKdTree.h"
-#include "TraverserDF.h"
+#include "kdtree.h"
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
 #include <vector>
@@ -9,10 +8,7 @@
 #include <omp.h>
 #include <iostream>
 
-
-using namespace vltools;
 using namespace Eigen;
-using namespace pointkd;
 using namespace std;
 
 typedef Matrix<float,Dynamic,3,RowMajor> Vectors;
@@ -115,23 +111,19 @@ void estimate_normals(Vectors & normals,
 	size_t numPoints = points.size() / 3;
 	Map<const Vectors> P(&points[0], numPoints, 3);
 	// Vectors P(numPoints, 3);
-	PointKdTree<float> tree(points, 3);
-	TraverserDF<float> trav(tree);
+	pointkd::KdTree<float, 3> tree(points);
 	normals.resize(numPoints, NoChange);
 	omp_set_num_threads(omp_get_num_procs());
 	std::cout << omp_get_num_procs() << std::endl;
 	#pragma omp parallel for schedule(static, 1000)
 	for (int i = 0; i < numPoints; i++) {
 		if (i%10000==0)std::cout << omp_get_thread_num() << ": " << i << std::endl;
-		vector<int> indices;
+		pointkd::Indices indices;
 		vector<float> distances;
 		vector<float> q(P.data() + i * 3, P.data() + (i + 1) * 3);
-		trav.nearest(q, k, indices, distances, d_max);
-		int num_neighbors;
-		for (num_neighbors = 0; num_neighbors < k; num_neighbors++)
-			if (indices[num_neighbors] == -1) break;
-		Vectors X(num_neighbors, 3);
-		for (size_t j = 0; j < num_neighbors; j++)
+		tree.KNearestNeighbors(indices, &q[0], k, d_max);
+		Vectors X(indices.size(), 3);
+		for (size_t j = 0; j < indices.size(); j++)
 			X.row(j) = P.row(indices[j]);
 		X.rowwise() -= X.colwise().mean();
 		Matrix3f C = X.transpose() * X;
