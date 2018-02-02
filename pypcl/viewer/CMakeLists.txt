@@ -1,24 +1,56 @@
-cmake_minimum_required(VERSION 2.8.11)
-project(viewer)
+# # Uncomment the following lines to run as standalone cmake script
+# cmake_minimum_required(VERSION 2.8.11)
+# project(viewer)
 
-set(EIGEN_INC "EIGEN_INC-NOTFOUND" CACHE PATH "Eigen include folder")
-find_program(QMAKE_BIN qmake DOC "qmake executable")
+# set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake" ${CMAKE_MODULE_PATH})
+# find_package(Eigen REQUIRED)
+# find_package(OpenGL REQUIRED)
+# find_package(Qt5 CONFIG REQUIRED COMPONENTS Widgets Network OpenGL Core)
+# include(UsefulMacros)
 
-if (EIGEN_INC STREQUAL "EIGEN_INC-NOTFOUND")
-	message(FATAL_ERROR "EIGEN_INC not set")
-endif()
-if (QMAKE_BIN STREQUAL "QMAKE_BIN-NOTFOUND")
-	message(FATAL_ERROR "QMAKE_BIN not set")
-endif()
-if (WIN32 AND MSVC)
-	set(MAKE_CMD nmake)
-else()
-	set(MAKE_CMD make)
-endif()
+add_executable(viewer
+  main.cpp
+  octree.h
+  box3.h
+  FloorGrid.h
+  SelectionBox.h
+  Background.h
+  LookAt.h
+  PointCloud.h
+  Viewer.h
+  QtCamera.h
+  Camera.h
+  CommFuncs.h
+  OpenGLFuncs.h
+  Text.h
+  CameraDolly.h
+  Splines.h
+  PointAttributes.h)
 
-set(QMAKE_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/qmake-build)
-file(MAKE_DIRECTORY ${QMAKE_BUILD_DIR})
-add_custom_target(viewer
-	ALL ${QMAKE_BIN} ${CMAKE_CURRENT_SOURCE_DIR} "EIGEN_INC = ${EIGEN_INC}"
-	COMMAND ${MAKE_CMD} install
-	WORKING_DIRECTORY ${QMAKE_BUILD_DIR})
+set_target_properties(viewer PROPERTIES AUTOMOC TRUE)
+target_link_libraries(viewer Qt5::Widgets Qt5::Network Qt5::OpenGL ${OPENGL_gl_LIBRARY})
+target_include_directories(viewer PRIVATE ${Eigen_INCLUDE_DIR} )
+copy_target(viewer)
+copy_file(viewer.py)
+copy_file(__init__.py)
+
+# deploy runtime dll's to libs folder
+get_target_property(_qmake_exe Qt5::qmake IMPORTED_LOCATION)
+get_filename_component(_qt_bin ${_qmake_exe} DIRECTORY)
+if (WIN32)
+  add_custom_command(TARGET viewer POST_BUILD 
+    COMMAND ${_qt_bin}/windeployqt.exe $<TARGET_FILE:viewer>
+      --libdir ${CMAKE_CURRENT_BINARY_DIR}/../libs
+      --no-compiler-runtime
+      --no-translations
+      --no-quick-import
+      --no-webkit2
+      --no-angle
+      --no-system-d3d-compiler)
+elseif (APPLE)
+  # TODO
+elseif (UNIX)
+  # TODO
+endif()
+unset(_qmake_exe)
+unset(_qt_bin)

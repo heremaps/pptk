@@ -1,0 +1,5 @@
+add_subdirectory(kdtree)
+add_subdirectory(points)
+add_subdirectory(processing)
+add_subdirectory(vfuncs)
+add_subdirectory(viewer)

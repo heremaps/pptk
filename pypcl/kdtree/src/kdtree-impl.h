@@ -65,7 +65,7 @@ typename enable_if<std::is_floating_point<T>::value>::type ValidPointIndices(
     bool valid_point = true;
     for (int j = 0; j < dim; j++) {
       T v = points[i * dim + j];
-      if (std::isinf<T>(v) || std::isnan<T>(v)) {
+      if (std::isinf(v) || std::isnan(v)) {
         valid_point = false;
         break;
       }

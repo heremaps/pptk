@@ -1,0 +1,21 @@
+# # Uncomment the following lines to run as standalone cmake script
+# cmake_minimum_required(VERSION 3.0)
+# project(vfuncs)
+
+# set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake" ${CMAKE_MODULE_PATH})
+# find_package(PythonLibs 2.7 REQUIRED)
+# find_package(Numpy REQUIRED)
+# find_package(Eigen REQUIRED)
+# include(UsefulMacros)
+
+add_library(vfuncs SHARED vfuncs.cpp)
+set_target_python_module_name(vfuncs)
+set_target_rpath(vfuncs ../libs)
+target_link_libraries(vfuncs ${PYTHON_LIBRARY})
+target_include_directories(vfuncs PRIVATE
+  ../include  # for python_util.h
+  ${PYTHON_INCLUDE_DIR}
+  ${Eigen_INCLUDE_DIR}
+  ${Numpy_INCLUDE_DIR})
+copy_target(vfuncs)
+copy_file(__init__.py)

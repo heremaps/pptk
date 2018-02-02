@@ -264,40 +264,24 @@ private slots:
 
 		// read first byte of incoming message
 		char msgType;
-		while (clientConnection->read(&msgType, 1) != 1);
+		comm::receiveBytes(&msgType, 1, clientConnection);
+		qDebug() << "Viewer: received message type " << msgType;
 
 		// switch on message type
 		switch(msgType) {
 			case 1:	// load points
 			{
-				qint64 bytesReceived;
-				qint64 expectedBytes;
 				// receive point count (next 4 bytes)
 				qint32 numPoints;
-				bytesReceived = 0;
-				while (bytesReceived < 4) {
-					bytesReceived += clientConnection->read(
-						(char*)&numPoints + bytesReceived, 4 - bytesReceived);
-				}
+				comm::receiveBytes((char*)&numPoints, sizeof(qint32), clientConnection);
 				qDebug() << "Viewer: expecting" << numPoints << "points";
 
 				// receive position vectors
 				// (next 3 x numPoints x sizeof(float) bytes)
 				std::vector<float> positions(3 * numPoints);
-				expectedBytes = (qint64)positions.size() * sizeof(float);
-				bytesReceived = 0;
-				while (bytesReceived < expectedBytes) {
-					qint64 received = clientConnection->read(
-						(char*)&positions[0] + bytesReceived,
-						expectedBytes - bytesReceived);
-					if (received == -1) {
-						qDebug() << "error during socket read()";
-						exit(1);
-					}
-					bytesReceived += received;
-					clientConnection->waitForReadyRead();
-				}
-				qDebug() << "Viewer: received positions," << bytesReceived << "bytes";
+				comm::receiveBytes((char*)&positions[0],
+					positions.size() * sizeof(float), clientConnection);
+				qDebug() << "Viewer: received positions";
 
 				_points->loadPoints(positions);
 				_camera = QtCamera(_points->getBox());

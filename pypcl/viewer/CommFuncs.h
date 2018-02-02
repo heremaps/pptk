@@ -22,9 +22,9 @@ namespace comm {
 			qint64 received = clientConnection->read(
 				destination, bytesExpected - bytesReceived);
 			if (received == 0)
-				clientConnection->waitForReadyRead();
+				clientConnection->waitForReadyRead(-1);
 			if (received == -1) {
-				std::cout << "error during socket read()" << std::endl;
+				qDebug() << "error during socket read()";
 				exit(1);
 			}
 			bytesReceived += received;
@@ -42,7 +42,7 @@ namespace comm {
 		while (bytesLeft > 0) {
 			qint64 bytesSent = clientConnection->write(buf, bytesLeft);
 			if (bytesSent == -1) {
-				std::cout << "error during socket read()" << std::endl;
+				qDebug() << "error during socket write()";
 				exit(1);
 			}
 			buf += bytesSent;

@@ -59,12 +59,14 @@ class viewer:
 	def get(self,prop_name):
 		return self.__query(_construct_get_msg(prop_name))
 		
-	def load(self,positions,\
-		colors=numpy.array([[1,1,1]]),colormap='jet'):
-		# check inputs
-		positions,colors = \
-			_fix_positions_colors_input(positions,colors,colormap)
+	def load(self,*args,**kwargs):
+		positions = numpy.asarray(args[0],dtype=numpy.float32).reshape(-1,3)
+		attr = args[1:]
+		color_map = kwargs.get('color_map','jet')
+		scale = kwargs.get('scale',None)
 		self.__load(positions)
+		self.attributes(*attr)
+		self.color_map(color_map,scale)
 
 	def attributes(self,*attr):
 		msg = struct.pack('Q',len(attr))
