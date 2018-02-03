@@ -28,15 +28,31 @@ macro(copy_target x)
   unset(dst)
 endmacro()
 
+macro(current_source_dir x)
+  string(CONCAT ${x} "^" ${PROJECT_SOURCE_DIR} "/?")
+  string(REGEX REPLACE ${${x}} "" ${x} ${CMAKE_CURRENT_SOURCE_DIR})
+endmacro()
+
 macro(copy_file x)
-  # x should be specified relative to current source directory
-  get_filename_component(y ${x} NAME)
-  set(src ${CMAKE_CURRENT_SOURCE_DIR}/${x})
+  # x should be a file path, and should not be a variable
+  # i.e. copy_file(${var}), not copy_file(var)
+  get_filename_component(name ${x} NAME)
+  file(RELATIVE_PATH temp ${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+  if (NOT (temp STREQUAL ""))
+    string(REGEX REPLACE "(/|\\\\)" "." temp "${temp}")
+    string(CONCAT name "${temp}" "." "${name}")
+  endif()
+  if (NOT IS_ABSOLUTE ${x})
+    set(src ${CMAKE_CURRENT_SOURCE_DIR}/${x})
+  else()
+    set(src ${x})
+  endif()
   set(dst ${CMAKE_CURRENT_BINARY_DIR})
-  add_custom_target(${y} ALL
+  add_custom_target(${name} ALL
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${src} ${dst}
     COMMENT "Copying ${src} to ${dst}")
-  unset(y)
   unset(src)
   unset(dst)
+  unset(temp)
+  unset(name)
 endmacro()
