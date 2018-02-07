@@ -33,7 +33,7 @@ macro(current_source_dir x)
   string(REGEX REPLACE ${${x}} "" ${x} ${CMAKE_CURRENT_SOURCE_DIR})
 endmacro()
 
-macro(copy_file x)
+function(copy_file x)
   # x should be a file path, and should not be a variable
   # i.e. copy_file(${var}), not copy_file(var)
   get_filename_component(name ${x} NAME)
@@ -51,8 +51,4 @@ macro(copy_file x)
   add_custom_target(${name} ALL
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${src} ${dst}
     COMMENT "Copying ${src} to ${dst}")
-  unset(src)
-  unset(dst)
-  unset(temp)
-  unset(name)
-endmacro()
+endfunction()

@@ -407,7 +407,7 @@ public:
 private:
 	void compileProgram() {
 		std::string vsCode =
-			"#version 130\n"
+			"#version 120\n"
 			"\n"
 			"uniform float point_size;\n"
 			"uniform float width;\n"
@@ -444,7 +444,7 @@ private:
 			"	p /= p.w;\n"
 			"	float tex_coord = clamp((scalar - scalar_min) / (scalar_max - scalar_min), 0.0, 1.0);\n"
 			"	tex_coord = (tex_coord - 0.5) * (color_map_n - 1.0) / color_map_n + 0.5;\n"
-			"	vec4 color_s = isnan(tex_coord) ? vec4(0,0,0,1) : texture(color_map, tex_coord);\n"
+			"	vec4 color_s = tex_coord != tex_coord ? vec4(0,0,0,1) : texture1D(color_map, tex_coord);\n"
 			"	vec4 color_r = color_s * color;\n"
 			"	if (box_select_mode == 2)\n"
 			"		frag_color = selected == 1.0 ? vec4(1,1,0,1) : color_r;\n"

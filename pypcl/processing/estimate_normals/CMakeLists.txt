@@ -12,7 +12,8 @@
 
 add_library(estimate_normals SHARED estimate_normals.cpp)
 set_target_properties(estimate_normals PROPERTIES
-  COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+  COMPILE_FLAGS ${OpenMP_CXX_FLAGS}
+  LINK_FLAGS ${OpenMP_CXX_FLAGS})
 set_target_python_module_name(estimate_normals)
 set_target_rpath(estimate_normals ../../libs)
 target_link_libraries(estimate_normals

@@ -1,0 +1,28 @@
+# usage: cmake -P CopyAppleDependencies.cmake 
+#   <install_name_tool path> <target file path> <copy folder path>
+include(GetPrerequisites)
+
+set(_install_name_tool ${CMAKE_ARGV3})
+set(_target ${CMAKE_ARGV4})
+set(_copy_folder ${CMAKE_ARGV5})
+message(${_install_name_tool})
+message(${_target})
+message(${_copy_folder})
+get_prerequisites(${_target} _prereqs 1 1 "" "")
+
+foreach(p ${_prereqs})
+  get_filename_component(y ${p} NAME)
+  set(dst ${_copy_folder}/${y})
+  execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${p} ${dst})
+  execute_process(COMMAND ${_install_name_tool} -id @rpath/${y} ${dst})
+  if (IS_ABSOLUTE ${p})
+    execute_process(COMMAND ${_install_name_tool} -change ${p} @rpath/${y} ${_target})
+  endif()
+  get_prerequisites(${dst} _prereqs_of_prereqs 1 0 "" "")
+  foreach (pp ${_prereqs_of_prereqs})
+    get_filename_component(yy ${pp} NAME)
+    if (IS_ABSOLUTE ${pp})
+      execute_process(COMMAND ${_install_name_tool} -change ${pp} @rpath/${yy} ${dst})
+    endif()
+  endforeach()
+endforeach()

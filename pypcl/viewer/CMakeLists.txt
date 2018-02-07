@@ -28,6 +28,7 @@ add_executable(viewer
   PointAttributes.h)
 
 set_target_properties(viewer PROPERTIES AUTOMOC TRUE)
+set_target_rpath(viewer ../libs)
 target_link_libraries(viewer Qt5::Widgets Qt5::Network Qt5::OpenGL ${OPENGL_gl_LIBRARY})
 target_include_directories(viewer PRIVATE ${Eigen_INCLUDE_DIR} )
 copy_target(viewer)
