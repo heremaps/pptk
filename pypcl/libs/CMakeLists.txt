@@ -10,10 +10,6 @@ elseif (UNIX)
   copy_file(/usr/lib64/libgomp.so.1)
 endif()
 
-# copy TBB runtime libraries
-copy_file(${TBB_tbb_RUNTIME})
-copy_file(${TBB_tbbmalloc_RUNTIME})
-
 # copy Qt runtime libraries
 macro(copy_import_target x)
   get_target_property(temp ${x} LOCATION)

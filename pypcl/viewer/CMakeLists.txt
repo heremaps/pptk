@@ -36,18 +36,12 @@ copy_file(__init__.py)
 copy_file(qt.conf)
 
 # deploy runtime dll's to libs folder
-get_target_property(_qmake_exe Qt5::qmake IMPORTED_LOCATION)
-get_filename_component(_qt_bin ${_qmake_exe} DIRECTORY)
 if (WIN32)
-  add_custom_command(TARGET viewer POST_BUILD 
-    COMMAND ${_qt_bin}/windeployqt.exe $<TARGET_FILE:viewer>
-      --libdir ${CMAKE_CURRENT_BINARY_DIR}/../libs
-      --no-compiler-runtime
-      --no-translations
-      --no-quick-import
-      --no-webkit2
-      --no-angle
-      --no-system-d3d-compiler)
+  add_custom_command(TARGET viewer POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -P
+      ${PROJECT_SOURCE_DIR}/cmake/CopyWindowsDependencies.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:viewer> ${PYPCL_LIBS_DIR}
+      "${PYPCL_DLL_DIRS}")
 elseif (APPLE)
   add_custom_command(TARGET viewer POST_BUILD
     COMMAND ${CMAKE_COMMAND} -P
@@ -56,5 +50,3 @@ elseif (APPLE)
 elseif (UNIX)
   # TODO
 endif()
-unset(_qmake_exe)
-unset(_qt_bin)

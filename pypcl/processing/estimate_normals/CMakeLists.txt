@@ -30,7 +30,11 @@ copy_target(estimate_normals)
 copy_file(__init__.py)
 
 if (WIN32)
-  # TODO
+  add_custom_command(TARGET estimate_normals POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -P
+      ${PROJECT_SOURCE_DIR}/cmake/CopyWindowsDependencies.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:estimate_normals>
+      ${PYPCL_LIBS_DIR} "${PYPCL_DLL_DIRS}")
 elseif (APPLE)
   add_custom_command(TARGET estimate_normals POST_BUILD
     COMMAND ${CMAKE_COMMAND} -P

@@ -44,11 +44,14 @@ setup(
 	author = 'Victor Lu',
 	packages = find_packages(),
 	package_data={
-		'pypcl': [os.path.join('libs', make_lib('*'))],
+		'pypcl': [
+			os.path.join('libs', make_lib('*')),
+			os.path.join('libs', 'qt_plugins', 'platforms', make_lib('*'))
+			],
 		'pypcl.kdtree': [make_mod('kdtree')],
 		'pypcl.processing.estimate_normals': [make_mod('estimate_normals')],
         'pypcl.vfuncs': [make_mod('vfuncs')],
-        'pypcl.viewer': [make_exe('viewer')]},
+        'pypcl.viewer': [make_exe('viewer'), 'qt.conf']},
 	options = {'bdist_wheel':{
 		'python_tag': wheel_tags[0],
 		'plat_name': wheel_tags[2]}})

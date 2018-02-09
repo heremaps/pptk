@@ -24,12 +24,16 @@ copy_target(kdtree)
 copy_file(__init__.py)
 
 if (WIN32)
-  # TODO
+  add_custom_command(TARGET kdtree POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -P
+      ${PROJECT_SOURCE_DIR}/cmake/CopyWindowsDependencies.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:kdtree> ${PYPCL_LIBS_DIR}
+      "${PYPCL_DLL_DIRS}")
 elseif (APPLE)
   add_custom_command(TARGET kdtree POST_BUILD
     COMMAND ${CMAKE_COMMAND} -P
       ${PROJECT_SOURCE_DIR}/cmake/CopyAppleDependencies.cmake
-      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:vfuncs> ${PYPCL_LIBS_DIR})
+      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:kdtree> ${PYPCL_LIBS_DIR})
 elseif (UNIX)
   # TODO
 endif()
