@@ -10,6 +10,10 @@
 
 add_library(kdtree SHARED kdtree_wrapper.cpp)
 set_target_python_module_name(kdtree)
+if (WIN32)
+    target_compile_options(kdtree PRIVATE /bigobj)
+endif()
+target_compile_definitions(kdtree PRIVATE -DUSE_TBB)
 target_include_directories(kdtree PRIVATE
   ../include  # for python_util.h
   src         # for k-d tree source code

@@ -414,10 +414,10 @@ bool CastAsIndex(T& index, PyObject* item) {
   * Assumes obj is a Python list (i.e. PyList_Check(obj) == true).
   * Raises exception if obj contains an item that cannot be cast as an index.
 */
-template <typename T>
-void ExtractIndicesFromPyList(std::vector<T>& indices, PyObject* obj) {
+template <typename T, typename A>
+void ExtractIndicesFromPyList(std::vector<T, A>& indices, PyObject* obj) {
   Py_ssize_t len = PyList_Size(obj);
-  std::vector<T> temp;
+  std::vector<T, A> temp;
   temp.reserve(len);
   for (Py_ssize_t i = 0; i < len; i++) {
     T index;
@@ -513,8 +513,9 @@ bool VectorFromArray2D(V<T, A>& v, const Array2D& x) {
   * Raises ValueError if obj's dim is neither 0, 1 nor 2
   * Indices are extracted from obj in row-major order.
 */
-template <typename T>
-void ExtractIndicesFromPyArray(std::vector<T>& indices, PyObject* obj, int n) {
+template <typename T, typename A>
+void ExtractIndicesFromPyArray(std::vector<T, A>& indices,
+                               PyObject* obj, int n) {
   int dim = PyArray_NDIM(obj);
   if (dim > 1)
     PyErr_Format(PyExc_ValueError,
@@ -547,8 +548,9 @@ void ExtractIndicesFromPyArray(std::vector<T>& indices, PyObject* obj, int n) {
   }
 }
 
-template <typename T>
-std::size_t FindInvalidIndex(const std::vector<T>& indices, const T max_index) {
+template <typename T, typename A>
+std::size_t FindInvalidIndex(const std::vector<T, A>& indices,
+                             const T max_index) {
   std::size_t i;
   for (i = 0; i < indices.size(); i++) {
     if (indices[i] < -max_index || indices[i] >= max_index) {
@@ -558,15 +560,15 @@ std::size_t FindInvalidIndex(const std::vector<T>& indices, const T max_index) {
   return i;
 }
 
-template <typename T>
-void FixNegativeIndices(std::vector<T>& indices, const npy_intp max_index) {
+template <typename T, typename A>
+void FixNegativeIndices(std::vector<T, A>& indices, const npy_intp max_index) {
   for (size_t i = 0; i < indices.size(); i++) {
     if (indices[i] < 0) indices[i] += (T)max_index;
   }
 }
 
-template <typename T>
-bool CheckAndExtractIndices(std::vector<T>& indices, PyObject* obj, int n) {
+template <typename T, typename A>
+bool CheckAndExtractIndices(std::vector<T, A>& indices, PyObject* obj, int n) {
   Array2D x;
   if (PyList_Check(obj)) {
     ExtractIndicesFromPyList(indices, obj);
