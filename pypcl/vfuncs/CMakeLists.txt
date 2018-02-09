@@ -10,7 +10,6 @@
 
 add_library(vfuncs SHARED vfuncs.cpp)
 set_target_python_module_name(vfuncs)
-set_target_rpath(vfuncs ../libs)
 target_link_libraries(vfuncs ${PYTHON_LIBRARY})
 target_include_directories(vfuncs PRIVATE
   ../include  # for python_util.h
@@ -19,3 +18,14 @@ target_include_directories(vfuncs PRIVATE
   ${Numpy_INCLUDE_DIR})
 copy_target(vfuncs)
 copy_file(__init__.py)
+
+if (WIN32)
+  # TODO
+elseif (APPLE)
+  add_custom_command(TARGET vfuncs POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -P
+      ${PROJECT_SOURCE_DIR}/cmake/CopyAppleDependencies.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:vfuncs> ${PYPCL_LIBS_DIR})
+elseif (UNIX)
+  # TODO
+endif()

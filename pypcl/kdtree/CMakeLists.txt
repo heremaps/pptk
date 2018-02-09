@@ -10,7 +10,6 @@
 
 add_library(kdtree SHARED kdtree_wrapper.cpp)
 set_target_python_module_name(kdtree)
-set_target_rpath(kdtree ../libs)
 target_include_directories(kdtree PRIVATE
   ../include  # for python_util.h
   src         # for k-d tree source code
@@ -23,3 +22,14 @@ target_link_libraries(kdtree
   ${PYTHON_LIBRARY} )
 copy_target(kdtree)
 copy_file(__init__.py)
+
+if (WIN32)
+  # TODO
+elseif (APPLE)
+  add_custom_command(TARGET kdtree POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -P
+      ${PROJECT_SOURCE_DIR}/cmake/CopyAppleDependencies.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:vfuncs> ${PYPCL_LIBS_DIR})
+elseif (UNIX)
+  # TODO
+endif()

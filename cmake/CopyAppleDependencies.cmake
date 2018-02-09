@@ -1,19 +1,32 @@
 # usage: cmake -P CopyAppleDependencies.cmake 
-#   <install_name_tool path> <target file path> <copy folder path>
-include(GetPrerequisites)
+#   <target file path> <copy folder path>
+# paths assumed to be existing full paths
 
-set(_install_name_tool ${CMAKE_ARGV3})
-set(_target ${CMAKE_ARGV4})
-set(_copy_folder ${CMAKE_ARGV5})
-message(${_install_name_tool})
-message(${_target})
-message(${_copy_folder})
-get_prerequisites(${_target} _prereqs 1 1 "" "")
+include(BundleUtilities)
 
+find_program(_install_name_tool "install_name_tool")
+set(_target ${CMAKE_ARGV3})
+set(_copy_folder ${CMAKE_ARGV4})
+set(_paths "/usr/bin")
+get_item_rpaths(${_target} _rpaths)
+get_prerequisites(${_target} _prereqs 1 1 "" "${_paths}" "${_rpaths}")
+
+# delete existing rpaths in _target and
+# add relative path to _copy_folder as new rpath
+foreach(p ${_rpaths})
+  execute_process(COMMAND ${_install_name_tool} -delete_rpath ${p} ${_target})
+endforeach()
+get_filename_component(_target_folder ${_target} DIRECTORY)
+file(RELATIVE_PATH _new_rpath ${_target_folder} ${_copy_folder})
+execute_process(COMMAND
+  ${_install_name_tool} -add_rpath "@loader_path/${_new_rpath}" ${_target})
+
+# copy _target's dependencies to _copy_folder
 foreach(p ${_prereqs})
   get_filename_component(y ${p} NAME)
   set(dst ${_copy_folder}/${y})
-  execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${p} ${dst})
+  gp_resolve_item(${_target} ${p} "" "${_paths}" src "${_rpaths}")
+  execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${src} ${dst})
   execute_process(COMMAND ${_install_name_tool} -id @rpath/${y} ${dst})
   if (IS_ABSOLUTE ${p})
     execute_process(COMMAND ${_install_name_tool} -change ${p} @rpath/${y} ${_target})

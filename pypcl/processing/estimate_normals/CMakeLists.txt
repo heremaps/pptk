@@ -15,7 +15,6 @@ set_target_properties(estimate_normals PROPERTIES
   COMPILE_FLAGS ${OpenMP_CXX_FLAGS}
   LINK_FLAGS ${OpenMP_CXX_FLAGS})
 set_target_python_module_name(estimate_normals)
-set_target_rpath(estimate_normals ../../libs)
 target_link_libraries(estimate_normals
   ${PYTHON_LIBRARY}
   ${TBB_tbb_LIBRARY}
@@ -29,3 +28,15 @@ target_include_directories(estimate_normals PRIVATE
   ${Numpy_INCLUDE_DIR})
 copy_target(estimate_normals)
 copy_file(__init__.py)
+
+if (WIN32)
+  # TODO
+elseif (APPLE)
+  add_custom_command(TARGET estimate_normals POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -P
+      ${PROJECT_SOURCE_DIR}/cmake/CopyAppleDependencies.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:estimate_normals>
+      ${PYPCL_LIBS_DIR})
+elseif (UNIX)
+  # TODO
+endif()
