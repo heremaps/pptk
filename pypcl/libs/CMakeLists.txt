@@ -1,3 +1,14 @@
+function(copy_system_file x)
+  # creates local copy of x in CMAKE_CURRENT_BINARY_DIR
+  # optional second argument is a list of search paths for x
+  if(ARGC EQUAL 2)
+    set(y ${ARGV1})
+  endif()
+  find_file(temp ${x} ${y})
+  copy_file(${temp})
+  unset(temp CACHE)
+endfunction()
+
 # install system runtime libraries
 if (WIN32)
   # for Windows, this copies msvcr*.dll, msvcp*.dll, msvcomp*.dll
@@ -6,8 +17,15 @@ if (WIN32)
   endforeach()
 elseif (APPLE)
 elseif (UNIX)
-  # assume Linux system already has libstdc++.so.6 and libgcc_s.so.1
-  copy_file(/usr/lib64/libgomp.so.1)
+  # create local copies of system libraries that are required by pypcl targets
+  # but not provided by a bare bone manylinux1 platform, as specified in PEP 513
+  if (CMAKE_LIBRARY_ARCHITECTURE)
+    set(_paths
+      /lib/${CMAKE_LIBRARY_ARCHITECTURE}
+      /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE})
+  endif()
+  copy_system_file(libgomp.so.1 "${_paths}")
+  copy_system_file(libz.so.1 "${_paths}")
 endif()
 
 # copy Qt runtime libraries

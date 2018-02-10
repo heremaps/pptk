@@ -28,6 +28,9 @@ set(PYPCL_DLL_DIRS
   ${Qt5_DIR}/bin
   CACHE INTERNAL "Additional folder paths for finding .dll's")
 
+# adds -std=gnu++11 flag when compiling with gcc
+set(CMAKE_CXX_STANDARD 11)
+
 include(UsefulMacros)
 
 # following lines specifies the CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS variable
