@@ -17,19 +17,6 @@ target_include_directories(vfuncs PRIVATE
   ${Eigen_INCLUDE_DIR}
   ${Numpy_INCLUDE_DIR})
 copy_target(vfuncs)
+copy_target_dependencies(vfuncs)
 copy_file(__init__.py)
 
-if (WIN32)
-  add_custom_command(TARGET vfuncs POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -P
-      ${PROJECT_SOURCE_DIR}/cmake/CopyWindowsDependencies.cmake
-      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:vfuncs> ${PYPCL_LIBS_DIR}
-      "${PYPCL_DLL_DIRS}")
-elseif (APPLE)
-  add_custom_command(TARGET vfuncs POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -P
-      ${PROJECT_SOURCE_DIR}/cmake/CopyAppleDependencies.cmake
-      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:vfuncs> ${PYPCL_LIBS_DIR})
-elseif (UNIX)
-  # TODO
-endif()

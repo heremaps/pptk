@@ -21,11 +21,11 @@ def make_mod(x):
 	else:
 		raise RuntimeError('Unknown system type %s', system_type)
 
-def make_lib(x):
+def make_lib(x, version_suffix = ''):
 	if system_type == 'Windows':
 		return x + '.dll'
 	elif system_type == 'Linux':
-		return 'lib' + x + '.so'
+		return 'lib' + x + '.so' + version_suffix
 	elif system_type == 'Darwin':
 		return 'lib' + x + '.dylib'
 	else:
@@ -45,8 +45,9 @@ setup(
 	packages = find_packages(),
 	package_data={
 		'pypcl': [
-			os.path.join('libs', make_lib('*')),
-			os.path.join('libs', 'qt_plugins', 'platforms', make_lib('*'))
+			os.path.join('libs', make_lib('*', '*')),
+			os.path.join('libs', 'qt_plugins', 'platforms', make_lib('*', '*')),
+			os.path.join('libs', 'qt_plugins', 'xcbglintegrations', make_lib('*', '*'))
 			],
 		'pypcl.kdtree': [make_mod('kdtree')],
 		'pypcl.processing.estimate_normals': [make_mod('estimate_normals')],

@@ -31,22 +31,8 @@ set_target_properties(viewer PROPERTIES AUTOMOC TRUE)
 target_link_libraries(viewer Qt5::Widgets Qt5::Network Qt5::OpenGL ${OPENGL_gl_LIBRARY})
 target_include_directories(viewer PRIVATE ${Eigen_INCLUDE_DIR} )
 copy_target(viewer)
+copy_target_dependencies(viewer)
 copy_file(viewer.py)
 copy_file(__init__.py)
 copy_file(qt.conf)
 
-# deploy runtime dll's to libs folder
-if (WIN32)
-  add_custom_command(TARGET viewer POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -P
-      ${PROJECT_SOURCE_DIR}/cmake/CopyWindowsDependencies.cmake
-      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:viewer> ${PYPCL_LIBS_DIR}
-      "${PYPCL_DLL_DIRS}")
-elseif (APPLE)
-  add_custom_command(TARGET viewer POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -P
-      ${PROJECT_SOURCE_DIR}/cmake/CopyAppleDependencies.cmake
-      ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:viewer> ${PYPCL_LIBS_DIR})
-elseif (UNIX)
-  # TODO
-endif()

@@ -5,8 +5,24 @@ function(copy_system_file x)
     set(y ${ARGV1})
   endif()
   find_file(temp ${x} ${y})
-  copy_file(${temp})
+  copy_file(${temp} _target)
+  if(UNIX AND NOT APPLE)
+    add_custom_command(TARGET ${_target} POST_BUILD COMMAND
+      ${PYPCL_PATCHELF} --set-rpath \\\$\$ORIGIN
+      ${CMAKE_CURRENT_BINARY_DIR}/${x})
+  endif()
   unset(temp CACHE)
+endfunction()
+
+function(copy_import_target x)
+  get_target_property(_file_path ${x} LOCATION)
+  get_filename_component(_file_name ${_file_path} NAME)
+  copy_file(${_file_path} _target)
+  if(UNIX AND NOT APPLE)
+    add_custom_command(TARGET ${_target} POST_BUILD COMMAND
+      ${PYPCL_PATCHELF} --set-rpath \\\$\$ORIGIN
+      ${CMAKE_CURRENT_BINARY_DIR}/${_file_name})
+  endif()
 endfunction()
 
 # install system runtime libraries
@@ -26,20 +42,6 @@ elseif (UNIX)
   endif()
   copy_system_file(libgomp.so.1 "${_paths}")
   copy_system_file(libz.so.1 "${_paths}")
-endif()
-
-# copy Qt runtime libraries
-macro(copy_import_target x)
-  get_target_property(temp ${x} LOCATION)
-  copy_file(${temp})
-  unset(temp)
-endmacro()
-if (UNIX AND NOT APPLE)
-  copy_import_target(Qt5::Network)
-  copy_import_target(Qt5::Core)
-  copy_import_target(Qt5::Gui)
-  copy_import_target(Qt5::OpenGL)
-  copy_import_target(Qt5::Widgets)
 endif()
 
 add_subdirectory(qt_plugins)

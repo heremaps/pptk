@@ -16,6 +16,7 @@ find_package(OpenMP)
 get_target_property(Qt5_DIR Qt5::qmake LOCATION)
 get_filename_component(Qt5_DIR ${Qt5_DIR} DIRECTORY)
 get_filename_component(Qt5_DIR ${Qt5_DIR} DIRECTORY)
+set(Qt5_PLUGINS_DIR ${Qt5_DIR}/plugins)
 
 # localize all dependencies (.dll, .so, or .dylib) in the following folder
 set(PYPCL_LIBS_DIR ${PROJECT_BINARY_DIR}/pypcl/libs)
@@ -27,6 +28,16 @@ set(PYPCL_DLL_DIRS
   ${TBB_RUNTIME_DIR}
   ${Qt5_DIR}/bin
   CACHE INTERNAL "Additional folder paths for finding .dll's")
+
+# use patchelf to modify binary RPATH when building pypcl on Linux
+if(UNIX AND NOT APPLE)
+  find_program(PYPCL_PATCHELF patchelf)
+  if (NOT PYPCL_PATCHELF)
+    message(FATAL_ERROR
+      "patchelf needed for localizing library dependencies; \
+      please manually set the PYPCL_PATCHELF variable.")
+  endif()
+endif()
 
 # adds -std=gnu++11 flag when compiling with gcc
 set(CMAKE_CXX_STANDARD 11)
