@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 from distutils.extension import Extension
 import subprocess
+import os
 import os.path
 import shutil
 import platform
@@ -37,6 +38,12 @@ def make_exe(x):
     else:
         return x
 
+def list_libs():
+	libs_dir = os.path.join('pypcl', 'libs')
+	exclude_list = ['Makefile', 'cmake_install.cmake']
+	return [f for f in os.listdir(libs_dir)
+		if os.path.isfile(os.path.join(libs_dir, f)) and f not in exclude_list]
+
 setup(
 	name = 'pypcl',
 	version = '0.1.0',
@@ -45,7 +52,7 @@ setup(
 	packages = find_packages(),
 	package_data={
 		'pypcl': [
-			os.path.join('libs', make_lib('*', '*')),
+			os.path.join('libs', f) for f in list_libs()] + [
 			os.path.join('libs', 'qt_plugins', 'platforms', make_lib('*', '*')),
 			os.path.join('libs', 'qt_plugins', 'xcbglintegrations', make_lib('*', '*'))
 			],

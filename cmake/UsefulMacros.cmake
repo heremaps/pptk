@@ -40,12 +40,13 @@ function(copy_target_dependencies x)
     add_custom_command(TARGET ${x} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -P
         ${PROJECT_SOURCE_DIR}/cmake/CopyWindowsDependencies.cmake
-        ${_target_file} ${PYPCL_LIBS_DIR} "${PYPCL_DLL_DIRS}")
+        ${CMAKE_CURRENT_BINARY_DIR}/${_target_file_name}
+        ${PYPCL_LIBS_DIR} "${PYPCL_DLL_DIRS}")
   elseif(APPLE)
     add_custom_command(TARGET ${x} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -P
         ${PROJECT_SOURCE_DIR}/cmake/CopyAppleDependencies.cmake
-        ${_target_file} ${PYPCL_LIBS_DIR})
+        ${CMAKE_CURRENT_BINARY_DIR}/${_target_file_name} ${PYPCL_LIBS_DIR})
   elseif(UNIX)
     add_custom_command(TARGET ${x} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -P
