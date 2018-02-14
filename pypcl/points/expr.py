@@ -1,5 +1,5 @@
-import python_c_api_tests.vfuncs as vfuncs
-import KdTree.kdtree as kdtree
+from ..vfuncs import vfuncs
+from ..kdtree import kdtree
 import numpy as np
 import copy
 import math
@@ -356,4 +356,4 @@ class nbhds_op(expression):
 		else:
 			(nhbrs,dists) = kdtree._query(self.data._tree,self.queries[index:index+size],self.k,self.r)
 		return nhbrs
-	
+

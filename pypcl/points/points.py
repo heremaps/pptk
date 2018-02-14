@@ -2,7 +2,7 @@ import numpy
 import time
 import ctypes
 import multiprocessing
-import KdTree.kdtree as kdtree
+from ..kdtree import kdtree
 import parmap
 import expr
 
