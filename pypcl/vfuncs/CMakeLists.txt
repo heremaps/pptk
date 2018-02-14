@@ -10,7 +10,10 @@
 
 add_library(vfuncs SHARED vfuncs.cpp)
 set_target_python_module_name(vfuncs)
-target_link_libraries(vfuncs ${PYTHON_LIBRARY})
+if(APPLE)
+  set_target_properties(vfuncs PROPERTIES
+    LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 target_include_directories(vfuncs PRIVATE
   ../include  # for python_util.h
   ${PYTHON_INCLUDE_DIR}

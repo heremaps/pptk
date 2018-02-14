@@ -12,6 +12,9 @@ add_library(kdtree SHARED kdtree_wrapper.cpp)
 set_target_python_module_name(kdtree)
 if (WIN32)
     target_compile_options(kdtree PRIVATE /bigobj)
+elseif(APPLE)
+  set_target_properties(kdtree PROPERTIES
+    LINK_FLAGS "-undefined dynamic_lookup")
 endif()
 target_compile_definitions(kdtree PRIVATE -DUSE_TBB)
 target_include_directories(kdtree PRIVATE
@@ -22,8 +25,7 @@ target_include_directories(kdtree PRIVATE
   ${Numpy_INCLUDE_DIR} )
 target_link_libraries(kdtree
   ${TBB_tbb_LIBRARY}
-  ${TBB_tbbmalloc_LIBRARY}
-  ${PYTHON_LIBRARY} )
+  ${TBB_tbbmalloc_LIBRARY})
 copy_target(kdtree)
 copy_target_dependencies(kdtree)
 copy_file(__init__.py)

@@ -11,12 +11,15 @@
 # include(FindOpenMP)
 
 add_library(estimate_normals SHARED estimate_normals.cpp)
+set(_link_flags ${OpenMP_CXX_FLAGS})
+if(APPLE)
+  set(_link_flags "${_link_flags} -undefined dynamic_lookup")
+endif()
 set_target_properties(estimate_normals PROPERTIES
   COMPILE_FLAGS ${OpenMP_CXX_FLAGS}
-  LINK_FLAGS ${OpenMP_CXX_FLAGS})
+  LINK_FLAGS ${_link_flags})
 set_target_python_module_name(estimate_normals)
 target_link_libraries(estimate_normals
-  ${PYTHON_LIBRARY}
   ${TBB_tbb_LIBRARY}
   ${TBB_tbbmalloc_LIBRARY})
 target_include_directories(estimate_normals PRIVATE
