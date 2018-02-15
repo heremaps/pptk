@@ -14,6 +14,8 @@ add_library(estimate_normals SHARED estimate_normals.cpp)
 set(_link_flags ${OpenMP_CXX_FLAGS})
 if(APPLE)
   set(_link_flags "${_link_flags} -undefined dynamic_lookup")
+elseif(UNIX)
+  set(_link_flags "${_link_flags} -static-libstdc++")
 endif()
 set_target_properties(estimate_normals PROPERTIES
   COMPILE_FLAGS ${OpenMP_CXX_FLAGS}

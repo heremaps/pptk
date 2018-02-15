@@ -15,6 +15,9 @@ if (WIN32)
 elseif(APPLE)
   set_target_properties(kdtree PROPERTIES
     LINK_FLAGS "-undefined dynamic_lookup")
+elseif(UNIX)
+  set_target_properties(kdtree PROPERTIES
+    LINK_FLAGS "-static-libstdc++")
 endif()
 target_compile_definitions(kdtree PRIVATE -DUSE_TBB)
 target_include_directories(kdtree PRIVATE
