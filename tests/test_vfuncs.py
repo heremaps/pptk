@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-import vfuncs
+from pypcl.vfuncs import vfuncs
 
 class TestAdd(unittest.TestCase):
 
@@ -347,30 +347,31 @@ class TestIndexing(unittest.TestCase):
 		A = self.A
 		S = self.S
 		B = self.B
+		B2 = np.r_[B,False]
 		X = [A,A,A]
 
 		Y = vfuncs._idx(X,([B],S))
 		for y in Y:
 			self.assertTrue(y.tolist()==A[B].tolist())
-		Y = vfuncs._idx(X,(S,[B]))
+		Y = vfuncs._idx(X,(S,[B2]))
 		for y in Y:
-			self.assertTrue(y.tolist()==A[:,B].tolist())
+			self.assertTrue(y.tolist()==A[:,B2].tolist())
 		Y = vfuncs._idx(X,([B,B,B],S))
 		for y in Y:
 			self.assertTrue(y.tolist()==A[B,:].tolist())
-		Y = vfuncs._idx(X,(S,[B,B,B]))
+		Y = vfuncs._idx(X,(S,[B2,B2,B2]))
 		for y in Y:
-			self.assertTrue(y.tolist()==A[:,B].tolist())
+			self.assertTrue(y.tolist()==A[:,B2].tolist())
 	
 		# length of boolean array allowed to exceed that of "indexee"
 		# as long as exceeding entries are all False
 		Y = vfuncs._idx(X,([B[:3]],S))
 		for y in Y:
-			self.assertTrue(y.tolist()==A[B[:3],:].tolist())
+			self.assertTrue(y.tolist()==A[:3,:][B[:3],:].tolist())
 		B2 = np.hstack((B,np.array([False,False,False])));
 		Y = vfuncs._idx(X,([B2],S))
 		for y in Y:
-			self.assertTrue(y.tolist()==A[B2,:].tolist())
+			self.assertTrue(y.tolist()==A[B,:].tolist())
 	
 	def test_intarray(self):
 		A = self.A
@@ -397,20 +398,35 @@ class TestIndexing(unittest.TestCase):
 	def test_mixed(self):
 		A = self.A
 		S = self.S
-		I0 = self.B
-		I1 = [1,4,5]
-		I2 = [True,2.0,False,6]
-		I3 = np.array([2,3,9],dtype=np.int32)
-		I4 = np.array([-3,9])
-
+		I = [
+			self.B,
+			[1,4,5],
+			[True,2.0,False,6],
+			np.array([2,3,9],dtype=np.int32),
+			np.array([-3,9])
+		]
+		I_1 = [
+			self.B,
+			[1,4,5],
+			[1,2,0,6],
+			np.array([2,3,9],dtype=np.int32),
+			np.array([-3,9])
+		]
+		I_2 = [
+			np.r_[self.B,False],
+			[1,4,5],
+			[1,2,0,6],
+			np.array([2,3,9],dtype=np.int32),
+			np.array([-3,9])
+		]
 		X = [A,A,A,A,A]
-		I = [I0,I1,I2,I3,I4]
 		Y = vfuncs._idx(X,(I,S))
 		for i,y in enumerate(Y):
-			self.assertTrue(y.tolist()==A[I[i]].tolist())
+			#print i,y
+			self.assertTrue(y.tolist()==A[I_1[i]].tolist())
 		Y = vfuncs._idx(X,(S,I))
 		for i,y in enumerate(Y):
-			self.assertTrue(y.tolist()==A[:,I[i]].tolist())
+			self.assertTrue(y.tolist()==A[:,I_2[i]].tolist())
 
 class TestDot(unittest.TestCase):
 
@@ -430,27 +446,25 @@ class TestDot(unittest.TestCase):
 		# [A1]*[B1]
 		Y = vfuncs._dot([A1],[B1])
 		self.assertTrue(len(Y)==1)
-		print np.dot(A1,B1).tolist()
-		print Y[0].tolist()
-		self.assertTrue(Y[0].tolist()==np.dot(A1,B1).tolist())
+		self.assertTrue(np.allclose(Y[0], np.dot(A1,B1)))
 
 		# [A1]*[B1,B2]
 		Y = vfuncs._dot([A1],[B1,B2])
 		self.assertTrue(len(Y)==2)
-		self.assertTrue(Y[0].tolist()==np.dot(A1,B1).tolist())
-		self.assertTrue(Y[1].tolist()==np.dot(A1,B2).tolist())
+		self.assertTrue(np.allclose(Y[0],np.dot(A1,B1)))
+		self.assertTrue(np.allclose(Y[1],np.dot(A1,B2)))
 
 		# [A1,A2]*[B1]
 		Y = vfuncs._dot([A1,A2],[B1])
 		self.assertTrue(len(Y)==2)
-		self.assertTrue(Y[0].tolist()==np.dot(A1,B1).tolist())
-		self.assertTrue(Y[1].tolist()==np.dot(A2,B1).tolist())
+		self.assertTrue(np.allclose(Y[0],np.dot(A1,B1)))
+		self.assertTrue(np.allclose(Y[1],np.dot(A2,B1)))
 
 		# [A1,A2]*[B1,B2]
 		Y = vfuncs._dot([A1,A2],[B1,B2])
 		self.assertTrue(len(Y)==2)
-		self.assertTrue(Y[0].tolist()==np.dot(A1,B1).tolist())
-		self.assertTrue(Y[1].tolist()==np.dot(A2,B2).tolist())
+		self.assertTrue(np.allclose(Y[0],np.dot(A1,B1)))
+		self.assertTrue(np.allclose(Y[1],np.dot(A2,B2)))
 
 		# incompatible shapes should raise value error
 		with self.assertRaises(ValueError):

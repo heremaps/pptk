@@ -4,6 +4,21 @@ import numpy as np
 import copy
 import math
 
+__all__ = [
+    'MEAN',
+    'SUM',
+    'PROD',
+    'ALL',
+    'ANY',
+    'MIN',
+    'MAX',
+    'ARGMIN',
+    'ARGMAX',
+    'EIGH',
+    'DOT',
+    'TRANSPOSE',
+]
+
 _num_chunks = 128
 _min_chunk_size = 1000
 _max_chunk_size = 5000
@@ -243,7 +258,7 @@ class list_expression(expression):
 	def _evaluate_chunk(self,index,size,use_cache=False):
 		return self.items[index:index+size]
 		
-class	index_op(expression):
+class index_op(expression):
 	def __init__(self,src,row_sel,col_sel):
 		self.res_len = index_op._check_operands(src,row_sel,col_sel)
 		self.src = src
@@ -352,8 +367,8 @@ class nbhds_op(expression):
 	def _evaluate_chunk(self,index,size,use_cache=False):
 		self.data._update_kd_tree()
 		if self.queries is None:
-			(nhbrs,dists) = kdtree._query(self.data._tree,range(index,index+size),self.k,self.r)
+			nhbrs = kdtree._query(self.data._tree,range(index,index+size),self.k,self.r)
 		else:
-			(nhbrs,dists) = kdtree._query(self.data._tree,self.queries[index:index+size],self.k,self.r)
+			nhbrs = kdtree._query(self.data._tree,self.queries[index:index+size],self.k,self.r)
 		return nhbrs
 

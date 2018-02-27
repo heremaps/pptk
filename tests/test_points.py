@@ -1,82 +1,60 @@
 import unittest
-execfile('../setvars.py')
-import points
+import pypcl
 import numpy
 
 class TestPointsCreation(unittest.TestCase): 
 
 	def test_one_point_a(self):
-		P = points.points([1,2,3])
-		self.assertTrue(type(P)==points.points)
-		self.assertTrue(P.dtype=='float32')
-		self.assertTrue(P.shape==(1,3))
-		self.assertTrue(P.tolist()==[[1,2,3]])
-
-	def test_one_point_b(self):
-		P = points.points([[1,2,3]])
-		self.assertTrue(type(P)==points.points)
-		self.assertTrue(P.dtype=='float32')
-		self.assertTrue(P.shape==(1,3))
-		self.assertTrue(P.tolist()==[[1,2,3]])
+		P = pypcl.points([1,2,3])
+		self.assertTrue(type(P)==pypcl.Points)
+		self.assertTrue(P.dtype=='int32')
+		self.assertTrue(P.shape==(3,))
+		self.assertTrue(P.tolist()==[1,2,3])
 
 	def test_two_points(self):
-		P = points.points([[1,2,3],[2,3,4]])
-		self.assertTrue(type(P)==points.points)
-		self.assertTrue(P.dtype=='float32')
+		P = pypcl.points([[1,2,3],[2,3,4]])
+		self.assertTrue(type(P)==pypcl.Points)
+		self.assertTrue(P.dtype=='int32')
 		self.assertTrue(P.shape==(2,3))
 		self.assertTrue(P.tolist()==[[1,2,3],[2,3,4]])
-
-	def test_from_string(self):
-		P = points.points('1,2,3;2,3,4')
-		self.assertTrue(type(P)==points.points)
-		self.assertTrue(P.dtype=='float32')
-		self.assertTrue(P.shape==(2,3))
-		self.assertTrue(P.tolist()==[[1,2,3],[2,3,4]])
-
-	def test_1d_point(self):
-		P = points.points(1)
-		self.assertTrue(type(P)==points.points)
-		self.assertTrue(P.dtype=='float32')
-		self.assertTrue(P.shape==(1,1))
-		self.assertTrue(P.tolist()==[[1]])
 	
 	def test_zeros(self):
-		P = points.zeros(10,3)
-		self.assertTrue(type(P)==points.points)
-		self.assertTrue(P.dtype=='float32')
+		P = pypcl.zeros((10,3))
+		self.assertTrue(type(P)==pypcl.Points)
+		self.assertTrue(P.dtype=='float64')
 		self.assertTrue(P.shape==(10,3))
 		self.assertTrue(numpy.all(P==0))
 	
 	def test_rand(self):
-		P = points.rand(10,3)
-		self.assertTrue(type(P)==points.points)
-		self.assertTrue(P.dtype=='float32')
+		P = pypcl.rand(10,3)
+		self.assertTrue(type(P)==pypcl.Points)
+		self.assertTrue(P.dtype=='float64')
 		self.assertTrue(P.shape==(10,3))
 
 	def test_empty(self):
-		P = points.empty(10,3)
-		self.assertTrue(type(P)==points.points)
-		self.assertTrue(P.dtype=='float32')
+		P = pypcl.empty((10,3))
+		self.assertTrue(type(P)==pypcl.Points)
+		self.assertTrue(P.dtype=='float64')
 		self.assertTrue(P.shape==(10,3))
 
 	def test_view(self):
 		M = numpy.matrix('1,2,3')
 		with self.assertRaises(TypeError):
-			M.view(points.points)
-		P = points.points('1,2,3')
+			M.view(pypcl.Points)
+		P = pypcl.points([1,2,3])
 		Q = P.view()
-		self.assertTrue(type(P)==points.points)
-		self.assertTrue(P.dtype=='float32')
-		self.assertTrue(P.shape==(1,3))
-		self.assertTrue(P.tolist()==[[1,2,3]])
+		self.assertTrue(type(Q)==pypcl.Points)
+		self.assertTrue(Q.dtype=='int32')
+		self.assertTrue(Q.shape==(3,))
+		self.assertTrue(Q.tolist()==[1,2,3])
 
 	def test_copy_from_ndarray(self):
 		X = numpy.ndarray(shape=(4,5),dtype='float32')
 		X[:] = 1
 		with self.assertRaises(TypeError):
-			points.points(X,copy=False)
-		P = points.points(X)
-		self.assertTrue(type(P)==points.points)
+			pypcl.points(X,copy=False)
+		P = pypcl.points(X)
+		self.assertTrue(type(P)==pypcl.Points)
 		self.assertTrue(P.dtype=='float32')
 		self.assertTrue(P.shape==(4,5))
 		self.assertTrue(P.tolist()==X.tolist())
@@ -86,9 +64,9 @@ class TestPointsCreation(unittest.TestCase):
 	def test_copy_from_matrix(self):
 		X = numpy.matrix('1,2;2,3',dtype='float32')
 		with self.assertRaises(TypeError):
-			points.points(X,copy=False)
-		P = points.points(X)
-		self.assertTrue(type(P)==points.points)
+			pypcl.points(X,copy=False)
+		P = pypcl.points(X)
+		self.assertTrue(type(P)==pypcl.Points)
 		self.assertTrue(P.dtype=='float32')
 		self.assertTrue(P.shape==(2,2))
 		self.assertTrue(P.tolist()==X.tolist())
@@ -98,21 +76,23 @@ class TestPointsCreation(unittest.TestCase):
 class TestIndexing(unittest.TestCase):
 
 	def setUp(self):
-		self.P = points.points('1,2,3;2,3,4')
+		P = numpy.array([[1,2,3],[2,3,4]],dtype=numpy.float32)
+		self.P = pypcl.Points(shape = P.shape, dtype = P.dtype)
+		self.P[:] = P
 		P = self.P.copy()
 		self.Q = P.view()
 
 	def test_get_row(self):
 		x = self.P[0]
-		self.assertTrue(type(x)==points.points)
-		self.assertTrue(x.shape==(1,3))
-		self.assertTrue(x.tolist()==[[1,2,3]])
+		self.assertTrue(type(x)==pypcl.Points)
+		self.assertTrue(x.shape==(3,))
+		self.assertTrue(x.tolist()==[1,2,3])
 
 	def test_get_item(self):
 		x = self.P[0:2,0]
-		self.assertTrue(type(x)==points.points)
-		self.assertTrue(x.shape==(2,1))
-		self.assertTrue(x.tolist()==[[1],[2]])
+		self.assertTrue(type(x)==pypcl.Points)
+		self.assertTrue(x.shape==(2,))
+		self.assertTrue(x.tolist()==[1,2])
 
 	def test_set_row_i(self):
 		self.P[0] = 1
@@ -124,12 +104,6 @@ class TestIndexing(unittest.TestCase):
 		self.P[0] = [0,1,2]
 		self.assertTrue(self.P.tolist()==[[0,1,2],[2,3,4]])
 		self.Q[0] = [0,1,2]
-		self.assertTrue(self.Q.tolist()==[[0,1,2],[2,3,4]])
-
-	def test_set_row_iii(self):
-		self.P[0] = [[0,1,2]]
-		self.assertTrue(self.P.tolist()==[[0,1,2],[2,3,4]])
-		self.Q[0] = [[0,1,2]]
 		self.assertTrue(self.Q.tolist()==[[0,1,2],[2,3,4]])
 
 	def test_set_all_i(self):
@@ -151,9 +125,9 @@ class TestIndexing(unittest.TestCase):
 		self.assertTrue(self.Q.tolist()==[[4,5,6],[4,5,6]])
 
 	def test_set_item(self):
-		self.P[0:2,0] = [[0],[1]]
+		self.P[0:2,0] = [0,1]
 		self.assertTrue(self.P.tolist()==[[0,2,3],[1,3,4]])
-		self.Q[0:2,0] = [[0],[1]]
+		self.Q[0:2,0] = [0,1]
 		self.assertTrue(self.Q.tolist()==[[0,2,3],[1,3,4]])
 
 	def test_augmented_assignments(self):
@@ -191,20 +165,20 @@ class TestIndexing(unittest.TestCase):
 	
 	def test_operations(self):
 		X = self.P[0] + self.P[1]
-		self.assertTrue(X.tolist()==[[3,5,7]])
+		self.assertTrue(X.tolist()==[3,5,7])
 		X = self.P[0] - self.P[1]
-		self.assertTrue(X.tolist()==[[-1,-1,-1]])
+		self.assertTrue(X.tolist()==[-1,-1,-1])
 		X = numpy.multiply(self.P[0],self.P[1])
-		self.assertTrue(X.tolist()==[[2,6,12]])
+		self.assertTrue(X.tolist()==[2,6,12])
 
-		P = points.empty(2)
+		P = pypcl.empty((2,3))
 		P[:] = [[1,2,3],[2,3,4]]
 		X = P[0] + P[1]
-		self.assertTrue(X.tolist()==[[3,5,7]])
+		self.assertTrue(X.tolist()==[3,5,7])
 		X = P[0] - P[1]
-		self.assertTrue(X.tolist()==[[-1,-1,-1]])
+		self.assertTrue(X.tolist()==[-1,-1,-1])
 		X = numpy.multiply(P[0],P[1])
-		self.assertTrue(X.tolist()==[[2,6,12]])
+		self.assertTrue(X.tolist()==[2,6,12])
 
 	def test_boolean_indexing(self):
 		# ideally want: X = self.P[self.P[:,0]<2]
@@ -213,17 +187,21 @@ class TestIndexing(unittest.TestCase):
 
 class TestOperations(unittest.TestCase):
 	def setUp(self):
-		self.P = points.points('1,2,3;2,3,4')
+		P = numpy.array([[1,2,3],[2,3,4]])
+		self.P = pypcl.Points(shape = P.shape, dtype = P.dtype)
+		self.P[:] = P
 
 	def test_mul(self):
-		X = self.P.T * self.P
+		X = numpy.dot(self.P.T, self.P)
 		self.assertTrue(X.tolist()==[[5,8,11],[8,13,18],[11,18,25]])
-		X = self.P * self.P.T
+		X = numpy.dot(self.P, self.P.T)
 		self.assertTrue(X.tolist()==[[14,20],[20,29]])
 
 class TestWriteLocking(unittest.TestCase):
 	def setUp(self):
-		self.P = points.points('1,2,3;2,3,4')
+		P = numpy.array([[1,2,3],[2,3,4]])
+		self.P = pypcl.Points(shape = P.shape, dtype = P.dtype)
+		self.P[:] = P
 	
 	def test_view(self):
 		X = self.P.view(numpy.ndarray)
@@ -243,29 +221,33 @@ class TestWriteLocking(unittest.TestCase):
 class TestUpdateSystem(unittest.TestCase):
 
 	def setUp(self):
-		self.P = points.points('1,2,3;2,3,4')
-		self.Q = points.points('0,0,0')
-		points._last_modified.clear()
+		P = numpy.array([[1,2,3],[2,3,4]])
+		Q = numpy.array([[0,0,0]])
+		self.P = pypcl.Points(shape = P.shape, dtype = P.dtype)
+		self.P[:] = P
+		self.Q = pypcl.Points(shape = Q.shape, dtype = Q.dtype)
+		self.Q[:] = Q
+		pypcl.Points._last_modified.clear()
 
 	def test_reset(self):
-		points._last_modified.clear()
-		self.assertTrue(points._last_modified.get(self.P._memloc)==None)
+		pypcl.Points._last_modified.clear()
+		self.assertTrue(pypcl.Points._last_modified.get(self.P._memloc)==None)
 		self.assertTrue(self.P._last_updated==None)
 
 	def test_modify_then_query(self):
 		self.P[0,0]=6
-		self.assertTrue(points._last_modified.get(self.P._memloc)!=None)
+		self.assertTrue(pypcl.Points._last_modified.get(self.P._memloc)!=None)
 		self.assertTrue(self.P._last_updated==None)
 
-		[x for x in self.P.nbhds(self.Q,k=1)]
+		[x for x in self.P.NBHDS(self.Q,k=1)]
 		self.assertTrue(self.P._last_updated!=None)
-		self.assertTrue(self.P._last_updated > points._last_modified.get(self.P._memloc))
+		self.assertFalse(self.P._last_updated < pypcl.Points._last_modified.get(self.P._memloc))
 
 	def test_directly_query(self):
-		[x for x in self.P.nbhds(self.Q,k=1)]
-		self.assertTrue(points._last_modified.get(self.P._memloc)!=None)
+		[x for x in self.P.NBHDS(self.Q,k=1)]
+		self.assertTrue(pypcl.Points._last_modified.get(self.P._memloc)!=None)
 		self.assertTrue(self.P._last_updated!=None)
-		self.assertTrue(self.P._last_updated > points._last_modified.get(self.P._memloc))
+		self.assertFalse(self.P._last_updated < pypcl.Points._last_modified.get(self.P._memloc))
 
 	def test_create_view(self):
 		X = self.P[:,1:]
@@ -284,26 +266,30 @@ class TestQueries(unittest.TestCase):
 
 	def setUp(self):
 		numpy.random.seed(0)
-		self.P = points.points(numpy.random.rand(100,3))
-		self.Q = points.points(numpy.random.rand(5,3))
+		P = numpy.random.rand(100,3)
+		Q = numpy.random.rand(5,3)
+		self.P = pypcl.Points(shape = P.shape, dtype = P.dtype)
+		self.P[:] = P
+		self.Q = pypcl.Points(shape = Q.shape, dtype = Q.dtype)
+		self.Q[:] = Q
 
 	def test_check_inputs(self):
-		with self.assertRaises(ValueError):
-			self.P.nbhds(points.zeros(0,2),k=1)
-		with self.assertRaises(TypeError):
-			self.P.nbhds(points.zeros(0,3),k='a')
-		with self.assertRaises(TypeError):
-			self.P.nbhds(points.zeros(0,3),r='a')
+		with self.assertRaises(Exception):
+			self.P.nbhds(pypcl.zeros(0,2),k=1)
+		with self.assertRaises(Exception):
+			self.P.nbhds(pypcl.zeros(0,3),k='a')
+		with self.assertRaises(Exception):
+			self.P.nbhds(pypcl.zeros(0,3),r='a')
 
 	def test_knearest(self):
 		k = 10
 		numqueries = self.Q.shape[0]
 		I = numpy.ndarray(shape=(numqueries,k))
 		for i,q in enumerate(self.Q):
-			d = numpy.sum(numpy.square(self.P-q),axis=1).T
-			I[i,:] = numpy.argsort(d)[0,0:k]
+			d = numpy.sum(numpy.square(self.P-q),axis=1)
+			I[i,:] = numpy.argsort(d)[:k]
 
-		R = numpy.vstack(x for x in self.P.nbhds(self.Q,k=k))
+		R = numpy.vstack(x for x in self.P.NBHDS(self.Q,k=k))
 		self.assertTrue((I==R).all())
 
 	def test_rnear(self):
