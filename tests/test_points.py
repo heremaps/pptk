@@ -7,14 +7,14 @@ class TestPointsCreation(unittest.TestCase):
 	def test_one_point_a(self):
 		P = pypcl.points([1,2,3])
 		self.assertTrue(type(P)==pypcl.Points)
-		self.assertTrue(P.dtype=='int32')
+		self.assertTrue(P.dtype=='int')
 		self.assertTrue(P.shape==(3,))
 		self.assertTrue(P.tolist()==[1,2,3])
 
 	def test_two_points(self):
 		P = pypcl.points([[1,2,3],[2,3,4]])
 		self.assertTrue(type(P)==pypcl.Points)
-		self.assertTrue(P.dtype=='int32')
+		self.assertTrue(P.dtype=='int')
 		self.assertTrue(P.shape==(2,3))
 		self.assertTrue(P.tolist()==[[1,2,3],[2,3,4]])
 	
@@ -44,7 +44,7 @@ class TestPointsCreation(unittest.TestCase):
 		P = pypcl.points([1,2,3])
 		Q = P.view()
 		self.assertTrue(type(Q)==pypcl.Points)
-		self.assertTrue(Q.dtype=='int32')
+		self.assertTrue(Q.dtype=='int')
 		self.assertTrue(Q.shape==(3,))
 		self.assertTrue(Q.tolist()==[1,2,3])
 
@@ -260,7 +260,8 @@ class TestUpdateSystem(unittest.TestCase):
 	
 	def test_create(self):
 		self.assertTrue(self.P._last_updated==None)
-		self.assertTrue(self.P._memsize==24)
+		memsize = self.P.dtype.itemsize * self.P.size
+		self.assertTrue(self.P._memsize==memsize)
 
 class TestQueries(unittest.TestCase):
 
