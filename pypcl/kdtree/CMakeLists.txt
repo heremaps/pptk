@@ -12,6 +12,7 @@ add_library(kdtree SHARED kdtree_wrapper.cpp)
 set_target_python_module_name(kdtree)
 if (WIN32)
     target_compile_options(kdtree PRIVATE /bigobj)
+    target_link_libraries(kdtree ${PYTHON_LIBRARY})
 elseif(APPLE)
   set_target_properties(kdtree PROPERTIES
     LINK_FLAGS "-undefined dynamic_lookup")

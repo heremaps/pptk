@@ -10,7 +10,9 @@
 
 add_library(vfuncs SHARED vfuncs.cpp)
 set_target_python_module_name(vfuncs)
-if(APPLE)
+if(WIN32)
+    target_link_libraries(vfuncs ${PYTHON_LIBRARY})
+elseif(APPLE)
   set_target_properties(vfuncs PROPERTIES
     LINK_FLAGS "-undefined dynamic_lookup")
 elseif(UNIX)

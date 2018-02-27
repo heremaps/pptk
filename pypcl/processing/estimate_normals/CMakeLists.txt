@@ -12,7 +12,9 @@
 
 add_library(estimate_normals SHARED estimate_normals.cpp)
 set(_link_flags ${OpenMP_CXX_FLAGS})
-if(APPLE)
+if(WIN32)
+  target_link_libraries(estimate_normals ${PYTHON_LIBRARY})
+elseif(APPLE)
   set(_link_flags "${_link_flags} -undefined dynamic_lookup")
 elseif(UNIX)
   set(_link_flags "${_link_flags} -static-libstdc++")
