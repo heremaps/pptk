@@ -15,6 +15,27 @@ __all__ = ['viewer']
 
 class viewer:
     def __init__(self, *args, **kwargs):
+        """ Opens a point cloud viewer
+
+        Examples:
+            Create 100 random points
+
+            >>> xyz = pypcl.rand(100, 3)
+
+            Visualize the points
+
+            >>> pypcl.viewer(xyz)
+
+            Visualize points shaded by height
+
+            >>> pypcl.viewer(xyz, xyz[:, 2])
+
+            Visualize points shaded by random RGB color
+
+            >>> rgb = pypcl.rand(100, 3)
+            >>> pypcl.viewer(xyz, rgb)
+
+        """
         # ensure positions is 3-column array of float32s
         positions = numpy.asarray(args[0], dtype=numpy.float32).reshape(-1, 3)
         attr = args[1:]
@@ -43,26 +64,105 @@ class viewer:
         self.color_map(color_map, scale)
 
     def close(self):
+        """ Closes the point cloud viewer
+
+        Examples:
+
+            >>> v.close()
+
+        """
         self._process.kill()
         pass
 
     def clear(self):
+        """ Removes the current point cloud in the viewer
+
+        Examples:
+
+            >>> v.clear()
+
+        """
         # construct message
         msg = struct.pack('b', 2)
         # send message to viewer
         self.__send(msg)
 
     def reset(self):
+        """ Resets the viewer
+        """
         # construct message
         msg = struct.pack('b', 3)
         # send message to viewer
         self.__send(msg)
 
     def set(self, **kwargs):
+        """ Sets viewer property
+
+        =================  ===============  =================================
+        Property Name      Value Type         Description
+        =================  ===============  =================================
+        bg_color           4 x float32      Background color in RGBA [0, 1]
+        bg_color_top       4 x float32      Top background color
+        bg_color_bottom    4 x float32      Bottom background color
+        color_map          ? x 4 x float32  Color map; array of RGBA's [0, 1]
+        color_map_scale    2 x float32      Color map scaling interval
+        curr_attribute_id  uint             Current attribute set index
+        floor_level        float32          Floor z-level
+        floor_color        4 x float32      Floor color in RGBA [0, 1]
+        lookat             3 x float32      Camera look-at position
+        phi                float32          Camera azimuthal angle (radians)
+        point_size         float32          Point size in world space
+        r                  float32          Camera distance to look-at point
+        selected           ? x uint         Indices of selected points
+        show_grid          bool             Show floor grid
+        show_info          bool             Show information text overlay
+        show_axis          bool             Show axis / look-at cursor
+        theta              float32          Camera elevation angle (radians)
+        =================  ===============  =================================
+
+        (phi, theta, r) are spherical coordinates specifying camera position
+        relative to the look at position.
+
+        (right, up, view) are orthogonal vectors forming the camera coordinate
+        frame, where view is pointed away from the look at position, and view
+        is the cross product of up with right
+
+        Examples:
+
+            >>> v = pypcl.viewer(xyz)
+            >>> v.set(point_size = 0.01)
+
+        """
         for prop, val in kwargs.items():
             self.__send(_construct_set_msg(prop, val))
 
     def get(self, prop_name):
+        """ Gets viewer property
+
+        ================  =============  ================================
+        Property Name     Return Type    Description
+        ================  =============  ================================
+        curr_atribute_id  uint           Current attribute set index
+        eye               3 x float64    Camera position
+        lookat            3 x float64    Camera look-at position
+        mvp               4 x 4 float64
+        num_points        uint           Number of points loaded
+        num_attributes    uint           Number of attribute sets loaded
+        phi               float64        Camera azimuthal angle (radians)
+        r                 float64        Camera distance to look-at point
+        right             3 x float64    Camera Right vector
+        selected          ? x int32      Indices of selected points
+        theta             float64        Camera elevation angle (radians)
+        up                3 x float64    Camera up vector
+        view              3 x float64    Camera view vector
+        ================  =============  ================================
+
+        Examples:
+
+            >>> v = pypcl.viewer(xyz)
+            >>> v.get('selected')
+
+        """
         return self.__query(_construct_get_msg(prop_name))
 
     def load(self, *args, **kwargs):
@@ -75,6 +175,32 @@ class viewer:
         self.color_map(color_map, scale)
 
     def attributes(self, *attr):
+        """ Loads point attributes
+
+        The loaded attributes are used to clor the currently loaded point
+        cloud.  Supposing n points loaded, this function accepts attributes of
+        the following forms:
+
+        * scalars: 1-d array of length 1 or n
+        * RGB colors: 2-d array of shape (1, 3) or (n, 3)
+        * RGBA colors: 2-d array of shape (1, 4) or (n, 4)
+
+        Passing in no arguments clears all existing attribute sets and colors
+        all points white.  Cycle through attribute sets via '[' and ']' keys.
+
+        Examples:
+
+        >>> xyz = pypcl.rand(100, 3)
+        >>> v = pypcl.viewer(xyz)
+        >>> attr1 = pypcl.rand(100)     # 100 random scalars
+        >>> attr2 = pypcl.rand(100, 3)  # 100 random RGB colors
+        >>> attr3 = pypcl.rand(100, 4)  # 100 random RGBA colors
+        >>> attr4 = pypcl.rand(1, 1)    # 1 random scalar
+        >>> attr5 = pypcl.rand(1, 3)    # 1 random RGB color
+        >>> attr6 = pypcl.rand(1, 4)    # 1 random RGBA color
+        >>> v.attributes(attr1, attr2, attr3, attr4, attr6)
+
+        """
         msg = struct.pack('Q', len(attr))
         error_msg = '%d-th attribute array inconsistent with number of points'
         for i, x in enumerate(attr):
@@ -100,6 +226,42 @@ class viewer:
         self.__send(msg)
 
     def color_map(self, c, scale=None):
+        """
+
+        Specifies how scalar attributes are used to color points in the viewer.
+
+        Input c is expected to be an array of n RGB (or RGBA) vectors
+        (i.e. c is a n x 3 or n x 4 numpy array).
+        Upon return, scalar values equal to scale 0 are colored with c[0],
+        scale[1] with c[-1], and scalars in between appropriately interpolated.
+        If scale is None, scale is automatically set as the minimum and maximum
+        scalar values in the current attribute set.
+
+        Alternatively, one can choose from a number of preset color maps by
+        passing the corresponding string instead.
+
+        =================  =====================================
+        Preset color maps
+        =================  =====================================
+        'jet' (default)    .. image:: images/colormap_jet.png
+        'hsv'              .. image:: images/colormap_hsv.png
+        'hot'              .. image:: images/colormap_hot.png
+        'cool'             .. image:: images/colormap_cool.png
+        'spring'           .. image:: images/colormap_spring.png
+        'summer'           .. image:: images/colormap_summer.png
+        'autumn'           .. image:: images/colormap_autumn.png
+        'winter'           .. image:: images/colormap_winter.png
+        'gray'             .. image:: images/colormap_gray.png
+        =================  =====================================
+
+        Examples:
+            >>> xyz = np.c_[np.arange(10), np.zeros(10), np.zeros(10)]
+            >>> scalars = np.arange(10)
+            >>> v = pypcl.viewer(xyz, scalars)
+            >>> v.color_map('cool', scale=[0, 5])
+            >>> v.color_map([[0, 0, 0], [1, 1, 1]])
+
+        """
         # accepts array of rgb or rgba vectors
         if isinstance(c, str):
             c = _color_maps[c]
@@ -116,11 +278,49 @@ class viewer:
             self.set(color_map_scale=scale)
 
     def capture(self, filename):
+        """
+
+        Take screen shot of current view and save to filename
+
+        Examples:
+
+        >>> v = pypcl.viewer(xyz)
+        >>> v.capture('screenshot.png')
+
+        """
         msg = struct.pack('b', 6) + _pack_string(os.path.abspath(filename))
         self.__send(msg)
 
     def play(self, poses, ts=[], tlim=[-numpy.inf, numpy.inf], repeat=False,
              interp='cubic_natural'):
+        """
+
+        Plays back camera path animation specified by poses
+
+        Args:
+            poses: Key poses. e.g. a list of 6-tuples (x, y, z, phi, theta, r)
+                poses, or anything convertible to a 6-column array by np.array
+            ts (optional): Key pose times. If unspecified key poses are placed
+                at 1 second intervals.
+            tlim (optional): Play back time range (in seconds)
+            repeat (optional): Toggles infinite play back loop.  Works well
+                with interp='cubic_periodic'.
+            interp (optional): Interpolation method.  Should be one of
+                'constant', 'linear', 'cubic_natural', or 'cubic_periodic'.
+
+        Examples:
+
+        Rotate camera about origin at 1/8 Hz.
+
+        >>> poses = []
+        >>> poses.append([0, 0, 0, 0 * np.pi/2, np.pi/4, 5])
+        >>> poses.append([0, 0, 0, 1 * np.pi/2, np.pi/4, 5])
+        >>> poses.append([0, 0, 0, 2 * np.pi/2, np.pi/4, 5])
+        >>> poses.append([0, 0, 0, 3 * np.pi/2, np.pi/4, 5])
+        >>> poses.append([0, 0, 0, 4 * np.pi/2, np.pi/4, 5])
+        >>> v.play(poses, 2 * np.arange(5), repeat=True, interp='linear')
+
+        """
         poses, ts = _fix_poses_ts_input(poses, ts)
         if poses.size == 0:
             return
@@ -137,8 +337,33 @@ class viewer:
     def record(self, folder, poses, ts=[], tlim=[-numpy.inf, numpy.inf],
                interp='cubic_natural', shutter_speed=numpy.inf, fps=24,
                prefix='frame_', ext='png'):
-        # note: generate video from resulting image sequence, for example:
-        # >> ffmpeg -i "frame_%03d.png" -c:v mpeg4 -qscale:v 0 -r 24 output.mp4
+        """
+
+        Records camera animation to a sequence of images. Usage of this method
+        is very similar to viewer.play(...).
+
+        Args:
+            folder: Folder to which images are saved
+            poses: Same as in :meth:`pypcl.viewer.play`
+            ts: Same as in :meth:`pypcl.viewer.play`
+            tlim: Same as in :meth:`pypcl.viewer.play`
+            interp: Same as in :meth:`pypcl.viewer.play`
+            fps: Frames per second
+            prefix: Resulting image file names are prefixed with this string
+            ext: Image format
+
+        Examples:
+
+            Assuming poses defined as in the example for :meth:pypcl.viewer.play
+
+            >>> mkdir 'recording'
+            >>> v.record('recording', poses)
+
+        Tip: Uses ffmpeg to generate a video from the resulting image sequence
+
+            >>> ffmpeg -i "frame_%03d.png" -c:v mpeg4 -qscale:v 0 -r 24 output.mp4
+
+        """
         if not os.path.isdir(folder):
             raise ValueError('invalid folder provided')
         poses, ts = _fix_poses_ts_input(poses, ts)
@@ -175,6 +400,18 @@ class viewer:
             #       ideally, capture(...) should return filename
 
     def wait(self):
+        """
+
+        Blocks until Enter/Return key is pressed in viewer
+
+        Examples:
+
+            >>> v = pypcl.viewer(xyz)
+            >>> v.wait()
+
+        Press enter in viewer to return control to python terminal.
+
+        """
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(('localhost', self._portNumber))
         s.send(struct.pack('b', 7))
