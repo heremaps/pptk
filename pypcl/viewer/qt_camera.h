@@ -1,6 +1,6 @@
 #ifndef QMOUSECONTROLLEDCAMERA_H
 #define QMOUSECONTROLLEDCAMERA_H
-#include "Camera.h"
+#include "camera.h"
 #include <QVector2D>
 #include <QVector3D>
 #include <QMatrix4x4>

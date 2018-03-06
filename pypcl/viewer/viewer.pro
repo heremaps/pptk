@@ -46,19 +46,19 @@ INCLUDEPATH += $$EIGEN_INC
 # Input
 HEADERS += octree.h \
     box3.h \
-    FloorGrid.h \
-    SelectionBox.h \
-    Background.h \
-    LookAt.h \
-    PointCloud.h \
-    Viewer.h \
-    QtCamera.h \
-    Camera.h \
-    CommFuncs.h \
-    OpenGLFuncs.h \
-    Text.h \
-    CameraDolly.h \
-    Splines.h \
-    PointAttributes.h
+    floor_grid.h \
+    selection_box.h \
+    background.h \
+    look_at.h \
+    point_cloud.h \
+    viewer.h \
+    qt_camera.h \
+    camera.h \
+    comm_funcs.h \
+    opengl_funcs.h \
+    text.h \
+    camera_dolly.h \
+    splines.h \
+    point_attributes.h
 SOURCES += \
     main.cpp

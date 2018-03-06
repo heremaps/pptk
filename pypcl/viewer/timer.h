@@ -1,5 +1,5 @@
-#ifndef _TIMER_H
-#define _TIMER_H
+#ifndef __TIMER_H__
+#define __TIMER_H__
 namespace vltools {
 #if defined(_WIN32) || defined(__CYGWIN__)
 #ifndef _WIN32
@@ -12,24 +12,24 @@ namespace vltools {
 #undef _WIN32
 #endif /* PCTIMER_NO_WIN32 */
 __inline double getTime() {
-	static LARGE_INTEGER pcount, pcfreq;
-	static int initflag;
-    if (!initflag) {
-		QueryPerformanceFrequency(&pcfreq);
-		initflag++;
-	}
-	QueryPerformanceCounter(&pcount);
-	return (double)pcount.QuadPart / (double)pcfreq.QuadPart;
+  static LARGE_INTEGER pcount, pcfreq;
+  static int initflag;
+  if (!initflag) {
+    QueryPerformanceFrequency(&pcfreq);
+    initflag++;
+  }
+  QueryPerformanceCounter(&pcount);
+  return (double)pcount.QuadPart / (double)pcfreq.QuadPart;
 }
 #else /* Not Win32/Cygwin */
 #include <sys/time.h>
 #include <cstddef>
 
 __inline double getTime() {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (double)tv.tv_sec + (double)tv.tv_usec / 1000000;
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return (double)tv.tv_sec + (double)tv.tv_usec / 1000000;
 }
 #endif
-} // namespace vltools
-#endif /* _TIMER_H */
+}  // namespace vltools
+#endif  // __TIMER_H__

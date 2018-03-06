@@ -1,7 +1,7 @@
 #include <iostream>
 #include <limits>
-#include "python_util.h"
 #include "kdtree.h"
+#include "python_util.h"
 using namespace std;
 
 struct KdTreeStruct {
@@ -50,7 +50,7 @@ void PerformAction(Action& action, int type_num, int dim) {
     PerformAction_<Action, 4>(action, type_num);
   } else {
     PyErr_Format(PyExc_RuntimeError,
-	             "PerformAction(): Invalid k-d tree dim = %d.", dim);
+                 "PerformAction(): Invalid k-d tree dim = %d.", dim);
   }
 }
 
@@ -62,6 +62,7 @@ class DeleteTreeAction {
     delete (pointkd::KdTree<T, dim>*)ptr_->tree_ptr;
     delete ptr_;
   }
+
  private:
   KdTreeStruct* ptr_;
 };
@@ -89,8 +90,8 @@ class BuildTreeAction {
       VectorFromArray2D(points, x_);
       tree = new KdTreeT(points, params_);
     }
-    KdTreeStruct* kdtree_struct = new KdTreeStruct((void*)tree,
-                                                   x_.type_num, dim);
+    KdTreeStruct* kdtree_struct =
+        new KdTreeStruct((void*)tree, x_.type_num, dim);
     results_ = PyCapsule_New((void*)kdtree_struct, NULL, &DeleteKdTree);
   }
 
@@ -115,8 +116,8 @@ PyObject* MakeList(const std::vector<pointkd::Indices>& v) {
 
 template <typename T, int dim>
 PyObject* QueryWithIndices(const pointkd::KdTree<T, dim>* kdtree,
-                           const pointkd::Indices& indices,
-                           long k, double dmax) {
+                           const pointkd::Indices& indices, long k,
+                           double dmax) {
   // assume k >= -1 and dMax >= 0.0
   typedef typename pointkd::KdTree<T, dim>::DistT DistT;
   std::vector<pointkd::Indices> results;
@@ -129,15 +130,16 @@ PyObject* QueryWithIndices(const pointkd::KdTree<T, dim>* kdtree,
   } else {
     PyErr_Format(PyExc_ValueError,
                  "QueryWithIndices(): "
-				 "k = %ld and dmax = %lf is an invalid combination.", k, dmax);
+                 "k = %ld and dmax = %lf is an invalid combination.",
+                 k, dmax);
     return NULL;
   }
 }
 
 template <typename Tx, typename Ty, int dim>
 PyObject* QueryWithPoints(const pointkd::KdTree<Tx, dim>* kdtree,
-                          const std::vector<Ty>& query_points,
-                          long k, double dmax) {
+                          const std::vector<Ty>& query_points, long k,
+                          double dmax) {
   // assume k >= -1 and dMax >= 0.0
   typedef typename pointkd::KdTree<Tx, dim>::DistT DistT;
   std::vector<pointkd::Indices> results;
@@ -150,14 +152,16 @@ PyObject* QueryWithPoints(const pointkd::KdTree<Tx, dim>* kdtree,
   } else {
     PyErr_Format(PyExc_ValueError,
                  "QueryWithPoints(): "
-				 "k = %ld and dmax = %lf is an invalid combination.", k, dmax);
+                 "k = %ld and dmax = %lf is an invalid combination.",
+                 k, dmax);
     return NULL;
   }
 }
 
 class QueryTreeAction {
  public:
-  QueryTreeAction(const KdTreeStruct* ptr, PyObject* obj_queries, long k, double dmax)
+  QueryTreeAction(const KdTreeStruct* ptr, PyObject* obj_queries, long k,
+                  double dmax)
       : ptr_(ptr),
         obj_queries_(obj_queries),
         k_(k),
@@ -171,25 +175,24 @@ class QueryTreeAction {
     std::vector<pointkd::Indices> r;
     if (obj_queries_ == NULL || obj_queries_ == Py_None) {
       // query with indices 0 ... num_points-1
-      for (int i = 0; i < tree->num_points(); i++)
-        indices.push_back(i);
+      for (int i = 0; i < tree->num_points(); i++) indices.push_back(i);
       results_ = QueryWithIndices(tree, indices, k_, dmax_);
     } else if (PySlice_Check(obj_queries_)) {
       // query with indices represented by a slice (begin:end:step)
       PyErr_SetString(PyExc_NotImplementedError,
-	                  "QueryTreeAction::Perform(): "
+                      "QueryTreeAction::Perform(): "
                       "slice-based query not yet implemented");
       results_ = NULL;
     } else if (PyArray_Check(obj_queries_) && PyArray_NDIM(obj_queries_) == 2) {
       // query with points
       Array2D x;
       ExtractArray2DFromPyArray(x, obj_queries_);
-	  if (x.n != dim) {
-		  PyErr_Format(PyExc_ValueError,
-		               "QueryTreeAction::Perform(): "
-		               "query point dim = %d (expecting dim = %d).",
-					   (int)x.n, dim);
-		  results_ = NULL;
+      if (x.n != dim) {
+        PyErr_Format(PyExc_ValueError,
+                     "QueryTreeAction::Perform(): "
+                     "query point dim = %d (expecting dim = %d).",
+                     (int)x.n, dim);
+        results_ = NULL;
       } else if (x.type_num == NPY_FLOAT32) {
         std::vector<float> q;
         VectorFromArray2D(q, x);
@@ -214,7 +217,7 @@ class QueryTreeAction {
         std::vector<std::int64_t> q;
         VectorFromArray2D(q, x);
         results_ = QueryWithPoints(tree, q, k_, dmax_);
-      } else if (x.type_num == NPY_UINT8) { 
+      } else if (x.type_num == NPY_UINT8) {
         std::vector<std::uint8_t> q;
         VectorFromArray2D(q, x);
         results_ = QueryWithPoints(tree, q, k_, dmax_);
@@ -231,13 +234,13 @@ class QueryTreeAction {
         VectorFromArray2D(q, x);
         results_ = QueryWithPoints(tree, q, k_, dmax_);
       }
-    } else if (CheckAndExtractIndices(indices,
-	                                  obj_queries_, tree->num_points())) {
+    } else if (CheckAndExtractIndices(indices, obj_queries_,
+                                      tree->num_points())) {
       results_ = QueryWithIndices(tree, indices, k_, dmax_);
     } else {
       if (!PyErr_Occurred())
         PyErr_Format(PyExc_TypeError,
-		             "QueryTreeAction::Perform(): "
+                     "QueryTreeAction::Perform(): "
                      "could not use object of type %s as query input.",
                      obj_queries_->ob_type->tp_name);
       results_ = NULL;
@@ -259,12 +262,13 @@ static PyObject* Build(PyObject* self, PyObject* args, PyObject* kwargs) {
                              (char*)"maxleafsize", (char*)"emptysplit", NULL};
   PyObject* data = NULL;
   pointkd::BuildParams build_params;
-  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|iid", keywords, &data,
-                                   &build_params.num_proc, &build_params.max_leaf_size, &build_params.empty_split_threshold)) {
+  if (!PyArg_ParseTupleAndKeywords(
+          args, kwargs, "O|iid", keywords, &data, &build_params.num_proc,
+          &build_params.max_leaf_size, &build_params.empty_split_threshold)) {
     PyErr_SetString(PyExc_TypeError, "Build(): failed parsing arguments");
     return NULL;
   }
-  // TODO: make sure data is never NULL at this point 
+  // TODO: make sure data is never NULL at this point
   Array2D x;
   if (CheckAndExtractArray2D(x, data)) {
     BuildTreeAction action(x, build_params);
@@ -309,7 +313,7 @@ static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
     return NULL;
   } else if (k <= 0) {
     PyErr_Format(PyExc_ValueError, "Query(): encountered negative k=%ld", k);
-    return NULL; 
+    return NULL;
   }
 
   // check option obj_dmax and set dmax
@@ -325,8 +329,8 @@ static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
                    obj_dmax->ob_type->tp_name);
     return NULL;
   } else if (dmax < 0.0) {
-    PyErr_Format(PyExc_ValueError,
-                 "Query(): encountered negative dmax %lf", dmax);
+    PyErr_Format(PyExc_ValueError, "Query(): encountered negative dmax %lf",
+                 dmax);
     return NULL;
   }
 
@@ -343,8 +347,8 @@ static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
 
   // note: at this point, k >= -1 and dMax >= 0.0
   QueryTreeAction action(kdtree_struct, obj_queries, k, dmax);
-  PerformAction<QueryTreeAction>(action,
-                                 kdtree_struct->type_num, kdtree_struct->dim);
+  PerformAction<QueryTreeAction>(action, kdtree_struct->type_num,
+                                 kdtree_struct->dim);
   if (PyErr_Occurred()) {
     return NULL;
   } else {
