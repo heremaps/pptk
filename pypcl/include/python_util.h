@@ -596,6 +596,7 @@ bool CheckAndExtractIndices(std::vector<T, A>& indices, PyObject* obj, int n) {
                  "CheckAndExtractIndices(): "
                  "%lu-th query index is outside of [%d,%d]",
                  i, -n, n - 1);
+    return false;
   } else {  // all indices in [-n, n-1]
     FixNegativeIndices(indices, n);
   }

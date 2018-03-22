@@ -232,7 +232,6 @@ static PyObject* binary_op_single(PyObject* self, PyObject* args) {
 
 template <class T>
 static PyObject* binary_op(PyObject* self, PyObject* args) {
-  
   T op;
   PyObject *X, *Y;
   ListItem x_struct, y_struct;
