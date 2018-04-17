@@ -52,8 +52,8 @@ class viewer:
             stdout=subprocess.PIPE,
             stderr=(None if debug else subprocess.PIPE))
         if debug:
-            print 'Started viewer process: %s' \
-                % os.path.join(_viewer_dir, 'viewer')
+            print ('Started viewer process: %s' \
+                % os.path.join(_viewer_dir, 'viewer'))
         x = s.accept()
         self._portNumber = struct.unpack('H', self._process.stdout.read(2))[0]
         # self._portNumber = struct.unpack('H',x[0].recv(2))[0]
@@ -416,10 +416,10 @@ class viewer:
         s.connect(('localhost', self._portNumber))
         s.send(struct.pack('b', 7))
         s.setblocking(1)
-        buf = ''
+        buf = b''
         while len(buf) == 0:
-            buf = s.recv(1)
-        if buf != 'x':
+            buf += s.recv(1)
+        if buf != b'x':
             raise RuntimeError('expecting return code \'x\'')
         s.close()
 
@@ -428,7 +428,7 @@ class viewer:
         if positions.size == 0:
             return
         # construct message
-        numPoints = positions.size / 3
+        numPoints = int(positions.size / 3)
         msg = struct.pack('b', 1) \
             + struct.pack('i', numPoints) + positions.tostring()
         # send message to viewer
@@ -482,7 +482,7 @@ class viewer:
 
 def _recv_from_socket(n, s):
     # receive n bytes from socket s
-    buf = ''
+    buf = b''
     while len(buf) < n:
         buf += s.recv(n - len(buf))
     return buf
@@ -619,7 +619,7 @@ def _construct_set_msg(prop_name, prop_value):
 
 def _pack_string(string):
     return struct.pack('Q', len(string)) + \
-        struct.pack(str(len(string)) + 's', string)
+        struct.pack(str(len(string)) + 's', string.encode('ascii'))
 
 
 def _init_color_maps():

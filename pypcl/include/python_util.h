@@ -135,10 +135,12 @@ bool CheckArrayScalar(PyObject* obj) { return PyArray_IsScalar(obj, Generic); }
 */
 bool CheckPyFloat(PyObject* obj) { return PyFloat_CheckExact(obj); }
 
+#if PY_MAJOR_VERSION < 3
 /**
   * Wraps macro PyInt_CheckExact into an actual function
 */
 bool CheckPyInt(PyObject* obj) { return PyInt_CheckExact(obj); }
+#endif
 
 /**
   * Wraps macro PyBool_Check into an actual function
@@ -197,6 +199,7 @@ void ExtractScalarFromPyFloat(std::vector<std::uint8_t>& scalar, int& type_num,
   *(double*)&scalar[0] = PyFloat_AS_DOUBLE(obj);
 }
 
+#if PY_MAJOR_VERSION < 3
 /**
   * Assumes obj is a Python int (i.e. PyInt_CheckExact(obj) == true)
 */
@@ -206,6 +209,7 @@ void ExtractScalarFromPyInt(std::vector<std::uint8_t>& scalar, int& type_num,
   scalar.resize(sizeof(long));
   *(long*)&scalar[0] = PyInt_AS_LONG(obj);
 }
+#endif
 
 /**
   * Assumes obj is a Python long (i.e. PyLong_CheckExact(obj) == true)
@@ -294,11 +298,13 @@ bool CheckAndExtractScalar(std::vector<uint8_t>& scalar, int& type_num,
   } else if (PyErr_Occurred())
     return false;
 
+#if PY_MAJOR_VERSION < 3
   if (CheckAndExtractScalar_<CheckPyInt, ExtractScalarFromPyInt>(
           scalar, type_num, obj)) {
     return true;
   } else if (PyErr_Occurred())
     return false;
+#endif
 
   if (CheckAndExtractScalar_<CheckPyBool, ExtractScalarFromPyBool>(
           scalar, type_num, obj)) {

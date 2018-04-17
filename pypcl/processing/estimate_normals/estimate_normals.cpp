@@ -201,7 +201,27 @@ static PyMethodDef methods[] = {
      METH_VARARGS | METH_KEYWORDS, estimate_normals_usage},
     {NULL, NULL, 0, NULL}};
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef module_def = {PyModuleDef_HEAD_INIT,
+                                        "estimate_normals",
+                                        NULL,
+                                        -1,
+                                        methods,
+                                        NULL,
+                                        NULL,
+                                        NULL,
+                                        NULL};
+
+PyMODINIT_FUNC PyInit_estimate_normals(void) {
+  PyObject* module = PyModule_Create(&module_def);
+#else
 PyMODINIT_FUNC initestimate_normals(void) {
   (void)Py_InitModule("estimate_normals", methods);
+#endif
+
   import_array();
+
+#if PY_MAJOR_VERSION >= 3
+  return module;
+#endif
 }

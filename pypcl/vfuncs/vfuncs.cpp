@@ -52,9 +52,11 @@ bool extract_scalar(ListItem& item, PyObject* obj) {
     if (PyFloat_CheckExact(obj)) {
       item.scalar = (float)PyFloat_AsDouble(obj);
       return true;
+#if PY_MAJOR_VERSION < 3
     } else if (PyInt_CheckExact(obj)) {
       item.scalar = (float)PyInt_AsLong(obj);
       return true;
+#endif
     } else if (PyLong_CheckExact(obj)) {
       item.scalar = (float)PyLong_AsLong(obj);
       return true;
@@ -318,9 +320,9 @@ static PyObject* reduction_op_single(PyObject* self, PyObject* args,
   }
   int axis;
   if (axis_obj != Py_None) {
-    PyObject* temp = PyNumber_Int(axis_obj);
+    PyObject* temp = PyNumber_Long(axis_obj);
     if (temp) {
-      axis = (int)PyInt_AsLong(temp);
+      axis = (int)PyLong_AsLong(temp);
       Py_DECREF(temp);
     } else {
       PyErr_Format(PyExc_TypeError,
@@ -420,9 +422,9 @@ static PyObject* reduction_op(PyObject* self, PyObject* args,
   }
   int axis;
   if (axis_obj != Py_None) {
-    PyObject* temp = PyNumber_Int(axis_obj);
+    PyObject* temp = PyNumber_Long(axis_obj);
     if (temp) {
-      axis = (int)PyInt_AsLong(temp);
+      axis = (int)PyLong_AsLong(temp);
       Py_DECREF(temp);
     } else {
       PyErr_Format(PyExc_TypeError,
@@ -942,7 +944,7 @@ bool extract_indices(vector<npy_intp>& indices, PyObject* obj,
                      "On %d-th item, "
                      "numpy array of %s's unsupported for indexing.",
                      (int)item_idx,
-                     PyArray_DESCR(arr)->typeobj->ob_type->tp_name);
+                     Py_TYPE(PyArray_DESCR(arr)->typeobj)->tp_name);
         return false;
       }
       return true;
@@ -973,10 +975,19 @@ bool check_indices(const vector<npy_intp>& indices, const npy_intp max_index,
   return true;
 }
 
+// In Python 3.2+, type of first argument of PySlice_GetIndicesEx changed from
+// PySliceObject to PyObject
+#if PY_VERSION_HEX >= 0x030200f0
+typedef PyObject PySliceObjectT;
+#else
+typedef PySliceObject PySliceObjectT;
+#endif
+
 void slice_rows(ListItem& item_struct, PySliceObject* slice) {
   // apply slice to rows of item_struct
   npy_intp start, stop, step, m_new;
-  PySlice_GetIndicesEx(slice, item_struct.m, &start, &stop, &step, &m_new);
+  PySlice_GetIndicesEx((PySliceObjectT*)slice, item_struct.m, &start, &stop,
+                       &step, &m_new);
   item_struct.data += start * item_struct.row_stride;
   item_struct.row_stride *= step;
   item_struct.m = m_new;
@@ -985,7 +996,8 @@ void slice_rows(ListItem& item_struct, PySliceObject* slice) {
 void slice_cols(ListItem& item_struct, PySliceObject* slice) {
   // apply slice to columns of item_struct
   npy_intp start, stop, step, n_new;
-  PySlice_GetIndicesEx(slice, item_struct.n, &start, &stop, &step, &n_new);
+  PySlice_GetIndicesEx((PySliceObjectT*)slice, item_struct.n, &start, &stop,
+                       &step, &n_new);
   item_struct.data += start * item_struct.col_stride;
   item_struct.col_stride *= step;
   item_struct.n = n_new;
@@ -1287,17 +1299,19 @@ static PyMethodDef method_table[] = {
     {"_mul", _mul, METH_VARARGS, "[x1*y1,...,xn*yn]<-[x1,...,xn]*[y1,...yn]"},
     {"_div", _div, METH_VARARGS, "[x1/y1,...,xn/yn]<-[x1,...,xn]/[y1,...yn]"},
     // functions instantiated from the reduction_op template
-    {"_sum", (PyCFunction)_sum, METH_KEYWORDS,
+    {"_sum", (PyCFunction)_sum, METH_VARARGS | METH_KEYWORDS,
      "[sum(x1),...,sum(xn)]<-sum([x1,...,xn])"},
-    {"_prod", (PyCFunction)_prod, METH_KEYWORDS, "product"},
-    {"_min", (PyCFunction)_min, METH_KEYWORDS, "min"},
-    {"_max", (PyCFunction)_max, METH_KEYWORDS, "max"},
-    {"_all", (PyCFunction)_all, METH_KEYWORDS, "all"},
-    {"_any", (PyCFunction)_any, METH_KEYWORDS, "any"},
-    {"_mean", (PyCFunction)_mean, METH_KEYWORDS,
+    {"_prod", (PyCFunction)_prod, METH_VARARGS | METH_KEYWORDS, "product" },
+    {"_min", (PyCFunction)_min, METH_VARARGS | METH_KEYWORDS, "min" },
+    {"_max", (PyCFunction)_max, METH_VARARGS | METH_KEYWORDS, "max" },
+    {"_all", (PyCFunction)_all, METH_VARARGS | METH_KEYWORDS, "all" },
+    {"_any", (PyCFunction)_any, METH_VARARGS | METH_KEYWORDS, "any" },
+    {"_mean", (PyCFunction)_mean, METH_VARARGS | METH_KEYWORDS,
      "[mean(x1),...,mean(xn)]<-mean([x1,...,xn])"},
-    {"_argmin", (PyCFunction)_argmin, METH_KEYWORDS, "minimizer index"},
-    {"_argmax", (PyCFunction)_argmax, METH_KEYWORDS, "maximizer index"},
+    {"_argmin", (PyCFunction)_argmin, METH_VARARGS | METH_KEYWORDS,
+     "minimizer index" },
+    {"_argmax", (PyCFunction)_argmax, METH_VARARGS | METH_KEYWORDS,
+     "maximizer index" },
     // not yet implemented
     {"_abs", _abs, METH_VARARGS, "absolute value"},
     {"_dot", _dot, METH_VARARGS, "matrix multiply"},
@@ -1311,22 +1325,46 @@ static PyMethodDef method_table[] = {
     {"_sdiv", _sdiv, METH_VARARGS, "[x1/y1,...,xn/yn]<-[x1,...,xn]/[y1,...yn]"},
 
     // functions instantiated from reduction_op_single
-    {"_ssum", (PyCFunction)_ssum, METH_KEYWORDS, "single sum"},
-    {"_sprod", (PyCFunction)_sprod, METH_KEYWORDS, "single prod"},
-    {"_smin", (PyCFunction)_smin, METH_KEYWORDS, "single min"},
-    {"_smax", (PyCFunction)_smax, METH_KEYWORDS, "single max"},
-    {"_sall", (PyCFunction)_sall, METH_KEYWORDS, "single all"},
-    {"_sany", (PyCFunction)_sany, METH_KEYWORDS, "single any"},
-    {"_smean", (PyCFunction)_smean, METH_KEYWORDS, "single mean"},
-    {"_sargmin", (PyCFunction)_sargmin, METH_KEYWORDS, "single argmin"},
-    {"_sargmax", (PyCFunction)_sargmax, METH_KEYWORDS, "single argmax"},
+    {"_ssum", (PyCFunction)_ssum, METH_VARARGS | METH_KEYWORDS, "single sum" },
+    {"_sprod", (PyCFunction)_sprod, METH_VARARGS | METH_KEYWORDS,
+     "single prod" },
+    {"_smin", (PyCFunction)_smin, METH_VARARGS | METH_KEYWORDS, "single min" },
+    {"_smax", (PyCFunction)_smax, METH_VARARGS | METH_KEYWORDS, "single max" },
+    {"_sall", (PyCFunction)_sall, METH_VARARGS | METH_KEYWORDS, "single all" },
+    {"_sany", (PyCFunction)_sany, METH_VARARGS | METH_KEYWORDS, "single any" },
+    {"_smean", (PyCFunction)_smean, METH_VARARGS | METH_KEYWORDS,
+     "single mean" },
+    {"_sargmin", (PyCFunction)_sargmin, METH_VARARGS | METH_KEYWORDS,
+     "single argmin" },
+    {"_sargmax", (PyCFunction)_sargmax, METH_VARARGS | METH_KEYWORDS,
+     "single argmax" },
     {"_sdot", _sdot, METH_VARARGS, "matrix multiply"},
     {"_stranspose", _stranspose, METH_VARARGS,
      "[x1.T,...,xn.T]<-[x1,...,xn].T"},
     {"_seigh", _seigh, METH_VARARGS, "single (eigenvalues, eigenvectors)"},
     {NULL, NULL, 0, NULL}};
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef module_def = {PyModuleDef_HEAD_INIT,
+                                        "vfuncs",
+                                        NULL,
+                                        -1,
+                                        method_table,
+                                        NULL,
+                                        NULL,
+                                        NULL,
+                                        NULL};
+
+PyMODINIT_FUNC PyInit_vfuncs(void) {
+  PyObject* module = PyModule_Create(&module_def);
+#else
 PyMODINIT_FUNC initvfuncs(void) {
   Py_InitModule("vfuncs", method_table);
+#endif
+
   import_array();
+
+#if PY_MAJOR_VERSION >= 3
+  return module;
+#endif
 }

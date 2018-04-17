@@ -2,7 +2,7 @@ import numpy
 import time
 import ctypes
 from ..kdtree import kdtree
-import expr
+from . import expr
 
 __all__ = [
     'Points',
@@ -148,7 +148,8 @@ class Points (numpy.ndarray):
 
         # note: None < x, for any number x
         build_time = None
-        if self._last_updated <= Points._last_modified[self._memloc]:
+        if self._last_updated is None \
+                or self._last_updated <= Points._last_modified[self._memloc]:
             # note: do not need to explicitly call __del__()
             # as it is automatically called when overwritten
             build_time = time.time()

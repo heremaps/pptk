@@ -31,15 +31,6 @@ class TestAdd(unittest.TestCase):
         for z in Z:
             self.assertTrue(z.tolist() == z_gt.tolist())
 
-        # add long
-        X = [1L]
-        Z = vfuncs._add(X, Y)
-        for z in Z:
-            self.assertTrue(z.tolist() == z_gt.tolist())
-        Z = vfuncs._add(Y, X)
-        for z in Z:
-            self.assertTrue(z.tolist() == z_gt.tolist())
-
         # add float
         X = [1.0]
         Z = vfuncs._add(X, Y)

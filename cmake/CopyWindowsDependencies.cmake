@@ -10,7 +10,7 @@ set(_copy_folder ${CMAKE_ARGV4})
 set(_dll_paths ${CMAKE_ARGV5})
 get_prerequisites(${_target_file} _prereqs 1 1 "" "${_dll_paths}")
 foreach(p ${_prereqs})
-  if(NOT (p STREQUAL "python27.dll"))
+  if(NOT (p MATCHES "python[0-9]*.dll"))
     gp_resolve_item("" ${p} "" "${_dll_paths}" src)
     set(dst ${_copy_folder})
     execute_process(COMMAND

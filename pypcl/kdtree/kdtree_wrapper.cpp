@@ -357,12 +357,33 @@ static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
 }
 
 static PyMethodDef methods_table[] = {
-    {"_build", (PyCFunction)Build, METH_KEYWORDS, "build k-d tree"},
-    {"_query", (PyCFunction)Query, METH_KEYWORDS,
+    {"_build", (PyCFunction)Build, METH_VARARGS | METH_KEYWORDS,
+     "build k-d tree"},
+    {"_query", (PyCFunction)Query, METH_VARARGS | METH_KEYWORDS,
      "performs either k-nearest or r-near"},
     {NULL, NULL, 0, NULL}};
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef module_def = {PyModuleDef_HEAD_INIT,
+                                        "kdtree",
+                                        NULL,
+                                        -1,
+                                        methods_table,
+                                        NULL,
+                                        NULL,
+                                        NULL,
+                                        NULL};
+
+PyMODINIT_FUNC PyInit_kdtree(void) {
+  PyObject* module = PyModule_Create(&module_def);
+#else
 PyMODINIT_FUNC initkdtree(void) {
   Py_InitModule("kdtree", methods_table);
+#endif
+
   import_array();
+
+#if PY_MAJOR_VERSION >= 3
+  return module;
+#endif
 }

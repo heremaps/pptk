@@ -415,8 +415,8 @@ class nbhds_op(expression):
     def _evaluate_chunk(self, index, size, use_cache=False):
         self.data._update_kd_tree()
         if self.queries is None:
-            nhbrs = kdtree._query(self.data._tree,
-                                  range(index, index + size), self.k, self.r)
+            indices = np.arange(index, index + size)
+            nhbrs = kdtree._query(self.data._tree, indices, self.k, self.r)
         else:
             nhbrs = kdtree._query(self.data._tree,
                                   self.queries[index:index + size],
