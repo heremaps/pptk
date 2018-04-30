@@ -41,19 +41,19 @@ function(copy_target_dependencies x)
       COMMAND ${CMAKE_COMMAND} -P
         ${PROJECT_SOURCE_DIR}/cmake/CopyWindowsDependencies.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/${_target_file_name}
-        ${PYPCL_LIBS_DIR} "${PYPCL_DLL_DIRS}")
+        ${PPTK_LIBS_DIR} "${PPTK_DLL_DIRS}")
   elseif(APPLE)
     add_custom_command(TARGET ${x} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -P
         ${PROJECT_SOURCE_DIR}/cmake/CopyAppleDependencies.cmake
-        ${CMAKE_CURRENT_BINARY_DIR}/${_target_file_name} ${PYPCL_LIBS_DIR})
+        ${CMAKE_CURRENT_BINARY_DIR}/${_target_file_name} ${PPTK_LIBS_DIR})
   elseif(UNIX)
     add_custom_command(TARGET ${x} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -P
         ${PROJECT_SOURCE_DIR}/cmake/CopyLinuxDependencies.cmake
         ${_target_file}
         ${CMAKE_CURRENT_BINARY_DIR}/${_target_file_name}
-        ${PYPCL_LIBS_DIR} ${PYPCL_PATCHELF})
+        ${PPTK_LIBS_DIR} ${PPTK_PATCHELF})
   endif()
 endfunction()
 

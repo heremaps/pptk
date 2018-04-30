@@ -20,20 +20,20 @@ class viewer:
         Examples:
             Create 100 random points
 
-            >>> xyz = pypcl.rand(100, 3)
+            >>> xyz = pptk.rand(100, 3)
 
             Visualize the points
 
-            >>> pypcl.viewer(xyz)
+            >>> pptk.viewer(xyz)
 
             Visualize points shaded by height
 
-            >>> pypcl.viewer(xyz, xyz[:, 2])
+            >>> pptk.viewer(xyz, xyz[:, 2])
 
             Visualize points shaded by random RGB color
 
-            >>> rgb = pypcl.rand(100, 3)
-            >>> pypcl.viewer(xyz, rgb)
+            >>> rgb = pptk.rand(100, 3)
+            >>> pptk.viewer(xyz, rgb)
 
         """
         # ensure positions is 3-column array of float32s
@@ -129,7 +129,7 @@ class viewer:
 
         Examples:
 
-            >>> v = pypcl.viewer(xyz)
+            >>> v = pptk.viewer(xyz)
             >>> v.set(point_size = 0.01)
 
         """
@@ -159,7 +159,7 @@ class viewer:
 
         Examples:
 
-            >>> v = pypcl.viewer(xyz)
+            >>> v = pptk.viewer(xyz)
             >>> v.get('selected')
 
         """
@@ -190,14 +190,14 @@ class viewer:
 
         Examples:
 
-        >>> xyz = pypcl.rand(100, 3)
-        >>> v = pypcl.viewer(xyz)
-        >>> attr1 = pypcl.rand(100)     # 100 random scalars
-        >>> attr2 = pypcl.rand(100, 3)  # 100 random RGB colors
-        >>> attr3 = pypcl.rand(100, 4)  # 100 random RGBA colors
-        >>> attr4 = pypcl.rand(1, 1)    # 1 random scalar
-        >>> attr5 = pypcl.rand(1, 3)    # 1 random RGB color
-        >>> attr6 = pypcl.rand(1, 4)    # 1 random RGBA color
+        >>> xyz = pptk.rand(100, 3)
+        >>> v = pptk.viewer(xyz)
+        >>> attr1 = pptk.rand(100)     # 100 random scalars
+        >>> attr2 = pptk.rand(100, 3)  # 100 random RGB colors
+        >>> attr3 = pptk.rand(100, 4)  # 100 random RGBA colors
+        >>> attr4 = pptk.rand(1, 1)    # 1 random scalar
+        >>> attr5 = pptk.rand(1, 3)    # 1 random RGB color
+        >>> attr6 = pptk.rand(1, 4)    # 1 random RGBA color
         >>> v.attributes(attr1, attr2, attr3, attr4, attr6)
 
         """
@@ -257,7 +257,7 @@ class viewer:
         Examples:
             >>> xyz = np.c_[np.arange(10), np.zeros(10), np.zeros(10)]
             >>> scalars = np.arange(10)
-            >>> v = pypcl.viewer(xyz, scalars)
+            >>> v = pptk.viewer(xyz, scalars)
             >>> v.color_map('cool', scale=[0, 5])
             >>> v.color_map([[0, 0, 0], [1, 1, 1]])
 
@@ -284,7 +284,7 @@ class viewer:
 
         Examples:
 
-        >>> v = pypcl.viewer(xyz)
+        >>> v = pptk.viewer(xyz)
         >>> v.capture('screenshot.png')
 
         """
@@ -344,17 +344,17 @@ class viewer:
 
         Args:
             folder: Folder to which images are saved
-            poses: Same as in :meth:`pypcl.viewer.play`
-            ts: Same as in :meth:`pypcl.viewer.play`
-            tlim: Same as in :meth:`pypcl.viewer.play`
-            interp: Same as in :meth:`pypcl.viewer.play`
+            poses: Same as in :meth:`pptk.viewer.play`
+            ts: Same as in :meth:`pptk.viewer.play`
+            tlim: Same as in :meth:`pptk.viewer.play`
+            interp: Same as in :meth:`pptk.viewer.play`
             fps: Frames per second
             prefix: Resulting image file names are prefixed with this string
             ext: Image format
 
         Examples:
 
-            Assuming poses defined as in the example for :meth:pypcl.viewer.play
+            Assuming poses defined as in the example for :meth:pptk.viewer.play
 
             >>> mkdir 'recording'
             >>> v.record('recording', poses)
@@ -406,7 +406,7 @@ class viewer:
 
         Examples:
 
-            >>> v = pypcl.viewer(xyz)
+            >>> v = pptk.viewer(xyz)
             >>> v.wait()
 
         Press enter in viewer to return control to python terminal.

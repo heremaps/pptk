@@ -8,7 +8,7 @@ function(copy_system_file x)
   copy_file(${temp} _target)
   if(UNIX AND NOT APPLE)
     add_custom_command(TARGET ${_target} POST_BUILD COMMAND
-      ${PYPCL_PATCHELF} --set-rpath \\\$\$ORIGIN
+      ${PPTK_PATCHELF} --set-rpath \\\$\$ORIGIN
       ${CMAKE_CURRENT_BINARY_DIR}/${x})
   endif()
   unset(temp CACHE)
@@ -20,7 +20,7 @@ function(copy_import_target x)
   copy_file(${_file_path} _target)
   if(UNIX AND NOT APPLE)
     add_custom_command(TARGET ${_target} POST_BUILD COMMAND
-      ${PYPCL_PATCHELF} --set-rpath \\\$\$ORIGIN
+      ${PPTK_PATCHELF} --set-rpath \\\$\$ORIGIN
       ${CMAKE_CURRENT_BINARY_DIR}/${_file_name})
   endif()
 endfunction()
@@ -33,7 +33,7 @@ if (WIN32)
   endforeach()
 elseif (APPLE)
 elseif (UNIX)
-  # create local copies of system libraries that are required by pypcl targets
+  # create local copies of system libraries that are required by pptk targets
   # but not provided by a bare bone manylinux1 platform, as specified in PEP 513
   if (CMAKE_LIBRARY_ARCHITECTURE)
     set(_paths

@@ -1,50 +1,50 @@
 import unittest
-import pypcl
+import pptk
 import numpy
 
 
 class TestPointsCreation(unittest.TestCase):
 
     def test_one_point_a(self):
-        P = pypcl.points([1, 2, 3])
-        self.assertTrue(type(P) == pypcl.Points)
+        P = pptk.points([1, 2, 3])
+        self.assertTrue(type(P) == pptk.Points)
         self.assertTrue(P.dtype == 'int')
         self.assertTrue(P.shape == (3, ))
         self.assertTrue(P.tolist() == [1, 2, 3])
 
     def test_two_points(self):
-        P = pypcl.points([[1, 2, 3], [2, 3, 4]])
-        self.assertTrue(type(P) == pypcl.Points)
+        P = pptk.points([[1, 2, 3], [2, 3, 4]])
+        self.assertTrue(type(P) == pptk.Points)
         self.assertTrue(P.dtype == 'int')
         self.assertTrue(P.shape == (2, 3))
         self.assertTrue(P.tolist() == [[1, 2, 3], [2, 3, 4]])
 
     def test_zeros(self):
-        P = pypcl.zeros((10, 3))
-        self.assertTrue(type(P) == pypcl.Points)
+        P = pptk.zeros((10, 3))
+        self.assertTrue(type(P) == pptk.Points)
         self.assertTrue(P.dtype == 'float64')
         self.assertTrue(P.shape == (10, 3))
         self.assertTrue(numpy.all(P == 0))
 
     def test_rand(self):
-        P = pypcl.rand(10, 3)
-        self.assertTrue(type(P) == pypcl.Points)
+        P = pptk.rand(10, 3)
+        self.assertTrue(type(P) == pptk.Points)
         self.assertTrue(P.dtype == 'float64')
         self.assertTrue(P.shape == (10, 3))
 
     def test_empty(self):
-        P = pypcl.empty((10, 3))
-        self.assertTrue(type(P) == pypcl.Points)
+        P = pptk.empty((10, 3))
+        self.assertTrue(type(P) == pptk.Points)
         self.assertTrue(P.dtype == 'float64')
         self.assertTrue(P.shape == (10, 3))
 
     def test_view(self):
         M = numpy.matrix('1,2,3')
         with self.assertRaises(TypeError):
-            M.view(pypcl.Points)
-        P = pypcl.points([1, 2, 3])
+            M.view(pptk.Points)
+        P = pptk.points([1, 2, 3])
         Q = P.view()
-        self.assertTrue(type(Q) == pypcl.Points)
+        self.assertTrue(type(Q) == pptk.Points)
         self.assertTrue(Q.dtype == 'int')
         self.assertTrue(Q.shape == (3, ))
         self.assertTrue(Q.tolist() == [1, 2, 3])
@@ -53,9 +53,9 @@ class TestPointsCreation(unittest.TestCase):
         X = numpy.ndarray(shape=(4, 5), dtype='float32')
         X[:] = 1
         with self.assertRaises(TypeError):
-            pypcl.points(X, copy=False)
-        P = pypcl.points(X)
-        self.assertTrue(type(P) == pypcl.Points)
+            pptk.points(X, copy=False)
+        P = pptk.points(X)
+        self.assertTrue(type(P) == pptk.Points)
         self.assertTrue(P.dtype == 'float32')
         self.assertTrue(P.shape == (4, 5))
         self.assertTrue(P.tolist() == X.tolist())
@@ -65,9 +65,9 @@ class TestPointsCreation(unittest.TestCase):
     def test_copy_from_matrix(self):
         X = numpy.matrix('1,2;2,3', dtype='float32')
         with self.assertRaises(TypeError):
-            pypcl.points(X, copy=False)
-        P = pypcl.points(X)
-        self.assertTrue(type(P) == pypcl.Points)
+            pptk.points(X, copy=False)
+        P = pptk.points(X)
+        self.assertTrue(type(P) == pptk.Points)
         self.assertTrue(P.dtype == 'float32')
         self.assertTrue(P.shape == (2, 2))
         self.assertTrue(P.tolist() == X.tolist())
@@ -79,20 +79,20 @@ class TestIndexing(unittest.TestCase):
 
     def setUp(self):
         P = numpy.array([[1, 2, 3], [2, 3, 4]], dtype=numpy.float32)
-        self.P = pypcl.Points(shape=P.shape, dtype=P.dtype)
+        self.P = pptk.Points(shape=P.shape, dtype=P.dtype)
         self.P[:] = P
         P = self.P.copy()
         self.Q = P.view()
 
     def test_get_row(self):
         x = self.P[0]
-        self.assertTrue(type(x) == pypcl.Points)
+        self.assertTrue(type(x) == pptk.Points)
         self.assertTrue(x.shape == (3, ))
         self.assertTrue(x.tolist() == [1, 2, 3])
 
     def test_get_item(self):
         x = self.P[0:2, 0]
-        self.assertTrue(type(x) == pypcl.Points)
+        self.assertTrue(type(x) == pptk.Points)
         self.assertTrue(x.shape == (2, ))
         self.assertTrue(x.tolist() == [1, 2])
 
@@ -174,7 +174,7 @@ class TestIndexing(unittest.TestCase):
         X = numpy.multiply(self.P[0], self.P[1])
         self.assertTrue(X.tolist() == [2, 6, 12])
 
-        P = pypcl.empty((2, 3))
+        P = pptk.empty((2, 3))
         P[:] = [[1, 2, 3], [2, 3, 4]]
         X = P[0] + P[1]
         self.assertTrue(X.tolist() == [3, 5, 7])
@@ -192,7 +192,7 @@ class TestIndexing(unittest.TestCase):
 class TestOperations(unittest.TestCase):
     def setUp(self):
         P = numpy.array([[1, 2, 3], [2, 3, 4]])
-        self.P = pypcl.Points(shape=P.shape, dtype=P.dtype)
+        self.P = pptk.Points(shape=P.shape, dtype=P.dtype)
         self.P[:] = P
 
     def test_mul(self):
@@ -205,7 +205,7 @@ class TestOperations(unittest.TestCase):
 class TestWriteLocking(unittest.TestCase):
     def setUp(self):
         P = numpy.array([[1, 2, 3], [2, 3, 4]])
-        self.P = pypcl.Points(shape=P.shape, dtype=P.dtype)
+        self.P = pptk.Points(shape=P.shape, dtype=P.dtype)
         self.P[:] = P
 
     def test_view(self):
@@ -229,38 +229,38 @@ class TestUpdateSystem(unittest.TestCase):
     def setUp(self):
         P = numpy.array([[1, 2, 3], [2, 3, 4]])
         Q = numpy.array([[0, 0, 0]])
-        self.P = pypcl.Points(shape=P.shape, dtype=P.dtype)
+        self.P = pptk.Points(shape=P.shape, dtype=P.dtype)
         self.P[:] = P
-        self.Q = pypcl.Points(shape=Q.shape, dtype=Q.dtype)
+        self.Q = pptk.Points(shape=Q.shape, dtype=Q.dtype)
         self.Q[:] = Q
-        pypcl.Points._last_modified.clear()
+        pptk.Points._last_modified.clear()
 
     def test_reset(self):
-        pypcl.Points._last_modified.clear()
+        pptk.Points._last_modified.clear()
         self.assertTrue(
-            pypcl.Points._last_modified.get(self.P._memloc) is None)
+            pptk.Points._last_modified.get(self.P._memloc) is None)
         self.assertTrue(self.P._last_updated is None)
 
     def test_modify_then_query(self):
         self.P[0, 0] = 6
         self.assertTrue(
-            pypcl.Points._last_modified.get(self.P._memloc) is not None)
+            pptk.Points._last_modified.get(self.P._memloc) is not None)
         self.assertTrue(self.P._last_updated is None)
 
         [x for x in self.P.NBHDS(self.Q, k=1)]
         self.assertTrue(self.P._last_updated is not None)
         self.assertFalse(
             self.P._last_updated
-            < pypcl.Points._last_modified.get(self.P._memloc))
+            < pptk.Points._last_modified.get(self.P._memloc))
 
     def test_directly_query(self):
         [x for x in self.P.NBHDS(self.Q, k=1)]
         self.assertTrue(
-            pypcl.Points._last_modified.get(self.P._memloc) is not None)
+            pptk.Points._last_modified.get(self.P._memloc) is not None)
         self.assertTrue(self.P._last_updated is not None)
         self.assertFalse(
             self.P._last_updated
-            < pypcl.Points._last_modified.get(self.P._memloc))
+            < pptk.Points._last_modified.get(self.P._memloc))
 
     def test_create_view(self):
         X = self.P[:, 1:]
@@ -283,18 +283,18 @@ class TestQueries(unittest.TestCase):
         numpy.random.seed(0)
         P = numpy.random.rand(100, 3)
         Q = numpy.random.rand(5, 3)
-        self.P = pypcl.Points(shape=P.shape, dtype=P.dtype)
+        self.P = pptk.Points(shape=P.shape, dtype=P.dtype)
         self.P[:] = P
-        self.Q = pypcl.Points(shape=Q.shape, dtype=Q.dtype)
+        self.Q = pptk.Points(shape=Q.shape, dtype=Q.dtype)
         self.Q[:] = Q
 
     def test_check_inputs(self):
         with self.assertRaises(Exception):
-            self.P.nbhds(pypcl.zeros(0, 2), k=1)
+            self.P.nbhds(pptk.zeros(0, 2), k=1)
         with self.assertRaises(Exception):
-            self.P.nbhds(pypcl.zeros(0, 3), k='a')
+            self.P.nbhds(pptk.zeros(0, 3), k='a')
         with self.assertRaises(Exception):
-            self.P.nbhds(pypcl.zeros(0, 3), r='a')
+            self.P.nbhds(pptk.zeros(0, 3), r='a')
 
     def test_knearest(self):
         k = 10

@@ -43,7 +43,7 @@ def make_exe(x):
 
 
 def list_libs():
-    libs_dir = os.path.join('pypcl', 'libs')
+    libs_dir = os.path.join('pptk', 'libs')
     exclude_list = ['Makefile', 'cmake_install.cmake']
     return [f for f in os.listdir(libs_dir)
             if os.path.isfile(os.path.join(libs_dir, f))
@@ -51,23 +51,23 @@ def list_libs():
 
 
 setup(
-    name='pypcl',
+    name='pptk',
     version='0.1.0',
     description='A Python package for facilitating point cloud processing.',
     author='Victor Lu',
     packages=find_packages(),
     package_data={
-        'pypcl': [
+        'pptk': [
             os.path.join('libs', f) for f in list_libs()] + [
             os.path.join('libs',
                          'qt_plugins', 'platforms', make_lib('*', '*')),
             os.path.join('libs',
                          'qt_plugins', 'xcbglintegrations', make_lib('*', '*'))
             ],
-        'pypcl.kdtree': [make_mod('kdtree')],
-        'pypcl.processing.estimate_normals': [make_mod('estimate_normals')],
-        'pypcl.vfuncs': [make_mod('vfuncs')],
-        'pypcl.viewer': [make_exe('viewer'), 'qt.conf']},
+        'pptk.kdtree': [make_mod('kdtree')],
+        'pptk.processing.estimate_normals': [make_mod('estimate_normals')],
+        'pptk.vfuncs': [make_mod('vfuncs')],
+        'pptk.viewer': [make_exe('viewer'), 'qt.conf']},
     options={'bdist_wheel': {
         'python_tag': wheel_tags[0],
         'plat_name': wheel_tags[2]}})

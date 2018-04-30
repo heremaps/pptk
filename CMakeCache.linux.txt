@@ -6,4 +6,4 @@ TBB_tbb_LIBRARY:FILEPATH=/home/victlu/Sources/tbb2018_20170919oss/lib/intel64/gc
 TBB_tbb_RUNTIME:FILEPATH=/home/victlu/Sources/tbb2018_20170919oss/lib/intel64/gcc4.7/libtbb.so
 TBB_tbbmalloc_LIBRARY:FILEPATH=/home/victlu/Sources/tbb2018_20170919oss/lib/intel64/gcc4.7/libtbbmalloc.so
 TBB_tbbmalloc_RUNTIME:FILEPATH=/home/victlu/Sources/tbb2018_20170919oss/lib/intel64/gcc4.7/libtbbmalloc.so
-PYPCL_PATCHELF:FILEPATH=/home/victlu/Sources/install/bin/patchelf
+PPTK_PATCHELF:FILEPATH=/home/victlu/Sources/install/bin/patchelf

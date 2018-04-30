@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pypcl.vfuncs import vfuncs
+from pptk.vfuncs import vfuncs
 
 
 class TestAdd(unittest.TestCase):
