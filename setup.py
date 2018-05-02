@@ -55,6 +55,12 @@ setup(
     version='0.1.0',
     description='A Python package for facilitating point cloud processing.',
     author='Victor Lu',
+    classifiers=[
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering',
+        'License :: OSI Approved :: MIT License'],
+    license='MIT',
+    requires=['numpy'],
     packages=find_packages(),
     package_data={
         'pptk': [
