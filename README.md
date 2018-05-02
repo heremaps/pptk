@@ -63,8 +63,8 @@ of these libraries may also work.
 >> mkdir <build_folder>
 ```
 
-2. Create an initial CMakeCache.txt under <build_folder>, specifying in it
-library paths on the build platform (see CMakeFiles.win.txt for an example)
+2. Create an initial CMakeCache.txt under <build_folder> and use it to provide
+values for the CMake cache variables listed above. (e.g. see CMakeCache.win.txt)
 
 3. Type the following...
 
