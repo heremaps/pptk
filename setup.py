@@ -60,7 +60,9 @@ setup(
         'Topic :: Scientific/Engineering',
         'License :: OSI Approved :: MIT License'],
     license='MIT',
-    requires=['numpy'],
+    install_requires=['numpy'],
+    project_urls={
+        'Source': 'https://github.com/heremaps/pptk'},
     packages=find_packages(),
     package_data={
         'pptk': [
