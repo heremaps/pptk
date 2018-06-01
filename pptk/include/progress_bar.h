@@ -30,6 +30,7 @@ class ProgressBar {
 
   std::string get_string() const {
     float p = (float)curr_iter_ / num_iters_;
+    if (num_iters_ == 0) p = 1.0f;
     int n = std::max(0, std::min(len_, (int)(p * len_)));
     if (curr_iter_ == num_iters_) n = len_;
     std::stringstream ss;
