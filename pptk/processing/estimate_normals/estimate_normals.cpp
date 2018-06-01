@@ -173,7 +173,7 @@ static char estimate_normals_usage[] =
     "based on the local neighborhoods of each point.\n"
     "\n"
     ".. math::\n"
-    "   C = \\sum_{i=1}^{N}{(p_i-\\mu)(p_i-\\mu)^T}\n"
+    "   C = \\frac{1}{N}\\sum_{i=1}^{N}{(p_i-\\mu)(p_i-\\mu)^T}\n"
     "where :math:`p_1 ... p_N` are the points in a given neighborhood and\n"
     ":math:`\\mu` is the centroid of the points.\n"
     "\n"
