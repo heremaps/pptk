@@ -51,4 +51,6 @@ set(CMAKE_INSTALL_OPENMP_LIBRARIES TRUE)  # requires cmake 3.1
 include(InstallRequiredSystemLibraries)
 
 copy_file(setup.py)
+copy_file(LICENSE)
 add_subdirectory(pptk)
+add_subdirectory(licenses)

@@ -12,6 +12,13 @@ wheel_tags = wheel.pep425tags.get_supported()[0]
 
 system_type = platform.system()
 
+license_text = ''
+with open('LICENSE', 'rb') as fd:
+    license_text += fd.read()
+with open(os.path.join('licenses', 'LICENSE.append.txt'), 'rb') as fd:
+    license_text += fd.read()
+with open(os.path.join('pptk', 'LICENSE'), 'wb') as fd:
+    fd.write(license_text)
 
 def make_mod(x):
     if system_type == 'Windows':
@@ -67,6 +74,7 @@ setup(
     package_data={
         'pptk': [
             os.path.join('libs', f) for f in list_libs()] + [
+            'LICENSE',
             os.path.join('libs',
                          'qt_plugins', 'platforms', make_lib('*', '*')),
             os.path.join('libs',
