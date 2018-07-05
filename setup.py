@@ -12,11 +12,11 @@ wheel_tags = wheel.pep425tags.get_supported()[0]
 
 system_type = platform.system()
 
-license_text = ''
+license_text = b''
 with open('LICENSE', 'rb') as fd:
-    license_text += fd.read()
+    license_text = license_text + fd.read()
 with open(os.path.join('licenses', 'LICENSE.append.txt'), 'rb') as fd:
-    license_text += fd.read()
+    license_text = license_text + fd.read()
 with open(os.path.join('pptk', 'LICENSE'), 'wb') as fd:
     fd.write(license_text)
 
