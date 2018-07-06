@@ -8,18 +8,32 @@ class TestEstimateNormals(unittest.TestCase):
         np.random.seed(0)
         x = pptk.rand(100, 3)
 
-        pptk.estimate_normals(x, 5, 0.2)
-        pptk.estimate_normals(x, 5, 0.2, output_eigenvalues=True)
-        pptk.estimate_normals(x, 5, 0.2, output_all_eigenvectors=True)
-        pptk.estimate_normals(x, 5, 0.2, output_eigenvalues=True,
-                               output_all_eigenvectors=True)
+        pptk.estimate_normals(x, 5, 0.2,
+                              verbose=False)
+        pptk.estimate_normals(x, 5, 0.2,
+                              output_eigenvalues=True,
+                              verbose=False)
+        pptk.estimate_normals(x, 5, 0.2,
+                              output_all_eigenvectors=True,
+                              verbose=False)
+        pptk.estimate_normals(x, 5, 0.2,
+                              output_eigenvalues=True,
+                              output_all_eigenvectors=True,
+                              verbose=False)
 
         x = np.float32(x)
-        pptk.estimate_normals(x, 5, 0.2)
-        pptk.estimate_normals(x, 5, 0.2, output_eigenvalues=True)
-        pptk.estimate_normals(x, 5, 0.2, output_all_eigenvectors=True)
-        pptk.estimate_normals(x, 5, 0.2, output_eigenvalues=True,
-                               output_all_eigenvectors=True)
+        pptk.estimate_normals(x, 5, 0.2,
+                              verbose=False)
+        pptk.estimate_normals(x, 5, 0.2,
+                              output_eigenvalues=True,
+                              verbose=False)
+        pptk.estimate_normals(x, 5, 0.2,
+                              output_all_eigenvectors=True,
+                              verbose=False)
+        pptk.estimate_normals(x, 5, 0.2,
+                              output_eigenvalues=True,
+                              output_all_eigenvectors=True,
+                              verbose=False)
 
     def test_output_types(self):
         # test all 8 combinations of output_* switches

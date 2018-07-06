@@ -9,6 +9,7 @@
 #include "kdtree.h"
 #include "progress_bar.h"
 #include "python_util.h"
+#include "timer.h"
 
 using namespace Eigen;
 using namespace std;
@@ -18,12 +19,25 @@ void estimate_normals(vector<T>* eigenvectors, vector<T>* eigenvalues,
                       vector<int>* neighborhood_sizes, const vector<T>& points,
                       const std::size_t k, const T d_max,
                       const std::vector<int>* subsample_indices,
-                      int num_eigen = 1, bool verbose = true) {
+                      int num_eigen = 1, bool verbose = true,
+                      int num_procs = -1) {
   size_t num_points = points.size() / 3;
   Map<const Matrix<T, Dynamic, 3, RowMajor> > P(&points[0], num_points, 3);
 
+  if (num_procs < 0) num_procs = omp_get_num_procs();
+  if (verbose)
+    cout << "(estimate_normals) using " << num_procs << " threads" << endl;
+
   // organize points into k-d tree
-  pointkd::KdTree<T, 3> tree(points);
+  pointkd::BuildParams build_params;
+  build_params.num_proc = num_procs;
+  double build_time = getTime();
+  pointkd::KdTree<T, 3> tree(points, build_params);
+  build_time = getTime() - build_time;
+  if (verbose) {
+    cout << "(estimate_normals) ";
+    cout << "k-d tree build time (s): " << build_time << endl;
+  }
 
   int num_normals = num_points;
   if (subsample_indices != NULL)
@@ -34,15 +48,18 @@ void estimate_normals(vector<T>* eigenvectors, vector<T>* eigenvalues,
   if (eigenvalues) eigenvalues->resize(num_normals * num_eigen);
   if (neighborhood_sizes) neighborhood_sizes->resize(num_normals);
 
-  int num_procs = omp_get_num_procs();
+  tbb::task_scheduler_init(1);  // use just 1 thread for k-d tree queries
   omp_set_num_threads(num_procs);
+
   if (verbose) {
-    cout << "Estimating normals with " << num_procs << " threads." << endl;
+    cout << "(estimate_normals) neighborhood parameters: " << endl;
     cout << "  k = " << k << endl;
     cout << "  r = " << d_max << endl;
   }
 
   ProgressBar<int> bar((int)num_normals);
+
+  double pca_time = getTime();
 
 #pragma omp parallel for schedule(static, 1000)
   for (int i = 0; i < (int)num_normals; i++) {
@@ -93,9 +110,12 @@ void estimate_normals(vector<T>* eigenvectors, vector<T>* eigenvalues,
       (*neighborhood_sizes)[i] = indices.size();
   }
 
+  pca_time = getTime() - pca_time;
+
   if (verbose) {
     bar.update((int)num_normals);
     cout << "\r" << bar.get_string() << endl;
+    cout << "(estimate_normals) PCA time (s): " << pca_time << std::endl;
   }
 }
 
@@ -117,7 +137,8 @@ void estimate_normals(PyObject*& out1, PyObject*& out2, PyObject*& out3,
                       const Array2D& arr, int k, float r,
                       std::vector<int>* ptr_subsample_indices,
                       bool output_eigenvalues, bool output_all_eigenvectors,
-                      bool output_neighborhood_sizes, bool verbose) {
+                      bool output_neighborhood_sizes, bool verbose,
+                      int num_procs) {
   vector<T> points;
   VectorFromArray2D(points, arr);
 
@@ -152,8 +173,8 @@ void estimate_normals(PyObject*& out1, PyObject*& out2, PyObject*& out3,
   vector<int> nbhd_sizes;
   estimate_normals<T>(&evecs, output_eigenvalues == 1 ? &evals : NULL,
                       output_neighborhood_sizes == 1 ? &nbhd_sizes : NULL,
-                      points, k, r, ptr_subsample_indices, num_eigen,
-                      (bool)verbose);
+                      points, k, r, ptr_subsample_indices, num_eigen, verbose,
+                      num_procs);
   out1 = PyArray_EMPTY(out1_ndim, out1_dims, typenum, false);
   copy(evecs.begin(), evecs.end(), (T*)PyArray_DATA((PyArrayObject*)out1));
   if (output_eigenvalues) {
@@ -195,6 +216,7 @@ static char estimate_normals_usage[] =
     "output_all_eigenvectors : bool, optional (default: False)\n"
     "output_neighborhood_sizes : bool, optional (default: False)\n"
     "verbose : bool (default: True)\n"
+    "num_procs : int (default: use all processors)\n"
     "\n"
     "Returns\n"
     "-------\n"
@@ -231,13 +253,16 @@ static PyObject* estimate_normals_wrapper(PyObject* self, PyObject* args,
   int output_all_eigenvectors = 0;
   int output_neighborhood_sizes = 0;
   int verbose = 1;
+  int num_procs = -1;
   static char* keywords[] = {
       "points", "k", "r", "subsample", "output_eigenvalues",
-      "output_all_eigenvectors", "output_neighborhood_sizes", "verbose", NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oif|Oiiii", keywords, &p, &k,
+      "output_all_eigenvectors", "output_neighborhood_sizes", "verbose",
+      "num_procs", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oif|Oiiiii", keywords, &p, &k,
                                    &r, &subsample, &output_eigenvalues,
                                    &output_all_eigenvectors,
-                                   &output_neighborhood_sizes, &verbose)) {
+                                   &output_neighborhood_sizes, &verbose,
+                                   &num_procs)) {
     PyErr_SetString(PyExc_RuntimeError, "Failed to parse inputs");
     return NULL;
   }
@@ -282,12 +307,14 @@ static PyObject* estimate_normals_wrapper(PyObject* self, PyObject* args,
     estimate_normals<float>(out1, out2, out3, arr, k, r, ptr_subsample_indices,
                             (bool)output_eigenvalues,
                             (bool)output_all_eigenvectors,
-                            (bool)output_neighborhood_sizes, (bool)verbose);
+                            (bool)output_neighborhood_sizes, (bool)verbose,
+                            num_procs);
   } else if (arr.type_num == NPY_FLOAT64) {
     estimate_normals<double>(out1, out2, out3, arr, k, r, ptr_subsample_indices,
                              (bool)output_eigenvalues,
                              (bool)output_all_eigenvectors,
-                             (bool)output_neighborhood_sizes, (bool)verbose);
+                             (bool)output_neighborhood_sizes, (bool)verbose,
+                             num_procs);
   } else {
     PyErr_SetString(PyExc_TypeError, "points must be float32 or float64");
     return NULL;
