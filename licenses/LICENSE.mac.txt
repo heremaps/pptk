@@ -9,19 +9,19 @@ Files: QtCore, QtGui, QtNetwork, QtOpenGL, QtPrintSupport, QtWidgets,
        libqcocoa.dylib
 Description: Bundled as dynamically linked library
 Availability: https://www.qt.io/
-License: LGPL v3
+SPDX-License-Identifier: LGPL-3.0-or-later
 
 Name: Intel Threading Building Blocks 2017 Update 5
 Files: libtbb.dylib, libtbbmalloc.dylib
 Description: Bundled as dynamically linked library
 Availability: https://www.threadingbuildingblocks.org/
-License: Apache 2.0
+SPDX-License-Identifier: Apache-2.0
 
 Name: GCC runtime library
 Files: libgcc_s.1.dylib, libgomp.1.dylib, libstdc++.6.dylib
 Descriptions: Bundled as dynamically linked library
 Availability: https://gcc.gnu.org/
-License: GPL v3 + runtime exception
+SPDX-License-Identifier: GPL-3.0-with-GCC-exception
 
 ----
 

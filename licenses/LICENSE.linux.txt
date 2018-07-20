@@ -11,19 +11,19 @@ Files: libicudata.so.56, libicui18n.so.56, libicuuc.so.56, libQt5Core.so.5,
        libqxcb-glx-integration.so
 Description: Bundled as dynamically linked library
 Availability: https://www.qt.io/
-License: LGPL v3
+SPDX-License-Identifier: LGPL-3.0-or-later
 
 Name: Intel Threading Building Blocks 4.3 Update 2
 Files: libtbb.so.2, libtbbmalloc.so.2
 Description: Bundled as dynamically linked library
 Availability: https://www.threadingbuildingblocks.org/
-License: Apache 2.0
+SPDX-License-Identifier: Apache-2.0
 
 Name: zlib
 Files: zlib.so.1
 Description: Bundled as dynamically linked library
 Availability: zlib.net
-License: zlib license
+SPDX-License-Identifier: Zlib
 
 ----
 

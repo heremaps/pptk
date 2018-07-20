@@ -1,6 +1,6 @@
 # pptk - Point Processing Toolkit
 
-Copyright (c) 2011-2017 HERE Europe B.V.
+Copyright (C) 2011-2017 HERE Europe B.V.
 
 pptk is a Python package for facilitating point cloud processing in Python.
 

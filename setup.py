@@ -61,7 +61,7 @@ setup(
     name='pptk',
     version='0.1.0',
     description='A Python package for facilitating point cloud processing.',
-    author='Victor Lu',
+    author='HERE Europe B.V.',
     classifiers=[
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering',

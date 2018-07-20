@@ -9,13 +9,13 @@ Files: icudt53.dll, icuin53.dll, icuuc53.dll, Qt5Core.dll, Qt5Gui.dll,
        Qt5Network.dll, Qt5Widgets.dll, qwindows.dll
 Description: Bundled as dynamically linked library
 Availability: https://www.qt.io/
-License: LGPL v3
+SPDX-License-Identifier: LGPL-3.0-or-later
 
 Name: Intel Threading Building Blocks 4.3 Update 2
 Files: tbb.dll, tbbmalloc.dll
 Description: Bundled as dynamically linked library
 Availability: https://www.threadingbuildingblocks.org/
-License: Apache 2.0
+SPDX-License-Identifier: Apache-2.0
 
 Name: Visual C++ runtime libraries
 Files: msvcp120.dll, msvcr120.dll, vcomp120.dll
