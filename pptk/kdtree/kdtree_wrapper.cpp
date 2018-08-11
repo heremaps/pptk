@@ -257,6 +257,27 @@ class QueryTreeAction {
   PyObject* results_;
 };
 
+static char kdtree_build_usage[] =
+    "Builds k-d tree.\n"
+    "\n"
+    "Parameters\n"
+    "----------\n"
+    "points : n x k numpy array\n"
+    "    Currently supports any numeric type and any k in [2, 4].\n"
+    "numprocs : int, optional\n"
+    "    Default: use all processors.\n"
+    "maxleafsize : int, optional\n"
+    "    Leaf nodes have at most this many points. Default: 10.\n"
+    "emptysplit : float, optional\n"
+    "    Empty splits are performed for gap ratios greater than this value.\n"
+    "    Default: 0.2\n"
+    "\n"
+    "Returns\n"
+    "-------\n"
+    "tree : capsule object\n"
+    "    This object is meant to be passed into the kdtree._query method.\n"
+    "\n";
+
 static PyObject* Build(PyObject* self, PyObject* args, PyObject* kwargs) {
   static char* keywords[] = {(char*)"data", (char*)"numprocs",
                              (char*)"maxleafsize", (char*)"emptysplit", NULL};
@@ -281,6 +302,40 @@ static PyObject* Build(PyObject* self, PyObject* args, PyObject* kwargs) {
     return NULL;
   }
 }
+
+static char kdtree_query_usage[] =
+    "Query k-d tree for nearest neighbors.\n"
+    "\n"
+    "Query points can be specified by one of the following ways\n"
+    "(n is the number of points in the k-d tree and m the number of queries):\n"
+    "\n"
+    "    1. k-d points\n"
+    "       (m x k numpy array)\n"
+    "    2. integer indices\n"
+    "       (list or numpy array of m integers; negative integers supported)\n"
+    "    3. boolean selection mask on the n points used to build the k-d tree\n"
+    "       (numpy array of n bools)\n"
+    "\n"
+    "For each query point, this function returns up to k nearest neighbors\n"
+    "that have distances strictly less than dmax from the query point.\n"
+    "\n"
+    "Parameters\n"
+    "----------\n"
+    "tree : capsule object\n"
+    "    A k-d tree as produced by kdtree._build.\n"
+    "queries : numpy array\n"
+    "    Specify query points by one of the ways above.\n"
+    "k : int, optional\n"
+    "    Default: 1\n"
+    "dmax : float or double, optional\n"
+    "    Default: inf\n"
+    "numprocs : int, optional\n"
+    "    Default: use all processors.\n"
+    "\n"
+    "Returns\n"
+    "-------\n"
+    "results: list of m numpy arrays of integer indices\n"
+    "\n";
 
 static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
   const float flt_infinity = numeric_limits<float>::infinity();
@@ -358,9 +413,9 @@ static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
 
 static PyMethodDef methods_table[] = {
     {"_build", (PyCFunction)Build, METH_VARARGS | METH_KEYWORDS,
-     "build k-d tree"},
+     kdtree_build_usage},
     {"_query", (PyCFunction)Query, METH_VARARGS | METH_KEYWORDS,
-     "performs either k-nearest or r-near"},
+     kdtree_query_usage},
     {NULL, NULL, 0, NULL}};
 
 #if PY_MAJOR_VERSION >= 3

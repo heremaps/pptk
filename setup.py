@@ -59,7 +59,7 @@ def list_libs():
 
 setup(
     name='pptk',
-    version='0.1.0',
+    version='0.1.1',
     description='A Python package for facilitating point cloud processing.',
     author='HERE Europe B.V.',
     classifiers=[
