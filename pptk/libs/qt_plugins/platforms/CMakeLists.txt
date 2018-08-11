@@ -1,7 +1,0 @@
-if(WIN32)
-  copy_file_with_dependencies(${Qt5_PLUGINS_DIR}/platforms/qwindows.dll)
-elseif (APPLE)
-  copy_file_with_dependencies(${Qt5_PLUGINS_DIR}/platforms/libqcocoa.dylib)
-elseif (UNIX)
-  copy_file_with_dependencies(${Qt5_PLUGINS_DIR}/platforms/libqxcb.so)
-endif()

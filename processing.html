@@ -1,0 +1,226 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Processing routines &#8212; pptk 0.1.1 documentation</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing to pptk" href="contributing.html" />
+    <link rel="prev" title="Point cloud viewer" href="viewer.html" /> 
+  </head>
+  <body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>pptk 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Processing routines</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="viewer.html">Point cloud viewer</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="contributing.html">Contributing to pptk</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="processing-routines">
+<h1>Processing routines<a class="headerlink" href="#processing-routines" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="normal-estimation">
+<h2>Normal estimation<a class="headerlink" href="#normal-estimation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pptk.estimate_normals">
+<code class="descclassname">pptk.</code><code class="descname">estimate_normals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pptk.estimate_normals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates normals at all points using principal component analysis
+(PCA). Specifically, computes eigenvectors of the covariance matrix C
+based on the local neighborhoods of each point.</p>
+<div class="math">
+<p><img src="_images/math/0048d849724ea89e925271d8d5adce8748479f94.png" alt="C = \frac{1}{N}\sum_{i=1}^{N}{(p_i-\mu)(p_i-\mu)^T}"/></p>
+</div><p>where <img class="math" src="_images/math/f485a85a7ebc30e9f1b33189665de9f2452940fe.png" alt="p_1 ... p_N"/> are the points in a given neighborhood and
+<img class="math" src="_images/math/d79e8a2c7ce54906c2b25549da38bdbe02cf40d6.png" alt="\mu"/> is the centroid of the points.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>points</strong> (<em>3-column numpy array of type float32</em><em> or </em><em>float64</em>) – Input point cloud.</li>
+<li><strong>k</strong> (<em>int</em>) – Number of neighbors to use.
+For pure r-near neighborhoods, set this to -1.</li>
+<li><strong>r</strong> (<em>float</em>) – Use neighbors within r of query point.
+For pure k-nearest neighborhoods, set this to np.inf.</li>
+<li><strong>subsample</strong> (<em>1-d array of bool</em><em> or </em><em>int</em><em>, </em><em>optional</em>) – Optionally estimate normals at subset of points specified by a
+boolean mask having length equal to the number of points, or by
+integer indices into the array of points. Default: None.</li>
+<li><strong>output_eigenvalues</strong> (<em>bool</em><em>, </em><em>optional</em>) – Default: False.</li>
+<li><strong>output_all_eigenvectors</strong> (<em>bool</em><em>, </em><em>optional</em>) – Default: False.</li>
+<li><strong>output_neighborhood_sizes</strong> (<em>bool</em><em>, </em><em>optional</em>) – Default: False.</li>
+<li><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Default: True.</li>
+<li><strong>num_procs</strong> (<em>int</em><em>, </em><em>optional</em>) – Default: use all processors.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>results</strong> (<em>ndarray or tuple of ndarray’s</em>) – PCA results. The tuple return type is triggered if any of
+output_eigenvalues or output_neighborhood_sizes is True.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following table summarizes all potential return types. Here m is the
+number of PCAs performed. If subsample is not None, then m is the size
+of subsample. Otherwise, m is just the number of input points.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="6%" />
+<col width="24%" />
+<col width="37%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2" rowspan="2">&#160;</th>
+<th class="head" colspan="2">output_all_eigenvectors</th>
+</tr>
+<tr class="row-even"><th class="head">F</th>
+<th class="head">T</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="4"><p class="first"><strong>output_eigenvalues</strong></p>
+<p class="last"><strong>output_nbhd_sizes</strong></p>
+</td>
+<td>F, F</td>
+<td>m x 3</td>
+<td>m x 3 x 3</td>
+</tr>
+<tr class="row-even"><td>F, T</td>
+<td>(m x 3, None, m)</td>
+<td>(m x 3 x 3, None, m)</td>
+</tr>
+<tr class="row-odd"><td>T, F</td>
+<td>(m x 3, m, None)</td>
+<td>(m x 3 x 3, m x 3, None)</td>
+</tr>
+<tr class="row-even"><td>T, T</td>
+<td>(m x 3, m, m)</td>
+<td>(m x 3 x 3, m x 3, m)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>The j-th eigenvector of the i-th PCA result is given by
+indices [i, j, :].</li>
+<li>eigenvectors are sorted in order of increasing eigenvalue</li>
+</ul>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pptk.kdtree">
+<span id="k-d-tree"></span><h2>k-d tree<a class="headerlink" href="#module-pptk.kdtree" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="pptk.kdtree._build">
+<code class="descclassname">kdtree.</code><code class="descname">_build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pptk.kdtree._build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds k-d tree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>points</strong> (<em>n x k numpy array</em>) – Currently supports any numeric type and any k in [2, 4].</li>
+<li><strong>numprocs</strong> (<em>int</em><em>, </em><em>optional</em>) – Default: use all processors.</li>
+<li><strong>maxleafsize</strong> (<em>int</em><em>, </em><em>optional</em>) – Leaf nodes have at most this many points. Default: 10.</li>
+<li><strong>emptysplit</strong> (<em>float</em><em>, </em><em>optional</em>) – Empty splits are performed for gap ratios greater than this value.
+Default: 0.2</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>tree</strong> (<em>capsule object</em>) – This object is meant to be passed into the kdtree._query method.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.kdtree._query">
+<code class="descclassname">kdtree.</code><code class="descname">_query</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pptk.kdtree._query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query k-d tree for nearest neighbors.</p>
+<p>Query points can be specified by one of the following ways
+(n is the number of points in the k-d tree and m the number of queries):</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>k-d points
+(m x k numpy array)</li>
+<li>integer indices
+(list or numpy array of m integers; negative integers supported)</li>
+<li>boolean selection mask on the n points used to build the k-d tree
+(numpy array of n bools)</li>
+</ol>
+</div></blockquote>
+<p>For each query point, this function returns up to k nearest neighbors
+that have distances strictly less than dmax from the query point.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tree</strong> (<em>capsule object</em>) – A k-d tree as produced by kdtree._build.</li>
+<li><strong>queries</strong> (<em>numpy array</em>) – Specify query points by one of the ways above.</li>
+<li><strong>k</strong> (<em>int</em><em>, </em><em>optional</em>) – Default: 1</li>
+<li><strong>dmax</strong> (<em>float</em><em> or </em><em>double</em><em>, </em><em>optional</em>) – Default: inf</li>
+<li><strong>numprocs</strong> (<em>int</em><em>, </em><em>optional</em>) – Default: use all processors.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>results</strong> (<em>list of m numpy arrays of integer indices</em>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="viewer.html">Point cloud viewer</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="contributing.html">Contributing to pptk</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, HERE Europe B.V..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+    </div>
+  </body>
+</html>

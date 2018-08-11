@@ -1,0 +1,141 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Installing pptk &#8212; pptk 0.1.1 documentation</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting started" href="quickstart.html" />
+    <link rel="prev" title="pptk documentation contents" href="index.html" /> 
+  </head>
+  <body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>pptk 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Installing pptk</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">pptk documentation contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="quickstart.html">Getting started</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="installing-pptk">
+<h1>Installing pptk<a class="headerlink" href="#installing-pptk" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="install-from-pypi">
+<h2>Install from PyPI<a class="headerlink" href="#install-from-pypi" title="Permalink to this headline">¶</a></h2>
+<p>One can either install pptk directly from PyPI</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">pptk</span>
+</pre></div>
+</div>
+<p>or from the .whl file that results from
+<a class="reference internal" href="#build-from-source"><span class="std std-ref">building pptk from source</span></a>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="o">&lt;.</span><span class="n">whl</span> <span class="n">file</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-from-source">
+<span id="build-from-source"></span><h2>Building from source<a class="headerlink" href="#building-from-source" title="Permalink to this headline">¶</a></h2>
+<p>We provide CMake scripts for automating most of the build process, but ask the
+user to manually prepare <a class="reference internal" href="#requirements"><span class="std std-ref">dependencies</span></a> and record their
+paths in the following CMake cache variables.</p>
+<ul class="simple">
+<li>Numpy_INCLUDE_DIR</li>
+<li>PYTHON_INCLUDE_DIR</li>
+<li>PYTHON_LIBRARY</li>
+<li>Eigen_INCLUDE_DIR</li>
+<li>TBB_INCLUDE_DIR</li>
+<li>TBB_tbb_LIBRARY</li>
+<li>TBB_tbb_RUNTIME</li>
+<li>TBB_tbbmalloc_LIBRARY</li>
+<li>TBB_tbbmalloc_RUNTIME</li>
+<li>Qt5_DIR</li>
+</ul>
+<p>To set these variables, either use one of CMake’s GUIs (ccmake or cmake-gui),
+or provide an initial CMakeCache.txt in the target build folder (for examples of
+initial cache files, see the CMakeCache..txt files)</p>
+<div class="section" id="requirements">
+<span id="id1"></span><h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
+<p>Listed are versions of libraries used to develop pptk, though earlier versions
+of these libraries may also work.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.qt.io/">QT</a> 5.4</li>
+<li><a class="reference external" href="https://www.threadingbuildingblocks.org/">TBB</a> 4.3</li>
+<li><a class="reference external" href="http://eigen.tuxfamily.org">Eigen</a> 3.2.9</li>
+<li><a class="reference external" href="https://www.python.org/">Python</a> 2.7+ or 3.6+</li>
+<li><a class="reference external" href="http://www.numpy.org/">Numpy</a> 1.13</li>
+</ul>
+</div>
+<div class="section" id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<p>Create an empty build folder</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mkdir</span> <span class="o">&lt;</span><span class="n">build_folder</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Create an initial CMakeCache.txt under &lt;build_folder&gt; and use it to provide
+values for the CMake cache variables listed above. (e.g. see CMakeCache.win.txt)</p>
+<p>Type the following…</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">build_folder</span><span class="o">&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cmake</span> <span class="o">-</span><span class="n">G</span> <span class="s">&quot;NMake Makefiles&quot;</span> <span class="o">&lt;</span><span class="n">source_folder</span><span class="o">&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nmake</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">bdist_wheel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">dist</span>\<span class="o">&lt;.</span><span class="n">whl</span> <span class="n">file</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h3>
+<p>Similar to building on Windows.</p>
+</div>
+<div class="section" id="mac">
+<h3>Mac<a class="headerlink" href="#mac" title="Permalink to this headline">¶</a></h3>
+<p>Similar to building on Windows.</p>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">pptk documentation contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="quickstart.html">Getting started</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, HERE Europe B.V..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+    </div>
+  </body>
+</html>

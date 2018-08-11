@@ -1,0 +1,544 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Point cloud viewer &#8212; pptk 0.1.1 documentation</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Processing routines" href="processing.html" />
+    <link rel="prev" title="Getting started" href="quickstart.html" /> 
+  </head>
+  <body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>pptk 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Point cloud viewer</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="quickstart.html">Getting started</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="processing.html">Processing routines</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="point-cloud-viewer">
+<h1>Point cloud viewer<a class="headerlink" href="#point-cloud-viewer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="controls">
+<h2>Controls<a class="headerlink" href="#controls" title="Permalink to this headline">¶</a></h2>
+<p><strong>View manipulation</strong>. The camera look at position is denoted by a
+red-green-blue cursor, with segments corresponding to x, y and z axes. Use the
+left mouse button to rotate. Hold down shift to pan. Double-clicking moves the
+look at position to a point near the mouse cursor.</p>
+<p><strong>Point selection</strong>. Hold down ctrl while clicking or dragging a box to add
+points to a selection. Hold down ctrl+shift to remove from a selection. Use the
+right mouse button to clear an existing selection.</p>
+<p><strong>Hot keys</strong>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="95%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">key</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>5</td>
+<td>Toggle between orthographic/perspective projection</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>Look along +y direction</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Look along -x direction</td>
+</tr>
+<tr class="row-odd"><td>7</td>
+<td>Look along -z direction</td>
+</tr>
+<tr class="row-even"><td>c</td>
+<td>Set look at position to mean position of selected points</td>
+</tr>
+<tr class="row-odd"><td>[</td>
+<td>Toggle previous attribute set</td>
+</tr>
+<tr class="row-even"><td>]</td>
+<td>Toggle next attribute set</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pptk.viewer">
+<em class="property">class </em><code class="descclassname">pptk.</code><code class="descname">viewer</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pptk.viewer.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens a point cloud viewer</p>
+<p class="rubric">Examples</p>
+<p>Create 100 random points</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Visualize the points</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Visualize points shaded by height</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Visualize points shaded by random RGB color</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rgb</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">rgb</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.attributes">
+<code class="descname">attributes</code><span class="sig-paren">(</span><em>*attr</em><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads point attributes</p>
+<p>The loaded attributes are used to clor the currently loaded point
+cloud.  Supposing n points loaded, this function accepts attributes of
+the following forms:</p>
+<ul class="simple">
+<li>scalars: 1-d array of length 1 or n</li>
+<li>RGB colors: 2-d array of shape (1, 3) or (n, 3)</li>
+<li>RGBA colors: 2-d array of shape (1, 4) or (n, 4)</li>
+</ul>
+<p>Passing in no arguments clears all existing attribute sets and colors
+all points white.  Cycle through attribute sets via ‘[‘ and ‘]’ keys.</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr1</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>     <span class="c"># 100 random scalars</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr2</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c"># 100 random RGB colors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr3</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c"># 100 random RGBA colors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr4</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>    <span class="c"># 1 random scalar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr5</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>    <span class="c"># 1 random RGB color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr6</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>    <span class="c"># 1 random RGBA color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span><span class="p">,</span> <span class="n">attr3</span><span class="p">,</span> <span class="n">attr4</span><span class="p">,</span> <span class="n">attr6</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.capture">
+<code class="descname">capture</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.capture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take screen shot of current view and save to filename</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">capture</span><span class="p">(</span><span class="s">&#39;screenshot.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the current point cloud in the viewer</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the point cloud viewer</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.color_map">
+<code class="descname">color_map</code><span class="sig-paren">(</span><em>c</em>, <em>scale=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.color_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies how scalar attributes are used to color points in the viewer.</p>
+<p>Input c is expected to be an array of n RGB (or RGBA) vectors
+(i.e. c is a n x 3 or n x 4 numpy array).
+Upon return, scalar values equal to scale 0 are colored with c[0],
+scale[1] with c[-1], and scalars in between appropriately interpolated.
+If scale is None, scale is automatically set as the minimum and maximum
+scalar values in the current attribute set.</p>
+<p>Alternatively, one can choose from a number of preset color maps by
+passing the corresponding string instead.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Preset color maps</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>‘jet’ (default)</td>
+<td><img alt="_images/colormap_jet.png" class="first last" src="_images/colormap_jet.png" />
+</td>
+</tr>
+<tr class="row-odd"><td>‘hsv’</td>
+<td><img alt="_images/colormap_hsv.png" class="first last" src="_images/colormap_hsv.png" />
+</td>
+</tr>
+<tr class="row-even"><td>‘hot’</td>
+<td><img alt="_images/colormap_hot.png" class="first last" src="_images/colormap_hot.png" />
+</td>
+</tr>
+<tr class="row-odd"><td>‘cool’</td>
+<td><img alt="_images/colormap_cool.png" class="first last" src="_images/colormap_cool.png" />
+</td>
+</tr>
+<tr class="row-even"><td>‘spring’</td>
+<td><img alt="_images/colormap_spring.png" class="first last" src="_images/colormap_spring.png" />
+</td>
+</tr>
+<tr class="row-odd"><td>‘summer’</td>
+<td><img alt="_images/colormap_summer.png" class="first last" src="_images/colormap_summer.png" />
+</td>
+</tr>
+<tr class="row-even"><td>‘autumn’</td>
+<td><img alt="_images/colormap_autumn.png" class="first last" src="_images/colormap_autumn.png" />
+</td>
+</tr>
+<tr class="row-odd"><td>‘winter’</td>
+<td><img alt="_images/colormap_winter.png" class="first last" src="_images/colormap_winter.png" />
+</td>
+</tr>
+<tr class="row-even"><td>‘gray’</td>
+<td><img alt="_images/colormap_gray.png" class="first last" src="_images/colormap_gray.png" />
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scalars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">scalars</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">color_map</span><span class="p">(</span><span class="s">&#39;cool&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">color_map</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>prop_name</em><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets viewer property</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="21%" />
+<col width="52%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property Name</th>
+<th class="head">Return Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>curr_atribute_id</td>
+<td>uint</td>
+<td>Current attribute set index</td>
+</tr>
+<tr class="row-odd"><td>eye</td>
+<td>3 x float64</td>
+<td>Camera position</td>
+</tr>
+<tr class="row-even"><td>lookat</td>
+<td>3 x float64</td>
+<td>Camera look-at position</td>
+</tr>
+<tr class="row-odd"><td>mvp</td>
+<td>4 x 4 float64</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>num_points</td>
+<td>uint</td>
+<td>Number of points loaded</td>
+</tr>
+<tr class="row-odd"><td>num_attributes</td>
+<td>uint</td>
+<td>Number of attribute sets loaded</td>
+</tr>
+<tr class="row-even"><td>phi</td>
+<td>float64</td>
+<td>Camera azimuthal angle (radians)</td>
+</tr>
+<tr class="row-odd"><td>r</td>
+<td>float64</td>
+<td>Camera distance to look-at point</td>
+</tr>
+<tr class="row-even"><td>right</td>
+<td>3 x float64</td>
+<td>Camera Right vector</td>
+</tr>
+<tr class="row-odd"><td>selected</td>
+<td>? x int32</td>
+<td>Indices of selected points</td>
+</tr>
+<tr class="row-even"><td>theta</td>
+<td>float64</td>
+<td>Camera elevation angle (radians)</td>
+</tr>
+<tr class="row-odd"><td>up</td>
+<td>3 x float64</td>
+<td>Camera up vector</td>
+</tr>
+<tr class="row-even"><td>view</td>
+<td>3 x float64</td>
+<td>Camera view vector</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;selected&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.play">
+<code class="descname">play</code><span class="sig-paren">(</span><em>poses, ts=[], tlim=[-inf, inf], repeat=False, interp='cubic_natural'</em><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.play" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plays back camera path animation specified by poses</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>poses</strong> – Key poses. e.g. a list of 6-tuples (x, y, z, phi, theta, r)
+poses, or anything convertible to a 6-column array by np.array</li>
+<li><strong>ts</strong> (<em>optional</em>) – Key pose times. If unspecified key poses are placed
+at 1 second intervals.</li>
+<li><strong>tlim</strong> (<em>optional</em>) – Play back time range (in seconds)</li>
+<li><strong>repeat</strong> (<em>optional</em>) – Toggles infinite play back loop.  Works well
+with interp=’cubic_periodic’.</li>
+<li><strong>interp</strong> (<em>optional</em>) – Interpolation method.  Should be one of
+‘constant’, ‘linear’, ‘cubic_natural’, or ‘cubic_periodic’.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<p>Rotate camera about origin at 1/8 Hz.</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="n">poses</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">repeat</span><span class="o">=</span><span class="k">True</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s">&#39;linear&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.record">
+<code class="descname">record</code><span class="sig-paren">(</span><em>folder, poses, ts=[], tlim=[-inf, inf], interp='cubic_natural', shutter_speed=inf, fps=24, prefix='frame_', ext='png'</em><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Records camera animation to a sequence of images. Usage of this method
+is very similar to viewer.play(…).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>folder</strong> – Folder to which images are saved</li>
+<li><strong>poses</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal"><span class="pre">pptk.viewer.play()</span></code></a></li>
+<li><strong>ts</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal"><span class="pre">pptk.viewer.play()</span></code></a></li>
+<li><strong>tlim</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal"><span class="pre">pptk.viewer.play()</span></code></a></li>
+<li><strong>interp</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal"><span class="pre">pptk.viewer.play()</span></code></a></li>
+<li><strong>fps</strong> – Frames per second</li>
+<li><strong>prefix</strong> – Resulting image file names are prefixed with this string</li>
+<li><strong>ext</strong> – Image format</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>Assuming poses defined as in the example for :meth:pptk.viewer.play</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mkdir</span> <span class="s">&#39;recording&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;recording&#39;</span><span class="p">,</span> <span class="n">poses</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Tip: Uses ffmpeg to generate a video from the resulting image sequence</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="s">&quot;frame_%03d.png&quot;</span> <span class="o">-</span><span class="n">c</span><span class="p">:</span><span class="n">v</span> <span class="n">mpeg4</span> <span class="o">-</span><span class="n">qscale</span><span class="p">:</span><span class="n">v</span> <span class="mi">0</span> <span class="o">-</span><span class="n">r</span> <span class="mi">24</span> <span class="n">output</span><span class="o">.</span><span class="n">mp4</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the viewer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets viewer property</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="23%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property Name</th>
+<th class="head">Value Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>bg_color</td>
+<td>4 x float32</td>
+<td>Background color in RGBA [0, 1]</td>
+</tr>
+<tr class="row-odd"><td>bg_color_top</td>
+<td>4 x float32</td>
+<td>Top background color</td>
+</tr>
+<tr class="row-even"><td>bg_color_bottom</td>
+<td>4 x float32</td>
+<td>Bottom background color</td>
+</tr>
+<tr class="row-odd"><td>color_map</td>
+<td>? x 4 x float32</td>
+<td>Color map; array of RGBA’s [0, 1]</td>
+</tr>
+<tr class="row-even"><td>color_map_scale</td>
+<td>2 x float32</td>
+<td>Color map scaling interval</td>
+</tr>
+<tr class="row-odd"><td>curr_attribute_id</td>
+<td>uint</td>
+<td>Current attribute set index</td>
+</tr>
+<tr class="row-even"><td>floor_level</td>
+<td>float32</td>
+<td>Floor z-level</td>
+</tr>
+<tr class="row-odd"><td>floor_color</td>
+<td>4 x float32</td>
+<td>Floor color in RGBA [0, 1]</td>
+</tr>
+<tr class="row-even"><td>lookat</td>
+<td>3 x float32</td>
+<td>Camera look-at position</td>
+</tr>
+<tr class="row-odd"><td>phi</td>
+<td>float32</td>
+<td>Camera azimuthal angle (radians)</td>
+</tr>
+<tr class="row-even"><td>point_size</td>
+<td>float32</td>
+<td>Point size in world space</td>
+</tr>
+<tr class="row-odd"><td>r</td>
+<td>float32</td>
+<td>Camera distance to look-at point</td>
+</tr>
+<tr class="row-even"><td>selected</td>
+<td>? x uint</td>
+<td>Indices of selected points</td>
+</tr>
+<tr class="row-odd"><td>show_grid</td>
+<td>bool</td>
+<td>Show floor grid</td>
+</tr>
+<tr class="row-even"><td>show_info</td>
+<td>bool</td>
+<td>Show information text overlay</td>
+</tr>
+<tr class="row-odd"><td>show_axis</td>
+<td>bool</td>
+<td>Show axis / look-at cursor</td>
+</tr>
+<tr class="row-even"><td>theta</td>
+<td>float32</td>
+<td>Camera elevation angle (radians)</td>
+</tr>
+</tbody>
+</table>
+<p>(phi, theta, r) are spherical coordinates specifying camera position
+relative to the look at position.</p>
+<p>(right, up, view) are orthogonal vectors forming the camera coordinate
+frame, where view is pointed away from the look at position, and view
+is the cross product of up with right</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pptk.viewer.wait">
+<code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blocks until Enter/Return key is pressed in viewer</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Press enter in viewer to return control to python terminal.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="quickstart.html">Getting started</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="processing.html">Processing routines</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, HERE Europe B.V..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+    </div>
+  </body>
+</html>

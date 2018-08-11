@@ -1,9 +1,0 @@
-Numpy_INCLUDE_DIR:PATH=/usr/local/lib/python2.7/dist-packages/numpy/core/include/numpy
-Eigen_INCLUDE_DIR:PATH=/home/victlu/Sources/eigen-3.3.4
-Qt5_DIR:PATH=/opt/Qt5.6.1/5.6/gcc_64/lib/cmake/Qt5
-TBB_INCLUDE_DIR:PATH=/home/victlu/Sources/tbb2018_20170919oss/include
-TBB_tbb_LIBRARY:FILEPATH=/home/victlu/Sources/tbb2018_20170919oss/lib/intel64/gcc4.7/libtbb.so
-TBB_tbb_RUNTIME:FILEPATH=/home/victlu/Sources/tbb2018_20170919oss/lib/intel64/gcc4.7/libtbb.so
-TBB_tbbmalloc_LIBRARY:FILEPATH=/home/victlu/Sources/tbb2018_20170919oss/lib/intel64/gcc4.7/libtbbmalloc.so
-TBB_tbbmalloc_RUNTIME:FILEPATH=/home/victlu/Sources/tbb2018_20170919oss/lib/intel64/gcc4.7/libtbbmalloc.so
-PPTK_PATCHELF:FILEPATH=/home/victlu/Sources/install/bin/patchelf

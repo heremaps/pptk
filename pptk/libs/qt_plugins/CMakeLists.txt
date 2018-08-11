@@ -1,2 +1,0 @@
-add_subdirectory(platforms)
-add_subdirectory(xcbglintegrations)
