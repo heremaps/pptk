@@ -36,6 +36,11 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.githubpages']
 
+def setup(app):
+    app.add_stylesheet('css/custom.css')
+
+imgmath_image_format = 'svg'
+imgmath_dvisvgm = 'F:\Programs\dvisvgm-2.3.3-win64\dvisvgm.exe'
 autodoc_member_order = 'groupwise'
 autosummary_generate = True
 napoleon_use_rtype = False

@@ -5,13 +5,25 @@ Install pptk.
 
     >>> pip install pptk
 
-In Python, generate 100 random 3-d points, and visualize it using pptk's viewer.
+.. note::
+   pptk requires 64-bit Python and is currently only :code:`pip install`-able on Python 3.6 and Python 2.7.
+    
+In Python, generate 100 random 3-d points, and 
 
-    >>> import pptk
+.. code-block:: python
+
     >>> import numpy as np
     >>> x = np.random.rand(100, 3)
-    >>> pptk.viewer(x)
 
-Set the point size to 0.01
+Visualize.
+
+.. code-block:: python
+
+    >>> import pptk
+    >>> v = pptk.viewer(x)
+
+Set point size to 0.01.
+
+.. code-block:: python
 
     >>> v.set(point_size=0.01)

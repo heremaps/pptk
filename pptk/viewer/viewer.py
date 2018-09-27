@@ -24,16 +24,19 @@ class viewer:
 
             Visualize the points
 
-            >>> pptk.viewer(xyz)
+            >>> v = pptk.viewer(xyz)
+            >>> v.set(point_size=0.005)
 
             Visualize points shaded by height
 
-            >>> pptk.viewer(xyz, xyz[:, 2])
+            >>> v = pptk.viewer(xyz, xyz[:, 2])
+            >>> v.set(point_size=0.005)
 
             Visualize points shaded by random RGB color
 
             >>> rgb = pptk.rand(100, 3)
             >>> pptk.viewer(xyz, rgb)
+            >>> v.set(point_size=0.005)
 
         """
         # ensure positions is 3-column array of float32s
@@ -195,10 +198,11 @@ class viewer:
         >>> attr1 = pptk.rand(100)     # 100 random scalars
         >>> attr2 = pptk.rand(100, 3)  # 100 random RGB colors
         >>> attr3 = pptk.rand(100, 4)  # 100 random RGBA colors
-        >>> attr4 = pptk.rand(1, 1)    # 1 random scalar
+        >>> attr4 = pptk.rand(1)       # 1 random scalar
         >>> attr5 = pptk.rand(1, 3)    # 1 random RGB color
         >>> attr6 = pptk.rand(1, 4)    # 1 random RGBA color
-        >>> v.attributes(attr1, attr2, attr3, attr4, attr6)
+        >>> v.attributes(attr1, attr2, attr3, attr4, attr5, attr6)
+        >>> v.set(point_size=0.005)
 
         """
         msg = struct.pack('Q', len(attr))
@@ -258,6 +262,7 @@ class viewer:
             >>> xyz = np.c_[np.arange(10), np.zeros(10), np.zeros(10)]
             >>> scalars = np.arange(10)
             >>> v = pptk.viewer(xyz, scalars)
+            >>> v.set(point_size=0.1)
             >>> v.color_map('cool', scale=[0, 5])
             >>> v.color_map([[0, 0, 0], [1, 1, 1]])
 
