@@ -3,7 +3,7 @@
 Tanks and Temples
 =================
 
-`Tank and Temples <https://www.tanksandtemples.org>`__
+`Tank and Temples <https://www.tanksandtemples.org>`_
 is a benchmark that uses Lidar point clouds as ground truth
 for benchmarking the quality of image-based 3-d reconstruction algorithms.
 The point clouds are stored as .ply files.
@@ -14,14 +14,16 @@ Download :code:`Truck.ply` (392 MB)
 
 Import required Python packages.
 Here we use the plyfile Python package to read .ply files.
-If :code:`pip install plyfile` does not work,
-simply save a local copy of plyfile.py from plyfile's `github page <https://github.com/dranjan/python-plyfile>`__.
 
 .. code-block:: python
 
     >>> import pptk
     >>> import numpy as np
     >>> import plyfile
+
+.. note::
+   If :code:`pip install plyfile` does not work,
+   simply save a local copy of plyfile.py from plyfile's `github page <https://github.com/dranjan/python-plyfile>`__.
 
 Read vertices in :code:`Truck.ply`.
 
@@ -40,6 +42,8 @@ Visualize.
     >>> v = pptk.viewer(xyz)
     >>> v.attributes(rgb / 255., 0.5 * (1 + n))
 
+Use :kbd:`[` and :kbd:`]` to toggle between attributes.
+
 .. |truck_rgb| image:: images/tanks_and_temples_truck_rgb.jpg
    :width: 340px
    :align: middle
@@ -48,6 +52,8 @@ Visualize.
    :width: 340px
    :align: middle
 
+.. rst-class:: image-grid
+
 .. table::
    :widths: 350 350
    :align: center
@@ -55,5 +61,12 @@ Visualize.
    =========== =========
    |truck_rgb| |truck_n|
    =========== =========
+
+.. rst-class:: caption
+
+   +----------------------------------------------------------------------------------------------+
+   | The :file:`Truck.py` point cloud from `Tanks and Temples <https://www.tanksandtemples.org>`_ |
+   | visualized using :py:meth:`pptk.viewer`. Points are colored by RGB (left) and normal (right) |
+   +----------------------------------------------------------------------------------------------+
 
 The above procedure can be repeated for the other point clouds in the dataset.

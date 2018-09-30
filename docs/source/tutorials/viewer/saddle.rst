@@ -58,7 +58,7 @@ One can also calculate and visualize additional per-point attributes.
     >>> # set per-point attributes
     >>> v.attributes(P[:, 2], mag, 0.5 * (N + 1))
 
-Toggle between attributes using the [ and ] keys.
+Toggle between attributes using the :kbd:`[` and :kbd:`]` keys.
 
 .. |saddle_z| image:: images/saddle_z.png
    :width: 256px
@@ -72,6 +72,7 @@ Toggle between attributes using the [ and ] keys.
    :width: 256px
    :align: middle
 
+.. rst-class:: image-grid
 .. table::
    :widths: 275 275 275
    :align: center
@@ -79,3 +80,10 @@ Toggle between attributes using the [ and ] keys.
    ========== ============ ==========
    |saddle_z| |saddle_mag| |saddle_n|
    ========== ============ ==========
+
+.. rst-class:: caption
+
+   +------------------------------------------------------------------------------------------------------+
+   | Visualization of :math:`f(x,y)=x^2-y^2`.                                                             |
+   | Points are colored by :math:`f` (left), :math:`|\nabla f|` (middle), and normal directions (right)   |
+   +------------------------------------------------------------------------------------------------------+

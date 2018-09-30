@@ -29,29 +29,36 @@ Controls
 **View manipulation**.
 The camera look at position is denoted by a red-green-blue cursor,
 with segments corresponding to x, y and z axes.
-Use the left mouse button to rotate.
-Hold down shift to pan.
-Double-clicking moves the look at position to a point near the mouse cursor.
+Perform :kbd:`LMB` drag to rotate the viewpoint in a turntable fashion.
+Perform :kbd:`LMB` drag while hold :kbd:`Shift` to pan the viewpoint.
+Double clicking the :kbd:`LMB` moves the look at position to a point near the mouse cursor.
+
+.. note::
+   :kbd:`LMB`/:kbd:`RMB` stands for left/right mouse button
 
 **Point selection**.
-Hold down ctrl while clicking or dragging a box to add points to a selection.
-Hold down ctrl+shift to remove from a selection.
-Use the right mouse button to clear an existing selection.
+Hold :kbd:`Ctrl`/:kbd:`Ctrl-Shift` while :kbd:`LMB` dragging a box to add/remove points to the current selection.
+Hold :kbd:`Ctrl`/:kbd:`Ctrl-Shift` while :kbd:`LMB` clicking on a point
+to add/remove a *single* point from the current selection.
+Click the :kbd:`RMB` to clear the current selection.
 Use :py:meth:`pptk.viewer.get` to query the selected point indices.
+
+.. note::
+   If you are using a Mac, use :kbd:`⌘` in place of :kbd:`Ctrl`.
 
 **Hot keys**.
 
-===  ========================================================
-key	 Description
-===  ========================================================
-5	   Toggle between orthographic/perspective projection
-1	   Look along +y direction
-3	   Look along -x direction
-7	   Look along -z direction
-c	   Set look at position to mean position of selected points
-[	   Toggle previous attribute set
-]	   Toggle next attribute set
-===  ========================================================
+========  ========================================================
+key	      Description
+========  ========================================================
+:kbd:`5`	Toggle between orthographic/perspective projection
+:kbd:`1`	Look along +y direction
+:kbd:`3`	Look along -x direction
+:kbd:`7`	Look along -z direction
+:kbd:`C`	Set look at position to mean position of selected points
+:kbd:`[`	Toggle previous attribute set
+:kbd:`]`	Toggle next attribute set
+========  ========================================================
 
 Methods
 -------

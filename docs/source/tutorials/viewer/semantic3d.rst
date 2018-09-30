@@ -3,17 +3,19 @@
 Semantic3D
 ==========
 
-Download the following zip files from the Semantic3D `website <http://semantic3d.net>`__.
+.. _Semantic3D: http://semantic3d.net
 
-* :code:`bildstein_station1_xyz_intensity_rgb.7z` (0.20 GB)
+Download the following zip files from the `Semantic3D`_ website.
+
+* :file:`bildstein_station1_xyz_intensity_rgb.7z` (0.20 GB)
   [`download <http://semantic3d.net/data/point-clouds/training1/bildstein_station1_xyz_intensity_rgb.7z>`__]
-* :code:`sem8_labels_training.7z` (0.01 GB)
+* :file:`sem8_labels_training.7z` (0.01 GB)
   [`download <http://semantic3d.net/data/sem8_labels_training.7z>`__]
 
 Extract the zip files and check that you have at least the following files.
 
-* :code:`bildstein_station1_xyz_intensity_rgb.txt`
-* :code:`bildstein_station1_xyz_intensity_rgb.labels`
+* :file:`bildstein_station1_xyz_intensity_rgb.txt`
+* :file:`bildstein_station1_xyz_intensity_rgb.labels`
 
 Point clouds are stored in .txt files, and their per-point labels are stored in corresponding .label files.
 
@@ -43,7 +45,7 @@ Note these functions are merely simple wrappers around the :py:func:`pandas.read
         # reads Semantic3D .labels file f into a pandas dataframe
         return pd.read_csv(f, header=None)[0].values
 
-Read :code:`bildstein_station1_xyz_intensity_rgb.txt`.
+Read :file:`bildstein_station1_xyz_intensity_rgb.txt`.
 
 .. code-block:: python
 
@@ -58,7 +60,7 @@ Read :code:`bildstein_station1_xyz_intensity_rgb.txt`.
     
     [29697591 rows x 7 columns]
 
-Read :code:`bildstein_station1_xyz_intensity_rgb.labels`.
+Read :file:`bildstein_station1_xyz_intensity_rgb.labels`.
 
 .. code-block:: python
 
@@ -66,7 +68,7 @@ Read :code:`bildstein_station1_xyz_intensity_rgb.labels`.
     >>> labels
         array([0, 0, 6, ..., 0, 0, 0], dtype=int64)
 
-Visualize.
+Visualize (refer to the :doc:`viewer page <../../viewer>` for control details).
 
     >>> v = pptk.viewer(points[['x', 'y', 'z']])
     >>> v.attributes(points[['r', 'g', 'b']] / 255., points['i'])
@@ -82,6 +84,8 @@ Visualize point labels, showing only points with non-zero labels (in this datase
     >>> v.attributes(P[['r', 'g', 'b']] / 255., P['i'], L)
     >>> v.set(point_size=0.001)
 
+Toggle between attributes using the :kbd:`[` and :kbd:`]` keys.
+
 .. |semantic3d_small_rgb| image:: images/semantic3d_small_rgb.jpg
    :width: 300px
    :align: middle
@@ -94,6 +98,7 @@ Visualize point labels, showing only points with non-zero labels (in this datase
    :width: 300px
    :align: middle
 
+.. rst-class:: image-grid
 .. table::
    :widths: 310 310 310
    :align: center
@@ -102,16 +107,28 @@ Visualize point labels, showing only points with non-zero labels (in this datase
    |semantic3d_small_rgb| |semantic3d_small_i| |semantic3d_small_labels|
    ====================== ==================== =========================
 
+.. rst-class:: caption
+
+   +-------------------------------------------------------------------------------+
+   | The `Semantic3D`_ :file:`bildstein1` point cloud,                             |
+   | with 0-labeled points removed, visualized using :py:meth:`pptk.viewer`.       |
+   | Points are colored by RGB (left), intensity (middle), semantic label (right). |
+   +-------------------------------------------------------------------------------+
+
 Basic support for point annotation
 ----------------------------------
 
 **Selecting points**.
-Holding Ctrl while performing a left click drag creates an "additive" selection box;
-when the mouse button is released, all points in the box are added into a set of currently selected points.
-Holding Ctrl and Shift while performing the left click drag creates a "subtractive" selection box;
+Holding :kbd:`Ctrl` while performing a :kbd:`LMB` drag creates an "additive" selection box;
+when the :kbd:`LMB` is released, all points in the box are added into a set of currently selected points.
+Holding :kbd:`Ctrl-Shift` while performing the :kbd:`LMB` drag creates a "subtractive" selection box;
 when the mouse button is released, all points in the box are removed from the set of currently selected points.
-Individual points can be added or removed from the set by clicking on a point while holding Ctrl or Ctrl + Shift.
+Individual points can be added or removed from the set
+by left clicking on a point while holding :kbd:`Ctrl` or :kbd:`Ctrl-Shift`.
 Right click to deselect all.
+
+.. note::
+   On Mac, use :kbd:`⌘` instead of :kbd:`Ctrl`
 
 Query the selected point indices using :py:meth:`pptk.viewer.get`.
 
@@ -130,14 +147,14 @@ the selection can be restored using :py:meth:`pptk.viewer.set`.
 Visualizing very large point clouds
 -----------------------------------
 
-The above procedure can be repeated for other point clouds in Semantic 3-d.
+The above procedure can be repeated for other point clouds in Semantic 3D.
 However, pptk viewer may fail to start for larger inputs
 (the actual input size depends on system and GPU memory;
 on certain machines this is known to happen for inputs larger than roughly 100M points).
 One workaround is to subsample (keep every k-th point) the input point cloud.
 Though imperfect, this in many cases can still give a reasonably accurate view of the point cloud.
 
-Here we show how to visualize the largest point cloud in Semantic3D.
+Here we show how to visualize the largest point cloud in `Semantic3D`_.
 
 * :code:`sg27_station2_intensity_rgb.7z` (2.72 GB)
   [`download <http://semantic3d.net/data/point-clouds/training1/sg27_station2_intensity_rgb.7z>`__]
@@ -210,3 +227,12 @@ Visualize.
 .. image:: images/semantic3d_large_labels.jpg
    :width: 90%
    :align: center
+
+.. rst-class:: caption
+
+   +----------------------------------------------------------------------------------------------+
+   | The `Semantic3D`_ :file:`sg27_station2` point cloud visualized using :py:meth:`pptk.viewer`. |
+   | Point cloud has been subsampled by a factor of 6 and removed of 0-labeled points.            |
+   | Points are colored by RGB (top), intensity (middle), semantic label (bottom).                |
+   +----------------------------------------------------------------------------------------------+
+

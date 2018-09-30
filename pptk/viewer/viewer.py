@@ -189,7 +189,8 @@ class viewer:
         * RGBA colors: 2-d array of shape (1, 4) or (n, 4)
 
         Passing in no arguments clears all existing attribute sets and colors
-        all points white.  Cycle through attribute sets via '[' and ']' keys.
+        all points white.  Cycle through attribute sets via :kbd:`[` and
+        :kbd:`]` keys.
 
         Examples:
 
@@ -407,7 +408,7 @@ class viewer:
     def wait(self):
         """
 
-        Blocks until Enter/Return key is pressed in viewer
+        Blocks until :kbd:`Enter`/:kbd:`Return` key is pressed in viewer
 
         Examples:
 

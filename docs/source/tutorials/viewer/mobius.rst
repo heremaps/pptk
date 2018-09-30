@@ -53,7 +53,7 @@ Visualize.
    :width: 256px
    :align: middle
 
-
+.. rst-class:: image-grid
 .. table::
    :align: center
    :widths: 270 270 270 270
@@ -61,3 +61,11 @@ Visualize.
    ======== ========== ========== ==========
    |mobius| |mobius_x| |mobius_y| |mobius_z|
    ======== ========== ========== ==========
+
+.. rst-class:: caption
+
+   +---------------------------------------------------------------------------+
+   | Visualization of a mobius strip using :py:meth:`pptk.viewer`.             |
+   | Points are colored by normal directions.                                  |
+   | And the latter three images are views along the -x, +y and -z directions. |
+   +---------------------------------------------------------------------------+

@@ -83,6 +83,7 @@ Visualize.
    :width: 375px
    :align: middle
 
+.. rst-class:: image-grid
 .. table::
    :widths: 390 390
    :align: center
@@ -90,6 +91,14 @@ Visualize.
    =============== ====================
    |footprints_dc| |footprints_dc_zoom|
    =============== ====================
+
+.. rst-class:: caption
+
+   +----------------------------------------------------------------------------------------+
+   | :file:`DistrictofColumbia.geojson` polygons from Microsoft's                           |
+   | `US building footprints dataset <https://github.com/Microsoft/USBuildingFootprints>`__ |
+   | converted into a point set and viewed using :py:meth:`pptk.viewer()`                   |
+   +----------------------------------------------------------------------------------------+
 
 The above procedure can be repeated for other .geojson files in the dataset.
 But note that converting polygons into a point set can become memory intensive.

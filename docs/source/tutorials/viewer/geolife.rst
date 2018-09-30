@@ -4,7 +4,7 @@ Geolife dataset
 ===============
 
 Download the dataset from the
-`project website <https://www.microsoft.com/en-us/research/publication/geolife-gps-trajectory-dataset-user-guide/>`_
+`Geolife <https://www.microsoft.com/en-us/research/publication/geolife-gps-trajectory-dataset-user-guide/>`_ project website
 
 Extract the zip file and observe the following directory structure.
 
@@ -224,15 +224,25 @@ Visualize and color each point based on its altitude.
 .. image:: images/geolife_latlon_default.png
    :align: center
    :width: 900px
-    
+
+.. rst-class:: caption
+
+   +-----------------------------------------------------------------------------+
+   | Full view of `Geolife`_ dataset in lat-lon with points colored by altitude. |
+   +-----------------------------------------------------------------------------+
+
 Since we are interested only in the spatial arrangements of points on the x-y plane,
-Press 5 to toggle to an orthographic view, and press 7 to go to a top-down view.
-Pan the viewpoint by pressing the left mouse button while holding the shift key.
-Double click on a point to recenter the view on the point.
+Press :kbd:`5` to toggle to an orthographic view, and press :kbd:`7` to go to a top-down view.
+Pan the viewpoint by pressing the :kbd:`LMB` while holding the :kbd:`Shift` key.
+Double click with the :kbd:`LMB` on a point to recenter the view on that point.
 And use the mouse wheel to zoom in/out.
 To inspect the attribute of a point, which here is altitude,
-left click the point while holding the Ctrl key.
+left click the point while holding the :kbd:`Ctrl` key.
 Deselect by right clicking anywhere.
+See the :doc:`viewer page <../../viewer>` for the full instructions on using the viewer.
+
+.. note::
+   On Mac, use :kbd:`⌘` instead of :kbd:`Ctrl`
 
 The mapping from per-point attribute value to per-point color is determined automatically based on the range of attribute values.
 But the presence of bad attribute values (e.g. unreasonably large or small altitude values) may result in a poor color mapping,
@@ -255,6 +265,13 @@ Improve the color map by manually setting the mapping domain using :py:meth:`vie
    :align: center
    :width: 900px
 
+.. rst-class:: caption
+
+   +----------------------------------------------------------------------------------------------------+
+   | Full view of `Geolife`_ dataset in lat-lon with an improved color map                              |
+   | (i.e. the greater range of colors allows one to better see the changes in altitude across points). |
+   +----------------------------------------------------------------------------------------------------+
+
 Observe that point coverage is world wide,
 as there are points not just in Beijing but also in faraway cities such as Rome and Seattle.
 Observe also the high altitude points (i.e. airplane trajectories) that connect some of these cities.
@@ -262,10 +279,29 @@ A future release of the pptk viewer may include support for overlaying points on
 (e.g. `HERE Map Tile <https://developer.here.com/documentation/map-tile/topics/introduction.html>`__)
 for better supporting such visualizations.
 
+.. note::
+   You may notice that you cannot zoom in as close as you would like.
+   This is because there is currently a hardcoded limit on zooming in,
+   which a future release of pptk will fix.
+   This is not an issue when viewing data such as Lidar point clouds that are typically specified in meters,
+   but becomes a limitation when viewing lat-lon points
+   (i.e. two points 1m apart translates to a very small difference in lat/lon).
+   Meanwhile, to zoom in further, consider scaling up the lat-lon values,
+   or converting the points to UTM coordinates, as described in the next section.
+
 Visualize using UTM coordinates
 -------------------------------
 
-Remove points that are outside the UTM zone 50 (Beijing's UTM zone).
+Directly mapping lon-lat to x-y (i.e. x <- lon, y <- lat),
+as in the previous section,
+causes points to appear stretched apart near the north and south poles.
+Alternatively, the `UTM projection <https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system>`__
+is able to convert lat-lon coordinates into units of meters
+while only introducing a relatively small amount of stretching/shrinking between points in the same UTM zone.
+In this section, we show how to apply the UTM projection on GPS points in UTM zone 50 (Beijing's UTM zone),
+which we then visualize using :py:meth:`pptk.viewer`.
+
+First remove points that are outside the UTM zone 50.
 This is to remove any invalid points that may later convert to unreasonably large UTM coordinates
 (the dataset contains a point with invalid latitude of 400.17)
 
@@ -296,7 +332,7 @@ Optionally, one may use :py:meth:`viewer.color_map <pptk.viewer.color_map>` to m
     >>> v = pptk.viewer(p[mask_labelled])
     >>> v.attributes(df_50[mask_labelled]['label'])
 
-Again Ctrl + left click on a point to examine its mode of transportation attribute.
+Again :kbd:`Ctrl` + left click on a point to examine its mode of transportation attribute.
 
 .. |geolife_utm| image:: images/geolife_utm.png
    :width: 390px
@@ -310,6 +346,7 @@ Again Ctrl + left click on a point to examine its mode of transportation attribu
    :width: 110px
    :align: middle
 
+.. rst-class:: image-grid
 .. table::
    :widths: 400 400 120
    :align: center
@@ -317,3 +354,10 @@ Again Ctrl + left click on a point to examine its mode of transportation attribu
    ============= ==================== ================
    |geolife_utm| |geolife_utm_zoomed| |geolife_legend|
    ============= ==================== ================
+
+.. rst-class:: caption
+
+   +------------------------------------------------------------------------------------+
+   | `Geolife`_ GPS points in UTM coordinates visualized using :py:meth:`pptk.viewer`.  |
+   | Points are from around the Beijing area and are colored by mode of transportation. |
+   +------------------------------------------------------------------------------------+
