@@ -7,7 +7,7 @@ Install pptk.
 
 .. note::
    pptk requires 64-bit Python and is only :code:`pip install`-able on versions of Python
-   that have a corresponding pptk wheel file on PyPI.
+   that have a corresponding pptk wheel file on `PyPI <https://pypi.org/project/pptk/>`__.
 
 In Python, generate 100 random 3-d points, and 
 
