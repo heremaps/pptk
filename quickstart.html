@@ -4,41 +4,35 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Getting started &#8212; pptk 0.1.1 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Point cloud viewer" href="viewer.html" />
+    <link rel="next" title="Tutorials" href="tutorial.html" />
     <link rel="prev" title="Installing pptk" href="install.html" /> 
-  </head>
-  <body>
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>pptk 0.1.1 documentation</span></a></h1>
-        <h2 class="heading"><span>Getting started</span></h2>
+        <h2 class="heading"><span>Point Processing Toolkit</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="install.html">Installing pptk</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="viewer.html">Point cloud viewer</a>&#160;&#160;»
+        
+                <a href="index.html">Contents</a>
+                &#160;&#160;&raquo;&#160;&#160;
+                
+        
+        Getting started
         </p>
 
       </div>
@@ -48,18 +42,26 @@
   <div class="section" id="getting-started">
 <h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
 <p>Install pptk.</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">pptk</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">pptk</span>
 </pre></div>
 </div>
-<p>In Python, generate 100 random 3-d points, and visualize it using pptk’s viewer.</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pptk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">pptk requires 64-bit Python and is only <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>-able on versions of Python
+that have a corresponding pptk wheel file on <a class="reference external" href="https://pypi.org/project/pptk/">PyPI</a>.</p>
+</div>
+<p>In Python, generate 100 random 3-d points, and</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Set the point size to 0.01</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<p>Visualize.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pptk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Set point size to 0.01.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -67,20 +69,13 @@
 
       </div>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      <p>&#160;</p>
       
-        <p>
-        «&#160;&#160;<a href="install.html">Installing pptk</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="viewer.html">Point cloud viewer</a>&#160;&#160;»
-        </p>
-
       </div>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, HERE Europe B.V..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
     </div>
   </body>
 </html>

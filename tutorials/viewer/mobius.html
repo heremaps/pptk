@@ -1,0 +1,118 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Visualizing a Mobius strip &#8212; pptk 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Point cloud viewer" href="../../viewer.html" />
+    <link rel="prev" title="Hyperbolic paraboloid" href="saddle.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>pptk 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Point Processing Toolkit</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        
+                <a href="../../index.html">Contents</a>
+                &#160;&#160;&raquo;&#160;&#160;
+                
+                        <a href="../../tutorial.html">Tutorials</a>
+                        &#160;&#160;&raquo;&#160;&#160;
+                
+        
+        Visualizing a Mobius strip
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="mobius-strip">
+<h1>Mobius strip<a class="headerlink" href="#mobius-strip" title="Permalink to this headline">¶</a></h1>
+<p>Given the following parametrization of a <a class="reference external" href="https://en.wikipedia.org/wiki/M%C3%B6bius_strip">Mobius strip</a></p>
+<div class="math">
+<p><img src="../../_images/math/7ae88e8971c5dddd1aff1852f92dfe9f62d1e1ff.svg" alt="x(s,t) &amp; = \left(1+\frac{t}{2}\cos\left(\frac{s}{2}\right)\right)\cos(s) \\
+y(s,t) &amp; = \left(1+\frac{t}{2}\cos\left(\frac{s}{2}\right)\right)\sin(s) \\
+z(s,t) &amp; = \frac{t}{2}\sin\left(\frac{s}{2}\right)"/></p>
+</div><p>where <img class="math" src="../../_images/math/7a30ae39b856345a2f242252a618cb5bff2f8f73.svg" alt="0\le s\le 2\pi"/> and <img class="math" src="../../_images/math/8732b6bdcac6b5a8e39ba98f365e3d0fb615ceba.svg" alt="-1\le t\le 1"/>.</p>
+<p>Define uniformly spaced samples in parameters <img class="math" src="../../_images/math/63751cb2e98ba393b0f22e45ca127c3cebb61487.svg" alt="s"/> and <img class="math" src="../../_images/math/5ec053cf70dc1c98cc297322250569eda193e7a4.svg" alt="t"/>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Evaluate the above parametric equations using parameter samples <code class="code docutils literal notranslate"><span class="pre">s</span></code> and <code class="code docutils literal notranslate"><span class="pre">t</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">s</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">s</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">s</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Calculate normals.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))[:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Visualize.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pptk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</pre></div>
+</div>
+<table border="1" class="colwidths-given image-grid docutils align-center">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../../_images/mobius1.png"><img alt="mobius" class="align-middle" src="../../_images/mobius1.png" style="width: 256px;" /></a></td>
+<td><a class="reference internal" href="../../_images/mobius_x.png"><img alt="mobius_x" class="align-middle" src="../../_images/mobius_x.png" style="width: 256px;" /></a></td>
+<td><a class="reference internal" href="../../_images/mobius_y.png"><img alt="mobius_y" class="align-middle" src="../../_images/mobius_y.png" style="width: 256px;" /></a></td>
+<td><a class="reference internal" href="../../_images/mobius_z.png"><img alt="mobius_z" class="align-middle" src="../../_images/mobius_z.png" style="width: 256px;" /></a></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="caption docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Visualization of a mobius strip using <a class="reference internal" href="../../viewer.html#pptk.viewer" title="pptk.viewer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a>.
+Points are colored by normal directions.
+And the latter three images are views along the -x, +y and -z directions.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      <p>&#160;</p>
+      
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, HERE Europe B.V..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+  </body>
+</html>

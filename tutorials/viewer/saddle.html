@@ -1,0 +1,128 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Visualizing a hyperbolic paraboloid &#8212; pptk 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Mobius strip" href="mobius.html" />
+    <link rel="prev" title="U.S. building footprints dataset by Microsoft" href="building_footprints.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>pptk 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Point Processing Toolkit</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        
+                <a href="../../index.html">Contents</a>
+                &#160;&#160;&raquo;&#160;&#160;
+                
+                        <a href="../../tutorial.html">Tutorials</a>
+                        &#160;&#160;&raquo;&#160;&#160;
+                
+        
+        Visualizing a hyperbolic paraboloid
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="hyperbolic-paraboloid">
+<h1>Hyperbolic paraboloid<a class="headerlink" href="#hyperbolic-paraboloid" title="Permalink to this headline">¶</a></h1>
+<p>Given <a class="reference external" href="https://en.wikipedia.org/wiki/Paraboloid">hyperbolic paraboloid</a></p>
+<div class="math">
+<p><img src="../../_images/math/b87795bc0c2eaabf443b238fb3df356158ba6e07.svg" alt="f(x,y) = x^2-y^2"/></p>
+</div><p>define corresponding Python function <code class="xref py py-func docutils literal notranslate"><span class="pre">f()</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="go">        return x ** 2 - y ** 2</span>
+</pre></div>
+</div>
+<p>Evaluate <code class="xref py py-func docutils literal notranslate"><span class="pre">f()</span></code> on 100 x 100 uniformly spaced samples in [-1, 1] x [-1, 1].</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Concatenate x, y and z into a single array of points.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Visualize.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pptk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">P</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># color points by their z-coordinates</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>One can also calculate and visualize additional per-point attributes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># calculate gradients</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dPdx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dPdy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># calculate gradient magnitudes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dPdx</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">dPdy</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># calculate normal vectors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">dPdx</span><span class="p">,</span> <span class="n">dPdy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))[:,</span> <span class="p">:,</span> <span class="bp">None</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># set per-point attributes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">P</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">mag</span><span class="p">,</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Toggle between attributes using the <kbd class="kbd docutils literal notranslate">[</kbd> and <kbd class="kbd docutils literal notranslate">]</kbd> keys.</p>
+<table border="1" class="colwidths-given image-grid docutils align-center">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../../_images/saddle_z.png"><img alt="saddle_z" class="align-middle" src="../../_images/saddle_z.png" style="width: 256px;" /></a></td>
+<td><a class="reference internal" href="../../_images/saddle_mag.png"><img alt="saddle_mag" class="align-middle" src="../../_images/saddle_mag.png" style="width: 256px;" /></a></td>
+<td><a class="reference internal" href="../../_images/saddle_n.png"><img alt="saddle_n" class="align-middle" src="../../_images/saddle_n.png" style="width: 256px;" /></a></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="caption docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Visualization of <img class="math" src="../../_images/math/29be9fceff348faaa92dfc066cb6664c4de988fe.svg" alt="f(x,y)=x^2-y^2"/>.
+Points are colored by <img class="math" src="../../_images/math/875eb40014526135383caa89fd500ae40a835f56.svg" alt="f"/> (left), <img class="math" src="../../_images/math/55cab36c1bff68c8cf261f822a42dcd52647d119.svg" alt="|\nabla f|"/> (middle), and normal directions (right)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      <p>&#160;</p>
+      
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, HERE Europe B.V..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+  </body>
+</html>

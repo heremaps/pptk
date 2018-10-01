@@ -1,0 +1,127 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tutorials &#8212; pptk 0.1.1 documentation</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Semantic3D" href="tutorials/viewer/semantic3d.html" />
+    <link rel="prev" title="Getting started" href="quickstart.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>pptk 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Point Processing Toolkit</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        
+                <a href="index.html">Contents</a>
+                &#160;&#160;&raquo;&#160;&#160;
+                
+        
+        Tutorials
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="tutorials">
+<h1>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="visualizing-2-d-and-3-d-point-data">
+<h2>Visualizing 2-d and 3-d point data<a class="headerlink" href="#visualizing-2-d-and-3-d-point-data" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="colwidths-given image-grid docutils align-center">
+<colgroup>
+<col width="26%" />
+<col width="28%" />
+<col width="26%" />
+<col width="19%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="_images/semantic3d_small_i.jpg"><img alt="semantic3d_small_i" class="align-middle" src="_images/semantic3d_small_i.jpg" style="width: 220.0px; height: 160.0px;" /></a></td>
+<td><a class="reference internal" href="_images/geolife_utm.png"><img alt="geolife_utm" class="align-middle" src="_images/geolife_utm.png" style="width: 231.2px; height: 160.0px;" /></a></td>
+<td><a class="reference internal" href="_images/footprints_dc.png"><img alt="footprints_dc" class="align-middle" src="_images/footprints_dc.png" style="width: 220.0px; height: 160.0px;" /></a></td>
+<td><a class="reference internal" href="_images/mobius.png"><img alt="mobius" class="align-middle" src="_images/mobius.png" style="width: 160.0px; height: 160.0px;" /></a></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="caption docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Point datasets visualized using <a class="reference internal" href="viewer.html#pptk.viewer" title="pptk.viewer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a>.
+The <code class="file docutils literal notranslate"><span class="pre">bildstein1</span></code> Lidar point cloud from <a class="reference external" href="http://semantic3d.net">Semantic3D</a> (left).
+Beijing GPS trajectories from
+<a class="reference external" href="https://www.microsoft.com/en-us/research/publication/geolife-gps-trajectory-dataset-user-guide/">Geolife</a>
+(middle left).
+<code class="file docutils literal notranslate"><span class="pre">DistrictofColumbia.geojson</span></code> 2-d polygons from
+<a class="reference external" href="https://github.com/Microsoft/USBuildingFootprints">US building footprints</a> (middle right).
+A Mobius strip (right).</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="viewer.html#pptk.viewer" title="pptk.viewer"><code class="xref py py-func docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a> allows interactive visualization of any point data that can be represented as a 3-column numpy array.
+This includes Lidar point clouds, GPS trajectories, points on a 3-d parametric surface, or even point samplings of 2-d polygons.
+The viewer is not tied to a specific file format.
+As shown in these tutorials,
+users of pptk may leverage the vast collection of existing Python packages for reading data from specific file formats.
+For example, the pandas package is very well-suited for reading .csv files,
+and the plyfile package for reading .ply files.
+The following tutorials each consider a different point dataset
+and provide step-by-step instructions for visualizing them using <a class="reference internal" href="viewer.html#pptk.viewer" title="pptk.viewer"><code class="xref py py-func docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a>.</p>
+<p><strong>Lidar point clouds</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/viewer/semantic3d.html">Semantic3D dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/viewer/tanks_and_temples.html">Tanks and Temples dataset</a></li>
+</ul>
+</div>
+<p><strong>GPS trajectories</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/viewer/geolife.html">Geolife dataset</a></li>
+</ul>
+</div>
+<p><strong>2-d Polygons</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/viewer/building_footprints.html">U.S. building footprints dataset</a></li>
+</ul>
+</div>
+<p><strong>Parametric surfaces</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/viewer/saddle.html">Hyperbolic paraboloid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/viewer/mobius.html">Mobius strip</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      <p>&#160;</p>
+      
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, HERE Europe B.V..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+  </body>
+</html>

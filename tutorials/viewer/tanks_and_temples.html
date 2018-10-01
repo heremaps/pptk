@@ -1,0 +1,118 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Visualizing the Tanks and Temples dataset &#8212; pptk 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Geolife dataset" href="geolife.html" />
+    <link rel="prev" title="Semantic3D" href="semantic3d.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>pptk 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Point Processing Toolkit</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        
+                <a href="../../index.html">Contents</a>
+                &#160;&#160;&raquo;&#160;&#160;
+                
+                        <a href="../../tutorial.html">Tutorials</a>
+                        &#160;&#160;&raquo;&#160;&#160;
+                
+        
+        Visualizing the Tanks and Temples dataset
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="tanks-and-temples">
+<h1>Tanks and Temples<a class="headerlink" href="#tanks-and-temples" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://www.tanksandtemples.org">Tank and Temples</a>
+is a benchmark that uses Lidar point clouds as ground truth
+for benchmarking the quality of image-based 3-d reconstruction algorithms.
+The point clouds are stored as .ply files.
+Here we show how to load and visualize these point clouds.</p>
+<p>Download <code class="code docutils literal notranslate"><span class="pre">Truck.ply</span></code> (392 MB)
+<a class="reference external" href="https://docs.google.com/uc?export=download&amp;id=0B-ePgl6HF260NlB1MXF1ZUs0c0U">[link]</a>.</p>
+<p>Import required Python packages.
+Here we use the plyfile Python package to read .ply files.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pptk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">plyfile</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">plyfile</span></code> does not work,
+simply save a local copy of plyfile.py from plyfile’s <a class="reference external" href="https://github.com/dranjan/python-plyfile">github page</a>.</p>
+</div>
+<p>Read vertices in <code class="code docutils literal notranslate"><span class="pre">Truck.ply</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">plyfile</span><span class="o">.</span><span class="n">PlyData</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;Truck.ply&#39;</span><span class="p">)[</span><span class="s1">&#39;vertex&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Use per-vertex attributes to make numpy arrays <code class="code docutils literal notranslate"><span class="pre">xyz</span></code>, <code class="code docutils literal notranslate"><span class="pre">rgb</span></code>, and <code class="code docutils literal notranslate"><span class="pre">n</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;green&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nx&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ny&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;nz&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>Visualize.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">rgb</span> <span class="o">/</span> <span class="mf">255.</span><span class="p">,</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">n</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Use <kbd class="kbd docutils literal notranslate">[</kbd> and <kbd class="kbd docutils literal notranslate">]</kbd> to toggle between attributes.</p>
+<table border="1" class="colwidths-given image-grid docutils align-center">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../../_images/tanks_and_temples_truck_rgb.jpg"><img alt="truck_rgb" class="align-middle" src="../../_images/tanks_and_temples_truck_rgb.jpg" style="width: 340px;" /></a></td>
+<td><a class="reference internal" href="../../_images/tanks_and_temples_truck_n.jpg"><img alt="truck_n" class="align-middle" src="../../_images/tanks_and_temples_truck_n.jpg" style="width: 340px;" /></a></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="caption docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>The <code class="file docutils literal notranslate"><span class="pre">Truck.py</span></code> point cloud from <a class="reference external" href="https://www.tanksandtemples.org">Tanks and Temples</a>
+visualized using <a class="reference internal" href="../../viewer.html#pptk.viewer" title="pptk.viewer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a>. Points are colored by RGB (left) and normal (right)</td>
+</tr>
+</tbody>
+</table>
+<p>The above procedure can be repeated for the other point clouds in the dataset.</p>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      <p>&#160;</p>
+      
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, HERE Europe B.V..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+  </body>
+</html>

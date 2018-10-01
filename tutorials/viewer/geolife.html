@@ -1,0 +1,448 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Visualizing the Geolife dataset &#8212; pptk 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="U.S. building footprints dataset by Microsoft" href="building_footprints.html" />
+    <link rel="prev" title="Tanks and Temples" href="tanks_and_temples.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>pptk 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Point Processing Toolkit</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        
+                <a href="../../index.html">Contents</a>
+                &#160;&#160;&raquo;&#160;&#160;
+                
+                        <a href="../../tutorial.html">Tutorials</a>
+                        &#160;&#160;&raquo;&#160;&#160;
+                
+        
+        Visualizing the Geolife dataset
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="geolife-dataset">
+<h1>Geolife dataset<a class="headerlink" href="#geolife-dataset" title="Permalink to this headline">¶</a></h1>
+<p>Download the dataset from the
+<a class="reference external" href="https://www.microsoft.com/en-us/research/publication/geolife-gps-trajectory-dataset-user-guide/">Geolife</a> project website</p>
+<p>Extract the zip file and observe the following directory structure.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Geolife dataset folder structure</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span> Data/
+ |
+ +-- 000/
+ +-- 001/
+ ...
+ +-- 010/
+ |    +-- labels.txt
+ |    +-- Trajectory/
+ |        +-- 20070804033032.plt
+ |        +-- 20070804155303.plt
+ |        ...
+ ...
+ +-- 181/
+</pre></div>
+</div>
+</div>
+<p>The top level <code class="code docutils literal notranslate"><span class="pre">Data/</span></code> folder contains 182 user folders, numbered <code class="code docutils literal notranslate"><span class="pre">000/</span></code> to <code class="code docutils literal notranslate"><span class="pre">181/</span></code>.
+Within each user folder, there is a <code class="code docutils literal notranslate"><span class="pre">Trajectory/</span></code> folder containing the user’s GPS trajectories
+(saved as .plt files)
+and optionally a <code class="code docutils literal notranslate"><span class="pre">labels.txt</span></code> file specifying the mode of transportation employed for a given time interval.</p>
+<p>The .plt files look like this.
+Starting with the seventh line, each line specifies in a comma-separated fashion the attributes of a single GPS point:
+(0) latitude, (1) longitude, (2) unused, (3) altitude, (4) days since Dec. 30 1899, (5) date, (6) time.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Data/010/Trajectory/20070804033032.plt</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span> Geolife trajectory
+ WGS 84
+ Altitude is in Feet
+ Reserved 3
+ 0,2,255,My Track,0,0,2,8421376
+ 0
+ 39.921712,116.472343,0,13,39298.1462037037,2007-08-04,03:30:32
+ 39.921705,116.472343,0,13,39298.1462152778,2007-08-04,03:30:33
+ 39.921695,116.472345,0,13,39298.1462268519,2007-08-04,03:30:34
+ ...
+</pre></div>
+</div>
+</div>
+<p>The <code class="code docutils literal notranslate"><span class="pre">labels.txt</span></code> files look like this.
+Each line specifies in a space-delimited fashion the start date, start time, end date, end time, and mode of transportation.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Data/010/labels.txt</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span> 2008/11/01 03:59:27 2008/11/01 04:30:18 train
+ 2008/11/01 04:35:38 2008/11/01 05:06:30 taxi
+ 2008/11/04 10:18:55 2008/11/04 10:21:11 subway
+ 2008/11/04 11:02:34 2008/11/04 11:10:08 taxi
+ 2008/11/04 11:14:08 2008/11/04 11:22:48 walk
+ 2008/11/04 14:38:07 2008/11/04 14:40:15 subway
+ 2008/11/04 14:41:44 2008/11/04 14:43:39 walk
+ ...
+</pre></div>
+</div>
+</div>
+<div class="section" id="loading-the-dataset">
+<h2>Loading the dataset<a class="headerlink" href="#loading-the-dataset" title="Permalink to this headline">¶</a></h2>
+<p>Both .plt and <code class="code docutils literal notranslate"><span class="pre">labels.txt</span></code> files are readily parsed using <code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>,
+which also has builtin date/time parsing capabilities.
+The following code defines Python functions that use <code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code> to load the Geolife dataset into Python.</p>
+<p>Copy the following code into a file named read_geolife.py.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">read_geolife.py</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">def</span> <span class="nf">read_plt</span><span class="p">(</span><span class="n">plt_file</span><span class="p">):</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">plt_file</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                         <span class="n">parse_dates</span><span class="o">=</span><span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]],</span> <span class="n">infer_datetime_format</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="c1"># for clarity rename columns</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;5_6&#39;</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;alt&#39;</span><span class="p">})</span>
+
+    <span class="c1"># remove unused columns</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">points</span>
+
+<span class="n">mode_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;walk&#39;</span><span class="p">,</span> <span class="s1">&#39;bike&#39;</span><span class="p">,</span> <span class="s1">&#39;bus&#39;</span><span class="p">,</span> <span class="s1">&#39;car&#39;</span><span class="p">,</span> <span class="s1">&#39;subway&#39;</span><span class="p">,</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;airplane&#39;</span><span class="p">,</span> <span class="s1">&#39;boat&#39;</span><span class="p">,</span> <span class="s1">&#39;run&#39;</span><span class="p">,</span> <span class="s1">&#39;motorcycle&#39;</span><span class="p">,</span> <span class="s1">&#39;taxi&#39;</span><span class="p">]</span>
+<span class="n">mode_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mode_names</span><span class="p">)}</span>
+
+<span class="k">def</span> <span class="nf">read_labels</span><span class="p">(</span><span class="n">labels_file</span><span class="p">):</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">labels_file</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                         <span class="n">parse_dates</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
+                         <span class="n">infer_datetime_format</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">delim_whitespace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="c1"># for clarity rename columns</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;start_time&#39;</span><span class="p">,</span> <span class="s1">&#39;end_time&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">]</span>
+
+    <span class="c1"># replace &#39;label&#39; column with integer encoding</span>
+    <span class="n">labels</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mode_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]]</span>
+
+    <span class="k">return</span> <span class="n">labels</span>
+
+<span class="k">def</span> <span class="nf">apply_labels</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="s1">&#39;start_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">no_label</span> <span class="o">=</span> <span class="p">(</span><span class="n">indices</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">labels</span><span class="p">[</span><span class="s1">&#39;end_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">points</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">points</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">][</span><span class="n">no_label</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">def</span> <span class="nf">read_user</span><span class="p">(</span><span class="n">user_folder</span><span class="p">):</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="n">plt_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">user_folder</span><span class="p">,</span> <span class="s1">&#39;Trajectory&#39;</span><span class="p">,</span> <span class="s1">&#39;*.plt&#39;</span><span class="p">))</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">read_plt</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">plt_files</span><span class="p">])</span>
+
+    <span class="n">labels_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">user_folder</span><span class="p">,</span> <span class="s1">&#39;labels.txt&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">labels_file</span><span class="p">):</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">read_labels</span><span class="p">(</span><span class="n">labels_file</span><span class="p">)</span>
+        <span class="n">apply_labels</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+
+<span class="k">def</span> <span class="nf">read_all_users</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+    <span class="n">subfolders</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+    <span class="n">dfs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subfolders</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1">] processing user </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">subfolders</span><span class="p">),</span> <span class="n">sf</span><span class="p">))</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">read_user</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">sf</span><span class="p">))</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sf</span><span class="p">)</span>
+        <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfs</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Explanation of the above code
+(understanding of the following explanations is not necessary for proceding with the tutorial,
+so feel free to skip ahead if you are in a hurry):</p>
+<ul class="simple">
+<li><em>Lines 1-6</em> imports required Python packages (use <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code> for retrieving any missing packages).</li>
+<li><em>Lines 8-18</em> implements function <code class="xref py py-func docutils literal notranslate"><span class="pre">read_plt()</span></code> for reading .plt files into a pandas dataframe.
+It uses the <code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code> function with the keyword argument <code class="code docutils literal notranslate"><span class="pre">parse_dates=[[5,</span> <span class="pre">6]]</span></code>
+to indicate that columns 5 and 6 should be interpretted together as a single timestamp.
+By default timestamps are represented as 64-bit integers recording the number of nanoseconds since 1970-01-01T00:00Z.</li>
+<li><em>Lines 20-21</em> defines an integer encoding for the modes of transportation that appear in <code class="code docutils literal notranslate"><span class="pre">labels.txt</span></code> files
+(i.e. <code class="code docutils literal notranslate"><span class="pre">mode_ids['walk']</span></code> evaluates to 1).
+This is so that points can later be colored by per-point integer labels.
+The label 0 is reserved for denoting the lack of a label, as the dataset contains a large number of unlabelled points.</li>
+<li><em>Lines 23-34</em> implements function <code class="xref py py-func docutils literal notranslate"><span class="pre">read_labels()</span></code> for reading <code class="code docutils literal notranslate"><span class="pre">labels.txt</span></code> files into a pandas dataframe,
+again using <code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>
+(this time attributes are whitespace-delimited, hence the keyword argument <code class="code docutils literal notranslate"><span class="pre">delim_whitespace=True</span></code>).</li>
+<li><em>Lines 36-40</em> implements function <code class="xref py py-func docutils literal notranslate"><span class="pre">apply_labels()</span></code>,
+which assigns a label to each point (i.e. row) in <code class="code docutils literal notranslate"><span class="pre">points</span></code>,
+by determining the time interval that the point resides in and assigning the label of that time interval to the point.
+Points that do not reside in any time interval in <code class="code docutils literal notranslate"><span class="pre">labels</span></code> are assigned the label 0.</li>
+<li><em>Lines 42-55</em> implements function <code class="xref py py-func docutils literal notranslate"><span class="pre">read_user()</span></code> for reading all points from a single user
+and applying labels if a <code class="code docutils literal notranslate"><span class="pre">labels.txt</span></code> is present.</li>
+<li><em>Lines 57-65</em> implements function <code class="xref py py-func docutils literal notranslate"><span class="pre">read_all_users()</span></code> for reading all points from all users.</li>
+</ul>
+<p>Ensure pandas and numpy are installed on your system; if not, use <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code> to install.</p>
+<p>In a new Python terminal, use the <code class="xref py py-func docutils literal notranslate"><span class="pre">read_all_users()</span></code> function to load the dataset.
+On a test machine this takes about 10 minutes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">read_geolife</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">read_geolife</span><span class="o">.</span><span class="n">read_all_users</span><span class="p">(</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span>
+<span class="go">                  time        lat         lon          alt  label  user</span>
+<span class="go">0  2008-10-23 02:53:04  39.984702  116.318417   492.000000      0     0</span>
+<span class="go">1  2008-10-23 02:53:10  39.984683  116.318450   492.000000      0     0</span>
+<span class="go">2  2008-10-23 02:53:15  39.984686  116.318417   492.000000      0     0</span>
+<span class="go">..        ...      ...        ...         ...          ...    ...   ...</span>
+<span class="go">21 2008-03-14 03:43:40  40.910933  111.711617  3802.493438      0   181</span>
+
+<span class="go">[24876978 rows x 6 columns]</span>
+</pre></div>
+</div>
+<p>(Optional)
+Consider saving the dataframe to a file format (e.g. .pkl or .hdf) that supports faster loading in the future.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="s1">&#39;geolife.pkl&#39;</span><span class="p">)</span>  <span class="c1"># saves df to &#39;geolife.pkl&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="s1">&#39;geolife.pkl&#39;</span><span class="p">)</span>  <span class="c1"># reads &#39;geolife.pkl&#39; into df</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="visualize-using-latitude-longitude-coordinates">
+<h2>Visualize using latitude-longitude coordinates<a class="headerlink" href="#visualize-using-latitude-longitude-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>Construct a point cloud using longitude as the x-coordinate and latitude as the y-coordinate.
+Directly using altitude as the z-coordinate will cause the points to appear as a very thin column of points.
+This is due to differences in units (i.e. degrees vs. meters).
+We thus choose here to set the z-coordinate to 0 and to convey altitude via a per-point color.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))]</span>
+</pre></div>
+</div>
+<p>Visualize and color each point based on its altitude.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pptk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;alt&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../../_images/geolife_latlon_default.png"><img alt="../../_images/geolife_latlon_default.png" class="align-center" src="../../_images/geolife_latlon_default.png" style="width: 900px;" /></a>
+<table border="1" class="caption docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Full view of <a class="reference external" href="https://www.microsoft.com/en-us/research/publication/geolife-gps-trajectory-dataset-user-guide/">Geolife</a> dataset in lat-lon with points colored by altitude.</td>
+</tr>
+</tbody>
+</table>
+<p>Since we are interested only in the spatial arrangements of points on the x-y plane,
+Press <kbd class="kbd docutils literal notranslate">5</kbd> to toggle to an orthographic view, and press <kbd class="kbd docutils literal notranslate">7</kbd> to go to a top-down view.
+Pan the viewpoint by pressing the <kbd class="kbd docutils literal notranslate">LMB</kbd> while holding the <kbd class="kbd docutils literal notranslate">Shift</kbd> key.
+Double click with the <kbd class="kbd docutils literal notranslate">LMB</kbd> on a point to recenter the view on that point.
+And use the mouse wheel to zoom in/out.
+To inspect the attribute of a point, which here is altitude,
+left click the point while holding the <kbd class="kbd docutils literal notranslate">Ctrl</kbd> key.
+Deselect by right clicking anywhere.
+See the <a class="reference internal" href="../../viewer.html"><span class="doc">viewer page</span></a> for the full instructions on using the viewer.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">On Mac, use <kbd class="kbd docutils literal notranslate">⌘</kbd> instead of <kbd class="kbd docutils literal notranslate">Ctrl</kbd></p>
+</div>
+<p>The mapping from per-point attribute value to per-point color is determined automatically based on the range of attribute values.
+But the presence of bad attribute values (e.g. unreasonably large or small altitude values) may result in a poor color mapping,
+where the majority of the points get assigned a small range of colors.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;alt&#39;</span><span class="p">])</span>
+<span class="go">    -32647.6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;alt&#39;</span><span class="p">])</span>
+<span class="go">    107503.3</span>
+</pre></div>
+</div>
+<p>Improve the color map by manually setting the mapping domain using <a class="reference internal" href="../../viewer.html#pptk.viewer.color_map" title="pptk.viewer.color_map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">viewer.color_map</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">color_map</span><span class="p">(</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20000</span><span class="p">])</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../../_images/geolife_latlon_labeled.png"><img alt="../../_images/geolife_latlon_labeled.png" class="align-center" src="../../_images/geolife_latlon_labeled.png" style="width: 900px;" /></a>
+<table border="1" class="caption docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Full view of <a class="reference external" href="https://www.microsoft.com/en-us/research/publication/geolife-gps-trajectory-dataset-user-guide/">Geolife</a> dataset in lat-lon with an improved color map
+(i.e. the greater range of colors allows one to better see the changes in altitude across points).</td>
+</tr>
+</tbody>
+</table>
+<p>Observe that point coverage is world wide,
+as there are points not just in Beijing but also in faraway cities such as Rome and Seattle.
+Observe also the high altitude points (i.e. airplane trajectories) that connect some of these cities.
+A future release of the pptk viewer may include support for overlaying points on map tiles
+(e.g. <a class="reference external" href="https://developer.here.com/documentation/map-tile/topics/introduction.html">HERE Map Tile</a>)
+for better supporting such visualizations.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You may notice that you cannot zoom in as close as you would like.
+This is because there is currently a hardcoded limit on zooming in,
+which a future release of pptk will fix.
+This is not an issue when viewing data such as Lidar point clouds that are typically specified in meters,
+but becomes a limitation when viewing lat-lon points
+(i.e. two points 1m apart translates to a very small difference in lat/lon).
+Meanwhile, to zoom in further, consider scaling up the lat-lon values,
+or converting the points to UTM coordinates, as described in the next section.</p>
+</div>
+</div>
+<div class="section" id="visualize-using-utm-coordinates">
+<h2>Visualize using UTM coordinates<a class="headerlink" href="#visualize-using-utm-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>Directly mapping lon-lat to x-y (i.e. x &lt;- lon, y &lt;- lat),
+as in the previous section,
+causes points to appear stretched apart near the north and south poles.
+Alternatively, the <a class="reference external" href="https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system">UTM projection</a>
+is able to convert lat-lon coordinates into units of meters
+while only introducing a relatively small amount of stretching/shrinking between points in the same UTM zone.
+In this section, we show how to apply the UTM projection on GPS points in UTM zone 50 (Beijing’s UTM zone),
+which we then visualize using <a class="reference internal" href="../../viewer.html#pptk.viewer" title="pptk.viewer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a>.</p>
+<p>First remove points that are outside the UTM zone 50.
+This is to remove any invalid points that may later convert to unreasonably large UTM coordinates
+(the dataset contains a point with invalid latitude of 400.17)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask_50</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">114.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">120.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">32.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">48.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_50</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">mask_50</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Use pyproj to convert latitudes and longitudes into meters in the UTM coordinate system.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyproj</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">proj</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Proj</span><span class="p">(</span><span class="n">proj</span><span class="o">=</span><span class="s1">&#39;utm&#39;</span><span class="p">,</span> <span class="n">zone</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">ellps</span><span class="o">=</span><span class="s1">&#39;WGS84&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">proj</span><span class="p">(</span><span class="n">df_50</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">df_50</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mf">0.3048</span> <span class="o">*</span> <span class="n">df_50</span><span class="p">[</span><span class="s1">&#39;alt&#39;</span><span class="p">]]</span>  <span class="c1"># alt originally in feet</span>
+</pre></div>
+</div>
+<p>Visualize the points.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Visualize points colored by transportation mode (non-labelled points removed).
+Optionally, one may use <a class="reference internal" href="../../viewer.html#pptk.viewer.color_map" title="pptk.viewer.color_map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">viewer.color_map</span></code></a> to manually set the color of each label.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask_labelled</span> <span class="o">=</span> <span class="n">df_50</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">mask_labelled</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">df_50</span><span class="p">[</span><span class="n">mask_labelled</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Again <kbd class="kbd docutils literal notranslate">Ctrl</kbd> + left click on a point to examine its mode of transportation attribute.</p>
+<table border="1" class="colwidths-given image-grid docutils align-center">
+<colgroup>
+<col width="43%" />
+<col width="43%" />
+<col width="13%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../../_images/geolife_utm1.png"><img alt="geolife_utm" class="align-middle" src="../../_images/geolife_utm1.png" style="width: 390px;" /></a></td>
+<td><a class="reference internal" href="../../_images/geolife_utm_zoomed.png"><img alt="geolife_utm_zoomed" class="align-middle" src="../../_images/geolife_utm_zoomed.png" style="width: 390px;" /></a></td>
+<td><a class="reference internal" href="../../_images/geolife_legend.png"><img alt="geolife_legend" class="align-middle" src="../../_images/geolife_legend.png" style="width: 110px;" /></a></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="caption docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference external" href="https://www.microsoft.com/en-us/research/publication/geolife-gps-trajectory-dataset-user-guide/">Geolife</a> GPS points in UTM coordinates visualized using <a class="reference internal" href="../../viewer.html#pptk.viewer" title="pptk.viewer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a>.
+Points are from around the Beijing area and are colored by mode of transportation.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      <p>&#160;</p>
+      
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, HERE Europe B.V..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,254 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Visualizing the Semantic3D dataset &#8212; pptk 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Tanks and Temples" href="tanks_and_temples.html" />
+    <link rel="prev" title="Tutorials" href="../../tutorial.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>pptk 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Point Processing Toolkit</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        
+                <a href="../../index.html">Contents</a>
+                &#160;&#160;&raquo;&#160;&#160;
+                
+                        <a href="../../tutorial.html">Tutorials</a>
+                        &#160;&#160;&raquo;&#160;&#160;
+                
+        
+        Visualizing the Semantic3D dataset
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="semantic3d">
+<h1>Semantic3D<a class="headerlink" href="#semantic3d" title="Permalink to this headline">¶</a></h1>
+<p>Download the following zip files from the <a class="reference external" href="http://semantic3d.net">Semantic3D</a> website.</p>
+<ul class="simple">
+<li><code class="file docutils literal notranslate"><span class="pre">bildstein_station1_xyz_intensity_rgb.7z</span></code> (0.20 GB)
+[<a class="reference external" href="http://semantic3d.net/data/point-clouds/training1/bildstein_station1_xyz_intensity_rgb.7z">download</a>]</li>
+<li><code class="file docutils literal notranslate"><span class="pre">sem8_labels_training.7z</span></code> (0.01 GB)
+[<a class="reference external" href="http://semantic3d.net/data/sem8_labels_training.7z">download</a>]</li>
+</ul>
+<p>Extract the zip files and check that you have at least the following files.</p>
+<ul class="simple">
+<li><code class="file docutils literal notranslate"><span class="pre">bildstein_station1_xyz_intensity_rgb.txt</span></code></li>
+<li><code class="file docutils literal notranslate"><span class="pre">bildstein_station1_xyz_intensity_rgb.labels</span></code></li>
+</ul>
+<p>Point clouds are stored in .txt files, and their per-point labels are stored in corresponding .label files.</p>
+<p>In a Python terminal, import the following Python packages.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pptk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+<p>Copy and paste the following function definitions for reading Semantic3D .txt and .labels files into your Python terminal.
+Note these functions are merely simple wrappers around the <code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">read_points</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="c1"># reads Semantic3D .txt file f into a pandas dataframe</span>
+    <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span>
+    <span class="n">col_dtype</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span>
+                  <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">col_dtype</span><span class="p">,</span> <span class="n">delim_whitespace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">read_labels</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="c1"># reads Semantic3D .labels file f into a pandas dataframe</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+</div>
+<p>Read <code class="file docutils literal notranslate"><span class="pre">bildstein_station1_xyz_intensity_rgb.txt</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="n">read_points</span><span class="p">(</span><span class="s1">&#39;bildstein_station1_xyz_intensity_rgb.txt&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span>
+<span class="go">                  x          y       z     i    r    g    b</span>
+<span class="go">0         20.622999  40.276001  -1.999 -1031  127  141  154</span>
+<span class="go">1         20.362000  40.375000  -2.239  -941  130  141  159</span>
+<span class="go">2         20.360001  40.375999  -2.402 -1083  139  151  165</span>
+<span class="gp">... </span>            <span class="o">...</span>        <span class="o">...</span>     <span class="o">...</span>   <span class="o">...</span>  <span class="o">...</span>  <span class="o">...</span>  <span class="o">...</span>
+<span class="go">29697590  60.196999  82.137001  11.085 -1619  134  140  172</span>
+
+<span class="go">[29697591 rows x 7 columns]</span>
+</pre></div>
+</div>
+<p>Read <code class="file docutils literal notranslate"><span class="pre">bildstein_station1_xyz_intensity_rgb.labels</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="n">read_labels</span><span class="p">(</span><span class="s1">&#39;bildstein_station1_xyz_intensity_rgb.labels&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span>
+<span class="go">    array([0, 0, 6, ..., 0, 0, 0], dtype=int64)</span>
+</pre></div>
+</div>
+<p>Visualize (refer to the <a class="reference internal" href="../../viewer.html"><span class="doc">viewer page</span></a> for control details).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">points</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">points</span><span class="p">[[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]]</span> <span class="o">/</span> <span class="mf">255.</span><span class="p">,</span> <span class="n">points</span><span class="p">[</span><span class="s1">&#39;i&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Visualize point labels, showing only points with non-zero labels (in this dataset label 0 denotes lack of a label).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">!=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">P</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">P</span><span class="p">[[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]]</span> <span class="o">/</span> <span class="mf">255.</span><span class="p">,</span> <span class="n">P</span><span class="p">[</span><span class="s1">&#39;i&#39;</span><span class="p">],</span> <span class="n">L</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Toggle between attributes using the <kbd class="kbd docutils literal notranslate">[</kbd> and <kbd class="kbd docutils literal notranslate">]</kbd> keys.</p>
+<table border="1" class="colwidths-given image-grid docutils align-center">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../../_images/semantic3d_small_rgb.jpg"><img alt="semantic3d_small_rgb" class="align-middle" src="../../_images/semantic3d_small_rgb.jpg" style="width: 300px;" /></a></td>
+<td><a class="reference internal" href="../../_images/semantic3d_small_i1.jpg"><img alt="semantic3d_small_i" class="align-middle" src="../../_images/semantic3d_small_i1.jpg" style="width: 300px;" /></a></td>
+<td><a class="reference internal" href="../../_images/semantic3d_small_labels.jpg"><img alt="semantic3d_small_labels" class="align-middle" src="../../_images/semantic3d_small_labels.jpg" style="width: 300px;" /></a></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="caption docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>The <a class="reference external" href="http://semantic3d.net">Semantic3D</a> <code class="file docutils literal notranslate"><span class="pre">bildstein1</span></code> point cloud,
+with 0-labeled points removed, visualized using <a class="reference internal" href="../../viewer.html#pptk.viewer" title="pptk.viewer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a>.
+Points are colored by RGB (left), intensity (middle), semantic label (right).</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="basic-support-for-point-annotation">
+<h2>Basic support for point annotation<a class="headerlink" href="#basic-support-for-point-annotation" title="Permalink to this headline">¶</a></h2>
+<p><strong>Selecting points</strong>.
+Holding <kbd class="kbd docutils literal notranslate">Ctrl</kbd> while performing a <kbd class="kbd docutils literal notranslate">LMB</kbd> drag creates an “additive” selection box;
+when the <kbd class="kbd docutils literal notranslate">LMB</kbd> is released, all points in the box are added into a set of currently selected points.
+Holding <kbd class="kbd docutils literal notranslate">Ctrl-Shift</kbd> while performing the <kbd class="kbd docutils literal notranslate">LMB</kbd> drag creates a “subtractive” selection box;
+when the mouse button is released, all points in the box are removed from the set of currently selected points.
+Individual points can be added or removed from the set
+by left clicking on a point while holding <kbd class="kbd docutils literal notranslate">Ctrl</kbd> or <kbd class="kbd docutils literal notranslate">Ctrl-Shift</kbd>.
+Right click to deselect all.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">On Mac, use <kbd class="kbd docutils literal notranslate">⌘</kbd> instead of <kbd class="kbd docutils literal notranslate">Ctrl</kbd></p>
+</div>
+<p>Query the selected point indices using <a class="reference internal" href="../../viewer.html#pptk.viewer.get" title="pptk.viewer.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer.get()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;selected&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When editting a selection containing a large number of points, consider “saving” often.
+If the selection is ever lost (e.g. accidental deselection),
+the selection can be restored using <a class="reference internal" href="../../viewer.html#pptk.viewer.set" title="pptk.viewer.set"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer.set()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">selected</span><span class="o">=</span><span class="n">indices</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="visualizing-very-large-point-clouds">
+<h2>Visualizing very large point clouds<a class="headerlink" href="#visualizing-very-large-point-clouds" title="Permalink to this headline">¶</a></h2>
+<p>The above procedure can be repeated for other point clouds in Semantic 3D.
+However, pptk viewer may fail to start for larger inputs
+(the actual input size depends on system and GPU memory;
+on certain machines this is known to happen for inputs larger than roughly 100M points).
+One workaround is to subsample (keep every k-th point) the input point cloud.
+Though imperfect, this in many cases can still give a reasonably accurate view of the point cloud.</p>
+<p>Here we show how to visualize the largest point cloud in <a class="reference external" href="http://semantic3d.net">Semantic3D</a>.</p>
+<ul class="simple">
+<li><code class="code docutils literal notranslate"><span class="pre">sg27_station2_intensity_rgb.7z</span></code> (2.72 GB)
+[<a class="reference external" href="http://semantic3d.net/data/point-clouds/training1/sg27_station2_intensity_rgb.7z">download</a>]</li>
+</ul>
+<p>Read points
+(this may take a few minutes as the point cloud is quite large;
+on a test machine this took ~6 min to load and used ~9GB of memory).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="n">read_points</span><span class="p">(</span><span class="s1">&#39;sg27_station2_intensity_rgb.txt&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span>
+<span class="go">                    x          y       z     i    r    g    b</span>
+<span class="go">0          -79.001999  15.598000  10.773 -1709  152  126   99</span>
+<span class="go">1         -101.685997  25.760000  15.934 -1111   32   22   21</span>
+<span class="go">2         -101.842003  25.563999  15.966 -1279  131  102   84</span>
+<span class="gp">... </span>              <span class="o">...</span>        <span class="o">...</span>     <span class="o">...</span>   <span class="o">...</span>  <span class="o">...</span>  <span class="o">...</span>  <span class="o">...</span>
+<span class="go">496702860   42.551998  94.640999   2.531 -1479  140  108  113</span>
+
+<span class="go">[496702861 rows x 7 columns]</span>
+</pre></div>
+</div>
+<p>(Optional) Consider saving points to .npy files for faster loading in the future.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;sg27_station2.xyz.npy&#39;</span><span class="p">,</span> <span class="n">points</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;sg27_station2.rgb.npy&#39;</span><span class="p">,</span> <span class="n">points</span><span class="p">[[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;sg27_station2.i.npy&#39;</span><span class="p">,</span> <span class="n">points</span><span class="p">[</span><span class="s1">&#39;i&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Read labels.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="n">read_labels</span><span class="p">(</span><span class="s1">&#39;sg27_station2_intensity_rgb.labels&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span>
+<span class="go">    array([2, 2, 2, ..., 6, 6, 6], dtype=int64)</span>
+</pre></div>
+</div>
+<p>Subsample points and labels by keeping only every 6-th point.
+This leaves 82,783,811 points (just under 100M points).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">points</span><span class="p">[::</span> <span class="mi">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[::</span> <span class="mi">6</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Remove 0-labeled points.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">L</span> <span class="o">!=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Visualize.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">P</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">P</span><span class="p">[[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]]</span> <span class="o">/</span> <span class="mf">255.</span><span class="p">,</span> <span class="n">P</span><span class="p">[</span><span class="s1">&#39;i&#39;</span><span class="p">],</span> <span class="n">L</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../../_images/semantic3d_large_rgb.jpg"><img alt="../../_images/semantic3d_large_rgb.jpg" class="align-center" src="../../_images/semantic3d_large_rgb.jpg" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../../_images/semantic3d_large_i.jpg"><img alt="../../_images/semantic3d_large_i.jpg" class="align-center" src="../../_images/semantic3d_large_i.jpg" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../../_images/semantic3d_large_labels.jpg"><img alt="../../_images/semantic3d_large_labels.jpg" class="align-center" src="../../_images/semantic3d_large_labels.jpg" style="width: 90%;" /></a>
+<table border="1" class="caption docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>The <a class="reference external" href="http://semantic3d.net">Semantic3D</a> <code class="file docutils literal notranslate"><span class="pre">sg27_station2</span></code> point cloud visualized using <a class="reference internal" href="../../viewer.html#pptk.viewer" title="pptk.viewer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a>.
+Point cloud has been subsampled by a factor of 6 and removed of 0-labeled points.
+Points are colored by RGB (top), intensity (middle), semantic label (bottom).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      <p>&#160;</p>
+      
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, HERE Europe B.V..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+  </body>
+</html>

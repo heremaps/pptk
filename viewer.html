@@ -4,41 +4,35 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Point cloud viewer &#8212; pptk 0.1.1 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Processing routines" href="processing.html" />
-    <link rel="prev" title="Getting started" href="quickstart.html" /> 
-  </head>
-  <body>
+    <link rel="prev" title="Mobius strip" href="tutorials/viewer/mobius.html" /> 
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>pptk 0.1.1 documentation</span></a></h1>
-        <h2 class="heading"><span>Point cloud viewer</span></h2>
+        <h2 class="heading"><span>Point Processing Toolkit</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="quickstart.html">Getting started</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="processing.html">Processing routines</a>&#160;&#160;»
+        
+                <a href="index.html">Contents</a>
+                &#160;&#160;&raquo;&#160;&#160;
+                
+        
+        Point cloud viewer
         </p>
 
       </div>
@@ -47,20 +41,53 @@
         
   <div class="section" id="point-cloud-viewer">
 <h1>Point cloud viewer<a class="headerlink" href="#point-cloud-viewer" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#pptk.viewer" title="pptk.viewer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a> function enables one to directly visualize large point clouds in Python.
+It accepts as input any Python variable that can be cast as a 3-column numpy array (i.e. via <code class="xref py py-func docutils literal notranslate"><span class="pre">np.asarray()</span></code>).
+It interprets the columns of such input as the x, y, and z coordinates of a point cloud.</p>
+<p>The viewer itself runs as a standalone operating system process separate from Python.
+The user can query and manipulate the viewer via the handle that is returned by <a class="reference internal" href="#pptk.viewer" title="pptk.viewer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a>.
+The handle encapsulates the details of communicating with the viewer (e.g. the viewer process’s port number)
+and provides methods for querying and manipulating the viewer.</p>
+<p>The viewer supports interactive visualization of tens of millions of points via an octree-based level-of-detail renderer.
+At startup the viewer organizes the input points into an octree.
+As the viewpoint is being manipulated,
+the octree is used to approximate groups of far away points as single points and cull points that are outside the view frustum,
+thus greatly reducing the number of points being rendered.
+Once there are no more changes to the viewpoint,
+the viewer then proceeds to perform a more time consuming detailed rendering of the points.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently the viewer crashes for larger number of points.
+The actual number depends on system and GPU memory.
+On certain machines this is known to start happening around 100M points.</p>
+</div>
 <div class="section" id="controls">
 <h2>Controls<a class="headerlink" href="#controls" title="Permalink to this headline">¶</a></h2>
-<p><strong>View manipulation</strong>. The camera look at position is denoted by a
-red-green-blue cursor, with segments corresponding to x, y and z axes. Use the
-left mouse button to rotate. Hold down shift to pan. Double-clicking moves the
-look at position to a point near the mouse cursor.</p>
-<p><strong>Point selection</strong>. Hold down ctrl while clicking or dragging a box to add
-points to a selection. Hold down ctrl+shift to remove from a selection. Use the
-right mouse button to clear an existing selection.</p>
+<p><strong>View manipulation</strong>.
+The camera look at position is denoted by a red-green-blue cursor,
+with segments corresponding to x, y and z axes.
+Perform <kbd class="kbd docutils literal notranslate">LMB</kbd> drag to rotate the viewpoint in a turntable fashion.
+Perform <kbd class="kbd docutils literal notranslate">LMB</kbd> drag while hold <kbd class="kbd docutils literal notranslate">Shift</kbd> to pan the viewpoint.
+Double clicking the <kbd class="kbd docutils literal notranslate">LMB</kbd> moves the look at position to a point near the mouse cursor.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><kbd class="kbd docutils literal notranslate">LMB</kbd>/<kbd class="kbd docutils literal notranslate">RMB</kbd> stands for left/right mouse button</p>
+</div>
+<p><strong>Point selection</strong>.
+Hold <kbd class="kbd docutils literal notranslate">Ctrl</kbd>/<kbd class="kbd docutils literal notranslate">Ctrl-Shift</kbd> while <kbd class="kbd docutils literal notranslate">LMB</kbd> dragging a box to add/remove points to the current selection.
+Hold <kbd class="kbd docutils literal notranslate">Ctrl</kbd>/<kbd class="kbd docutils literal notranslate">Ctrl-Shift</kbd> while <kbd class="kbd docutils literal notranslate">LMB</kbd> clicking on a point
+to add/remove a <em>single</em> point from the current selection.
+Click the <kbd class="kbd docutils literal notranslate">RMB</kbd> to clear the current selection.
+Use <a class="reference internal" href="#pptk.viewer.get" title="pptk.viewer.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer.get()</span></code></a> to query the selected point indices.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are using a Mac, use <kbd class="kbd docutils literal notranslate">⌘</kbd> in place of <kbd class="kbd docutils literal notranslate">Ctrl</kbd>.</p>
+</div>
 <p><strong>Hot keys</strong>.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="5%" />
-<col width="95%" />
+<col width="11%" />
+<col width="89%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">key</th>
@@ -68,25 +95,25 @@ right mouse button to clear an existing selection.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>5</td>
+<tr class="row-even"><td><kbd class="kbd docutils literal notranslate">5</kbd></td>
 <td>Toggle between orthographic/perspective projection</td>
 </tr>
-<tr class="row-odd"><td>1</td>
+<tr class="row-odd"><td><kbd class="kbd docutils literal notranslate">1</kbd></td>
 <td>Look along +y direction</td>
 </tr>
-<tr class="row-even"><td>3</td>
+<tr class="row-even"><td><kbd class="kbd docutils literal notranslate">3</kbd></td>
 <td>Look along -x direction</td>
 </tr>
-<tr class="row-odd"><td>7</td>
+<tr class="row-odd"><td><kbd class="kbd docutils literal notranslate">7</kbd></td>
 <td>Look along -z direction</td>
 </tr>
-<tr class="row-even"><td>c</td>
+<tr class="row-even"><td><kbd class="kbd docutils literal notranslate">C</kbd></td>
 <td>Set look at position to mean position of selected points</td>
 </tr>
-<tr class="row-odd"><td>[</td>
+<tr class="row-odd"><td><kbd class="kbd docutils literal notranslate">[</kbd></td>
 <td>Toggle previous attribute set</td>
 </tr>
-<tr class="row-even"><td>]</td>
+<tr class="row-even"><td><kbd class="kbd docutils literal notranslate">]</kbd></td>
 <td>Toggle next attribute set</td>
 </tr>
 </tbody>
@@ -103,20 +130,23 @@ right mouse button to clear an existing selection.</p>
 <dd><p>Opens a point cloud viewer</p>
 <p class="rubric">Examples</p>
 <p>Create 100 random points</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Visualize the points</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Visualize points shaded by height</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Visualize points shaded by random RGB color</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rgb</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rgb</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">rgb</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -134,17 +164,19 @@ the following forms:</p>
 <li>RGBA colors: 2-d array of shape (1, 4) or (n, 4)</li>
 </ul>
 <p>Passing in no arguments clears all existing attribute sets and colors
-all points white.  Cycle through attribute sets via ‘[‘ and ‘]’ keys.</p>
+all points white.  Cycle through attribute sets via <kbd class="kbd docutils literal notranslate">[</kbd> and
+<kbd class="kbd docutils literal notranslate">]</kbd> keys.</p>
 <p>Examples:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">attr1</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>     <span class="c"># 100 random scalars</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">attr2</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c"># 100 random RGB colors</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">attr3</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c"># 100 random RGBA colors</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">attr4</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>    <span class="c"># 1 random scalar</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">attr5</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>    <span class="c"># 1 random RGB color</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">attr6</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>    <span class="c"># 1 random RGBA color</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span><span class="p">,</span> <span class="n">attr3</span><span class="p">,</span> <span class="n">attr4</span><span class="p">,</span> <span class="n">attr6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr1</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>     <span class="c1"># 100 random scalars</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr2</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># 100 random RGB colors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr3</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># 100 random RGBA colors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr4</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>       <span class="c1"># 1 random scalar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr5</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>    <span class="c1"># 1 random RGB color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attr6</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>    <span class="c1"># 1 random RGBA color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span><span class="p">,</span> <span class="n">attr3</span><span class="p">,</span> <span class="n">attr4</span><span class="p">,</span> <span class="n">attr5</span><span class="p">,</span> <span class="n">attr6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -154,8 +186,8 @@ all points white.  Cycle through attribute sets via ‘[‘ and ‘]’ keys.</p
 <code class="descname">capture</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.capture" title="Permalink to this definition">¶</a></dt>
 <dd><p>Take screen shot of current view and save to filename</p>
 <p>Examples:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">capture</span><span class="p">(</span><span class="s">&#39;screenshot.png&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">capture</span><span class="p">(</span><span class="s1">&#39;screenshot.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -165,7 +197,7 @@ all points white.  Cycle through attribute sets via ‘[‘ and ‘]’ keys.</p
 <code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes the current point cloud in the viewer</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -175,7 +207,7 @@ all points white.  Cycle through attribute sets via ‘[‘ and ‘]’ keys.</p
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Closes the point cloud viewer</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -242,10 +274,11 @@ passing the corresponding string instead.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scalars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">scalars</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">color_map</span><span class="p">(</span><span class="s">&#39;cool&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">color_map</span><span class="p">(</span><span class="s1">&#39;cool&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">color_map</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 </pre></div>
 </div>
@@ -323,8 +356,8 @@ passing the corresponding string instead.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;selected&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;selected&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -354,13 +387,13 @@ with interp=’cubic_periodic’.</li>
 </table>
 <p>Examples:</p>
 <p>Rotate camera about origin at 1/8 Hz.</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">poses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="n">poses</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">repeat</span><span class="o">=</span><span class="k">True</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s">&#39;linear&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="n">poses</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">repeat</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -376,10 +409,10 @@ is very similar to viewer.play(…).</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>folder</strong> – Folder to which images are saved</li>
-<li><strong>poses</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal"><span class="pre">pptk.viewer.play()</span></code></a></li>
-<li><strong>ts</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal"><span class="pre">pptk.viewer.play()</span></code></a></li>
-<li><strong>tlim</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal"><span class="pre">pptk.viewer.play()</span></code></a></li>
-<li><strong>interp</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal"><span class="pre">pptk.viewer.play()</span></code></a></li>
+<li><strong>poses</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer.play()</span></code></a></li>
+<li><strong>ts</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer.play()</span></code></a></li>
+<li><strong>tlim</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer.play()</span></code></a></li>
+<li><strong>interp</strong> – Same as in <a class="reference internal" href="#pptk.viewer.play" title="pptk.viewer.play"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer.play()</span></code></a></li>
 <li><strong>fps</strong> – Frames per second</li>
 <li><strong>prefix</strong> – Resulting image file names are prefixed with this string</li>
 <li><strong>ext</strong> – Image format</li>
@@ -390,12 +423,12 @@ is very similar to viewer.play(…).</p>
 </table>
 <p class="rubric">Examples</p>
 <p>Assuming poses defined as in the example for :meth:pptk.viewer.play</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mkdir</span> <span class="s">&#39;recording&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;recording&#39;</span><span class="p">,</span> <span class="n">poses</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mkdir</span> <span class="s1">&#39;recording&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s1">&#39;recording&#39;</span><span class="p">,</span> <span class="n">poses</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Tip: Uses ffmpeg to generate a video from the resulting image sequence</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="s">&quot;frame_%03d.png&quot;</span> <span class="o">-</span><span class="n">c</span><span class="p">:</span><span class="n">v</span> <span class="n">mpeg4</span> <span class="o">-</span><span class="n">qscale</span><span class="p">:</span><span class="n">v</span> <span class="mi">0</span> <span class="o">-</span><span class="n">r</span> <span class="mi">24</span> <span class="n">output</span><span class="o">.</span><span class="n">mp4</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;frame_</span><span class="si">%03d</span><span class="s2">.png&quot;</span> <span class="o">-</span><span class="n">c</span><span class="p">:</span><span class="n">v</span> <span class="n">mpeg4</span> <span class="o">-</span><span class="n">qscale</span><span class="p">:</span><span class="n">v</span> <span class="mi">0</span> <span class="o">-</span><span class="n">r</span> <span class="mi">24</span> <span class="n">output</span><span class="o">.</span><span class="n">mp4</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -499,7 +532,7 @@ relative to the look at position.</p>
 frame, where view is pointed away from the look at position, and view
 is the cross product of up with right</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -508,9 +541,9 @@ is the cross product of up with right</p>
 <dl class="method">
 <dt id="pptk.viewer.wait">
 <code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pptk.viewer.wait" title="Permalink to this definition">¶</a></dt>
-<dd><p>Blocks until Enter/Return key is pressed in viewer</p>
+<dd><p>Blocks until <kbd class="kbd docutils literal notranslate">Enter</kbd>/<kbd class="kbd docutils literal notranslate">Return</kbd> key is pressed in viewer</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -525,20 +558,13 @@ is the cross product of up with right</p>
 
       </div>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      <p>&#160;</p>
       
-        <p>
-        «&#160;&#160;<a href="quickstart.html">Getting started</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="processing.html">Processing routines</a>&#160;&#160;»
-        </p>
-
       </div>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, HERE Europe B.V..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
     </div>
   </body>
 </html>

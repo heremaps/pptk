@@ -4,41 +4,35 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Installing pptk &#8212; pptk 0.1.1 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Getting started" href="quickstart.html" />
-    <link rel="prev" title="pptk documentation contents" href="index.html" /> 
-  </head>
-  <body>
+    <link rel="prev" title="Contents" href="index.html" /> 
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>pptk 0.1.1 documentation</span></a></h1>
-        <h2 class="heading"><span>Installing pptk</span></h2>
+        <h2 class="heading"><span>Point Processing Toolkit</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="index.html">pptk documentation contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="quickstart.html">Getting started</a>&#160;&#160;»
+        
+                <a href="index.html">Contents</a>
+                &#160;&#160;&raquo;&#160;&#160;
+                
+        
+        Installing pptk
         </p>
 
       </div>
@@ -49,13 +43,18 @@
 <h1>Installing pptk<a class="headerlink" href="#installing-pptk" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="install-from-pypi">
 <h2>Install from PyPI<a class="headerlink" href="#install-from-pypi" title="Permalink to this headline">¶</a></h2>
-<p>One can either install pptk directly from PyPI</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">pptk</span>
+<p>Install pptk directly from PyPI</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">pptk</span>
 </pre></div>
 </div>
-<p>or from the .whl file that results from
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">pptk requires 64-bit Python and is only <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>-able on versions of Python
+that have a corresponding pptk wheel file on <a class="reference external" href="https://pypi.org/project/pptk/">PyPI</a>.</p>
+</div>
+<p>Or install from the .whl file that results from
 <a class="reference internal" href="#build-from-source"><span class="std std-ref">building pptk from source</span></a>.</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="o">&lt;.</span><span class="n">whl</span> <span class="n">file</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="o">&lt;.</span><span class="n">whl</span> <span class="n">file</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -94,14 +93,14 @@ of these libraries may also work.</p>
 <div class="section" id="windows">
 <h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
 <p>Create an empty build folder</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mkdir</span> <span class="o">&lt;</span><span class="n">build_folder</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mkdir</span> <span class="o">&lt;</span><span class="n">build_folder</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>Create an initial CMakeCache.txt under &lt;build_folder&gt; and use it to provide
 values for the CMake cache variables listed above. (e.g. see CMakeCache.win.txt)</p>
 <p>Type the following…</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">build_folder</span><span class="o">&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cmake</span> <span class="o">-</span><span class="n">G</span> <span class="s">&quot;NMake Makefiles&quot;</span> <span class="o">&lt;</span><span class="n">source_folder</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">build_folder</span><span class="o">&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cmake</span> <span class="o">-</span><span class="n">G</span> <span class="s2">&quot;NMake Makefiles&quot;</span> <span class="o">&lt;</span><span class="n">source_folder</span><span class="o">&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nmake</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">bdist_wheel</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">dist</span>\<span class="o">&lt;.</span><span class="n">whl</span> <span class="n">file</span><span class="o">&gt;</span>
@@ -122,20 +121,13 @@ values for the CMake cache variables listed above. (e.g. see CMakeCache.win.txt)
 
       </div>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      <p>&#160;</p>
       
-        <p>
-        «&#160;&#160;<a href="index.html">pptk documentation contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="quickstart.html">Getting started</a>&#160;&#160;»
-        </p>
-
       </div>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, HERE Europe B.V..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
     </div>
   </body>
 </html>

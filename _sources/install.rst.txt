@@ -4,11 +4,15 @@ Installing pptk
 Install from PyPI
 -----------------
 
-One can either install pptk directly from PyPI
+Install pptk directly from PyPI
 
     >>> pip install pptk
 
-or from the .whl file that results from 
+.. note::
+   pptk requires 64-bit Python and is only :code:`pip install`-able on versions of Python
+   that have a corresponding pptk wheel file on `PyPI <https://pypi.org/project/pptk/>`__.
+
+Or install from the .whl file that results from
 :ref:`building pptk from source <build_from_source>`.
 
     >>> pip install <.whl file>

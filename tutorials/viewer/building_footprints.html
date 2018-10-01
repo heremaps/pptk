@@ -1,0 +1,152 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Visualizing 2-d building footprint polygons &#8212; pptk 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Hyperbolic paraboloid" href="saddle.html" />
+    <link rel="prev" title="Geolife dataset" href="geolife.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>pptk 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Point Processing Toolkit</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        
+                <a href="../../index.html">Contents</a>
+                &#160;&#160;&raquo;&#160;&#160;
+                
+                        <a href="../../tutorial.html">Tutorials</a>
+                        &#160;&#160;&raquo;&#160;&#160;
+                
+        
+        Visualizing 2-d building footprint polygons
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="u-s-building-footprints-dataset-by-microsoft">
+<h1>U.S. building footprints dataset by Microsoft<a class="headerlink" href="#u-s-building-footprints-dataset-by-microsoft" title="Permalink to this headline">¶</a></h1>
+<p>Download the District of Columbia footprints from the project
+<a class="reference external" href="https://github.com/Microsoft/USBuildingFootprints">website</a>.</p>
+<p>Extract <code class="code docutils literal notranslate"><span class="pre">DistrictofColumbia.zip</span></code> to get <code class="code docutils literal notranslate"><span class="pre">DistrictofColumbia.geojson</span></code>.</p>
+<p>In a Python terminal, import required Python packages.
+Install any missing packages using <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pptk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">json</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyproj</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+<p>Load <code class="code docutils literal notranslate"><span class="pre">DistrictofColumbia.geojson</span></code> using <code class="xref py py-func docutils literal notranslate"><span class="pre">json.load()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;DistrictofColumbia.geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+<span class="go">        data = json.load(fd)</span>
+</pre></div>
+</div>
+<p>Collect the polygon coordinates into a list of numpy arrays.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Vs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">F</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">F</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>Convert the points into UTM coordinates (District of Columbia’s UTM zone is 18).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">proj</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Proj</span><span class="p">(</span><span class="n">proj</span><span class="o">=</span><span class="s1">&#39;utm&#39;</span><span class="p">,</span> <span class="n">zone</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">ellps</span><span class="o">=</span><span class="s1">&#39;WGS84&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ws</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">proj</span><span class="p">(</span><span class="n">V</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">V</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())]</span> <span class="k">for</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">Vs</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Copy and paste the following function that converts a polygon into a point set.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sample_polygon</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+    <span class="c1"># samples polygon V s.t. consecutive samples are no greater than eps apart</span>
+    <span class="c1"># assumes last vertex in V is a duplicate of the first</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">eps</span><span class="p">)</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">V</span><span class="p">[:</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">V</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">v1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">m</span><span class="p">,</span> <span class="n">endpoint</span> <span class="o">=</span> <span class="bp">False</span><span class="p">),</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">m</span><span class="p">,</span> <span class="n">endpoint</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Q</span>
+</pre></div>
+</div>
+<p>Then apply <code class="xref py py-func docutils literal notranslate"><span class="pre">sample_polygon()</span></code> to all polygons in <code class="code docutils literal notranslate"><span class="pre">Ws</span></code> and
+concatenate the vertices into a single numpy array.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">sample_polygon</span><span class="p">(</span><span class="n">W</span><span class="p">)</span> <span class="k">for</span> <span class="n">W</span> <span class="ow">in</span> <span class="n">Ws</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Add a third zero column.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">))]</span>
+</pre></div>
+</div>
+<p>Recenter the points to remove rendering glitches associated
+with rendering points with large coordinate values.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="bp">None</span><span class="p">,</span> <span class="p">:]</span>
+</pre></div>
+</div>
+<p>Visualize.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">pptk</span><span class="o">.</span><span class="n">viewer</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">point_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<table border="1" class="colwidths-given image-grid docutils align-center">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../../_images/footprints_dc1.png"><img alt="footprints_dc" class="align-middle" src="../../_images/footprints_dc1.png" style="width: 375px;" /></a></td>
+<td><a class="reference internal" href="../../_images/footprints_dc_zoom.png"><img alt="footprints_dc_zoom" class="align-middle" src="../../_images/footprints_dc_zoom.png" style="width: 375px;" /></a></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="caption docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="file docutils literal notranslate"><span class="pre">DistrictofColumbia.geojson</span></code> polygons from Microsoft’s
+<a class="reference external" href="https://github.com/Microsoft/USBuildingFootprints">US building footprints dataset</a>
+converted into a point set and viewed using <a class="reference internal" href="../../viewer.html#pptk.viewer" title="pptk.viewer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pptk.viewer()</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p>The above procedure can be repeated for other .geojson files in the dataset.
+But note that converting polygons into a point set can become memory intensive.
+By the above procedure, the District of Columbia’s 58,329 polygons yields 18,465,292 points.
+This number of points is easily handled by pptk’s viewer,
+but the number of points may become prohibitive for larger .geojson files in the dataset.
+To visualize the larger .geojson files consider breaking them into smaller pieces.</p>
+<p>Though programs such as <a class="reference external" href="https://www.qgis.org/en/site/">QGIS</a>
+may be more suitable for visualizing building footprints,
+especially if one needs to overlay the footprints on satellite imagery,
+pptk’s viewer can still at times be useful for quickly visualizing results of
+polygon calculations in Python.</p>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      <p>&#160;</p>
+      
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, HERE Europe B.V..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+  </body>
+</html>
