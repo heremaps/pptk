@@ -6,7 +6,7 @@ import os.path
 import shutil
 import platform
 
-from pip import wheel
+from pip._internal import wheel
 
 wheel_tags = wheel.pep425tags.get_supported()[0]
 

@@ -22,8 +22,10 @@ Or install from the .whl file that results from
 Building from source 
 ----------------------------------------
 
-We provide CMake scripts for automating most of the build process, but ask the
-user to manually prepare :ref:`dependencies <requirements>` and record their
+pptk source code is available on `GitHub <https://github.com/heremaps/pptk>`__
+
+Build is mostly automated via CMake scripts,
+but the user must manually prepare :ref:`dependencies <requirements>` and record their
 paths in the following CMake cache variables.
 
 * Numpy_INCLUDE_DIR
@@ -46,8 +48,9 @@ initial cache files, see the CMakeCache..txt files)
 Requirements
 ~~~~~~~~~~~~
 
-Listed are versions of libraries used to develop pptk, though earlier versions
-of these libraries may also work.
+Listed are versions of libraries used to develop pptk,
+though earlier versions of these libraries may also work.
+pptk requires 64-bit versions of these libraries.
 
 * `QT <https://www.qt.io/>`_ 5.4
 * `TBB <https://www.threadingbuildingblocks.org/>`_ 4.3
@@ -57,6 +60,10 @@ of these libraries may also work.
 
 Windows
 ~~~~~~~
+
+Check out source code
+
+    >>> git clone https://github.com/heremaps/pptk.git <source_folder>
 
 Create an empty build folder
 

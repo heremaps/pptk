@@ -26,8 +26,7 @@ Extract the zip file and observe the following directory structure.
     +-- 181/
 
 The top level :code:`Data/` folder contains 182 user folders, numbered :code:`000/` to :code:`181/`.
-Within each user folder, there is a :code:`Trajectory/` folder containing the user's GPS trajectories
-(saved as .plt files) 
+Each user folder has a :code:`Trajectory/` folder containing the user's GPS trajectories (saved as .plt files)
 and optionally a :code:`labels.txt` file specifying the mode of transportation employed for a given time interval.
 
 The .plt files look like this.
@@ -142,9 +141,8 @@ Copy the following code into a file named read_geolife.py.
            dfs.append(df)
        return pd.concat(dfs)
 
-Explanation of the above code
-(understanding of the following explanations is not necessary for proceding with the tutorial,
-so feel free to skip ahead if you are in a hurry):
+Understanding of the following explanation of :file:`read_geolife.py` is not necessary for proceding with the tutorial.
+Feel free to skip ahead if you are in a hurry.
 
 - *Lines 1-6* imports required Python packages (use :code:`pip install` for retrieving any missing packages).
 
