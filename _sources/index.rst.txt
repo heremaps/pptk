@@ -1,5 +1,7 @@
 .. title:: Contents
 
+`GitHub repository <https://github.com/heremaps/pptk>`__
+
 Contents
 ========
 

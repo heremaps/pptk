@@ -66,8 +66,7 @@
 </div>
 </div>
 <p>The top level <code class="code docutils literal notranslate"><span class="pre">Data/</span></code> folder contains 182 user folders, numbered <code class="code docutils literal notranslate"><span class="pre">000/</span></code> to <code class="code docutils literal notranslate"><span class="pre">181/</span></code>.
-Within each user folder, there is a <code class="code docutils literal notranslate"><span class="pre">Trajectory/</span></code> folder containing the user’s GPS trajectories
-(saved as .plt files)
+Each user folder has a <code class="code docutils literal notranslate"><span class="pre">Trajectory/</span></code> folder containing the user’s GPS trajectories (saved as .plt files)
 and optionally a <code class="code docutils literal notranslate"><span class="pre">labels.txt</span></code> file specifying the mode of transportation employed for a given time interval.</p>
 <p>The .plt files look like this.
 Starting with the seventh line, each line specifies in a comma-separated fashion the attributes of a single GPS point:
@@ -242,9 +241,8 @@ The following code defines Python functions that use <code class="xref py py-fun
 </pre></div>
 </td></tr></table></div>
 </div>
-<p>Explanation of the above code
-(understanding of the following explanations is not necessary for proceding with the tutorial,
-so feel free to skip ahead if you are in a hurry):</p>
+<p>Understanding of the following explanation of <code class="file docutils literal notranslate"><span class="pre">read_geolife.py</span></code> is not necessary for proceding with the tutorial.
+Feel free to skip ahead if you are in a hurry.</p>
 <ul class="simple">
 <li><em>Lines 1-6</em> imports required Python packages (use <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code> for retrieving any missing packages).</li>
 <li><em>Lines 8-18</em> implements function <code class="xref py py-func docutils literal notranslate"><span class="pre">read_plt()</span></code> for reading .plt files into a pandas dataframe.
