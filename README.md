@@ -16,6 +16,15 @@ At present, pptk consists of the following features.
 
 [Homepage](https://heremaps.github.io/pptk/index.html)
 
+![pptk screenshots](/docs/source/tutorials/viewer/images/tutorial_banner.png)
+
+The screenshots above show various point datasets visualized using pptk.
+The `bildstein1` Lidar point cloud from Semantic3D (left),
+Beijing GPS trajectories from Geolife (middle left),
+`DistrictofColumbia.geojson` 2-d polygons from US building footprints (middle right),
+and a Mobius strip (right).
+For details, see the [tutorials](https://heremaps.github.io/pptk/tutorial.html).
+
 ## License
 
 Unless otherwise noted in `LICENSE` files for specific files or directories,
